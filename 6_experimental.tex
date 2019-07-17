@@ -1,0 +1,267 @@
+%!TEX root=./main.tex
+
+\section{Experimental Validation}
+\label{sec:experiments}
+\subsection{Overview}
+This section presents qualitative and quantitative evaluation of the proposed pipeline. We first present a quantitative evaluation with \textit{in-silica} data. We then present qualitative results with offline videos of real human patient data. We then compare the improvements of the tracking algorithm \wrt our previous work and a state-of-the-art SLAM method. Finally we describe our experiences with deploying and running the pipeline in the real clinical setting. We emphasise that all previous works on real-time markerless monocular laparoscopic registration with pre-operative organ models have only been evaluated with pre-recoded video data. Thus they have never made the step up to live tests in the clinic and their robustness and practicality in the clinical setting has not been validated. 
+
+\subsection{Quantitative evaluation with Simulation experiments}
+% !THIS TEXT IS FROM ISMAR!
+We present a quantitative evaluation of the initial registration algorithm using a synthetic phantom that we constructed by 3D printing a uterus CAD model in a rigid material, and simulated deformations in software.
+The phantom body (\fig{fig:phantom}(a)) was $90 \times 60 \times 60\si{\cubic\milli\metre}$ and it was printed in color with a realistic texture obtained from images of a human uterus. We introduced the phantom into a pelvic trainer (\fig{fig:phantom}(b)) to simulate the laparoscopic conditions, using a $\SI{10}{\milli\metre}$ Karl Storz HD laparoscope fixed to the pelvic trainer trough a flexible arm. We performed the exploratory video by rotating the model about the cervix similarly to the motion experienced in real surgery by rotating the cannule, keeping $K=20$ keyframes (\fig{fig:reconstruction}).
+ 
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.5\textwidth]{./figs/phantom.pdf}
+\caption{(a) CAD model of the rigid phantom. (b) 3D printed phantom inside a pelvic trainer with a \SI{10}{\milli\metre} Karl Storz HD laparoscope. (c) Laparoscopic images of the phantom.}
+\label{fig:phantom}
+\end{figure}
+
+
+\begin{figure*}[htb]
+  \centering
+  \includegraphics[width=0.9\textwidth]{./figs/markupWithDefSim.pdf}
+\caption{Left: Some of the  exploratory video keyframes with marked occluding contour fragments. Middle: Sparse 3D cloud from SfM. Right, up: Pre-operative model overlaid with the TPS grid of control points. Right, down: Several synthetic deformations obtained with the TPS.}
+\label{fig:reconstruction}
+\end{figure*}
+
+We synthetically deformed the CAD model to simulate a range of different pre-operative shapes of the uterus. To this end we used a volumetric deformation model represented with the Thin Plate Spline (TPS). The TPS was defined by a set of $2\times 3 \times 3$ control points uniformly spaced over the CAD model. By perturbing the control point grid we could create non-linear volumetric deformations (see \fig{fig:reconstruction}, right). We generated many pre-operative deformations first applying a random global affine transform to the reference control points followed by a random displacement of standard deviation $\sigma_p=\SI{10}{\milli\metre}$. We define the TPS as $\wTPS(\cdot,\thetaTPS)$, where $\thetaTPS$ holds the control centers (\ie $18\times 3$ parameters in total).
+
+%
+%\begin{figure}[htb]
+  %\centering
+  %\includegraphics[width=0.3\textwidth]{./figsSimulation/deformSimulation.pdf}
+%\caption{Up: Intra-operative phantom surface, overlaid with the TPS grid of control points. Down: Several synthetic deformations obtained with the TPS.}
+%\label{fig:uterusDeformations}
+%\end{figure}
+To test the accuracy of the initial registration, we use an affine deformable model. This was chosen because the synthetic deformation we induce with the TPS model cannot be exactly approximated by the deformation model. We used this to test our system's robustness to unmodelled deformation modes, which is likely occur when dealing in real conditions with real deformations.
+Our quantitative experiment tested the influence of the number of keyframes on the registration accuracy. We randomly selected sets of $\{2,3,4,5,6,7,10,15\}$ images from the $K=20$ keyframes. For each set we generated $50$ random deformations with the TPS. \fig{fig:InitialSolutions} shows the shapes of three deformed models overlaid with the marked contours from three different views.
+    
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.35\textwidth]{./figs/initial_.pdf}
+\caption{(a), (b) and (c) show the initial projection of three different pre-operative models (one model per column) in three different views (one view per row) using the $z$-buffer. We overlay on top the contours from each view given by the user.}
+\label{fig:InitialSolutions}
+\end{figure}
+
+We measured registration error in 3D by discretizing the internal volume of the uterus model from a grid of $100\times 100 \times 100$ voxels. We denote as $\mathcal{V}$ the set of voxels in the interior of the uterus model. We defined the registration error $\epsilon_r$ as follow:
+% \begin{small}
+\begin{equation}
+  \label{eq:regerror}
+  \epsilon^2_r=\frac{1}{N_{\mathcal{V}}}\sum_{\mathbf{q}\in \mathcal{V}} \|f(\wTPS(\mathbf{q};\thetaTPS),t_0;\theta)-\mathbf{q}\|^2. 
+\end{equation}
+% \end{small}
+\noindent \fig{fig:results}(a) shows the mean registration error we achieved as a function of the number of available keyframes. \fig{fig:results}(b) shows the mean number of iterations it takes our method to reach convergence. \fig{fig:results}(c) shows the mean registration error at each surface vertex using a heatmap visualization.What we see is a clear reduction in registration error with increased numbers of views, and saturating at approximately $8$ views beyond which the registration error is approximately \SI{1.4}{\milli\metre}. The distribution of errors at $2$ views in \fig{fig:results}(c) shows a tendency for greater error away from the uterus head towards the cervix. This is logical because with only a few views the uterus head is quite well constrained by the SfM pointcloud. However, further into the uterus the registration becomes less well constrained which leads to greater error.
+By contrast with more views we have more constraints from the silhouette contours, as these reveal the boundaries of the uterus from a greater range of viewpoints, and the result is a significant improvement in registration. This experiment provides strong evidence for the value in using multiple viewpoints to constrain the registration problem, compared with prior works that uses only one viewpoint. We also see a significant reduction in the number of iterations for convergence with more views.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.85\textwidth]{./figs/introFig.pdf}
+\caption{(a) The MRI preoperative data, (b) the 3D preoperative model of the uterus with the two myomas as reconstructed from the MRI, (c) a frame from the live feed and (d) its AR augmentation with the myomas shown as image overlay.}
+\label{fig:myomas}
+\end{figure*}
+
+\begin{figure*}[htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth]{./figs/errors.pdf}
+\caption{(a) Registration error vs. number of views. (b) Number of iterations vs. number of views. (c) Mean surface registration error for $2$, $4$ and $15$ views.}
+\label{fig:results}
+\end{figure*}
+
+\subsection{Qualitative retrospective evaluation with human uteri}
+% !THIS TEXT IS FROM ISMAR!
+We present qualitative results on pre-recorded video data of a patient with two myomas (see \fig{fig:myomas}). 
+One myoma was large, with a diameter of \SI{121}{\milli\metre}, and the other medium sized with a diameter of \SI{52}{\milli\metre}.
+$\mathcal{M}$ was constructed by performing an interactive segmentation of the MRI using MITK~\cite{Wolf_themedical}, followed by meshing with marching cubes, two iterations of Laplacian mesh smoothing and then mesh decimation with quadratic edge collapse~\cite{conf/siggraph/GarlandH97} to give a mesh of $6210$ vertices. The laparoscopic video was recorded during the patient's myomectomy and we performed the registration and augmentation off-line after surgery on a \SI{50}{\second} video clip before resection began (including the 20 second exploratory phase). We used $10$ keyframes to perform the SfM from the exploratory phase, and this computed correspondences for $321$ image features located on the uterus. The cost function in \eq{eq:totalCost} was optimised in $6$ iterations in approximately \SI{15}{\second}.% with our \CC implementation.
+% This took approximately \SI{15}{\second} to compute using an unoptimised Matlab implementation with a \CC $z$-buffer implementation. \todo{Pamir's times for optimised \CC}
+The registration for the frames after the exploratory video was achieved using the method described in \sect{sec:registration}, which processed each frame in approximately \SI{37.0}{\milli\second} (or \SI{27}{fps}). We show four frames from the clip in \fig{fig:qualResults} (top row), together with an overlay of $\mathcal{M}$ registered to each frame.
+We show with a red contour the silhouette boundary of $\mathcal{M}$ in each frame.
+Qualitatively we see that the red contours align well to the real image contours, and the supplied video shows clearly that the registration track the uterus well over the sequence. In \fig{fig:qualResults} (bottom row) we show the visual augmentation of the myomas in each frame (the larger myoma is in green and the smaller is in blue). The surgeon who conducted the myomectomy reported that localising the small myoma was difficult, and took them approximately $15$ minutes. After surgery they inspected our augmentations and confirmed that both myomas appeared to be localised well by the system. This promising result indicates the potential benefit for using our AR system during surgery.
+\begin{figure*}[ht]
+  \centering
+  \includegraphics[width=0.75\textwidth]{./figs/invivoHumanUteri/qualitative.pdf}
+  \caption{Registration between the uterus in a pre-operative MRI to intra-operative laparoscopic images, and visual augmentation of two hidden myomas.
+The top row shows $\mathcal{M}$ (the mesh model of the uterus from the MRI ) overlaid in each image.
+The red contours denote the silhouette boundaries of $\mathcal{M}$ in each image. The bottom row shows the augmented myomas.}
+	\label{fig:qualResults}
+\end{figure*}
+
+
+% \subsection{Live usage and quantitative ex-vivo user evaluation with porcine kidneys}
+% %\subsection{Overview}
+% %\paragraph{Materials.}
+%  We used $29$ porcine kidneys recovered from pigs operated after resident training. For each kidney pseudo-tumours were created by injecting alginate, a hardening hydrocolloid, of between \SI{4}{\milli\metre} and \SI{10}{\milli\metre} in diameter.
+% In total $59$ pseudo-tumours were injected at arbitrary sub-surface positions, with an average of $2.5$ per kidney.
+% We used safe tissue margins of \SI{5}{\milli\metre}.
+% Kidney models were made as described in \sect{sec:inputModels} from 3T MRI images (\SI{0.4}{\milli\metre} resolution and slice thickness \SI{1.5}{\milli\metre}).
+% The interventional equipment is shown in \fig{fig:visualCompare}\,(c) and consisted of a Karl Storz \SI{10}{\milli\metre} laparoscope column with CLARA image enhancement, a surgical grasper, an incision tool, a laparoscopic pelvic trainer and an instrument with a surgical marker pen attached at the tip (referred to as the \emph{marker instrument}).
+% The AR software ran on a mid-range Intel i7 desktop workstation with an NVidia 980 Ti GPU, with visualisations shown on a \SI{26}{\inch} monitor.
+% Laparosurgery was performed by a skilled final-year resident.
+% The resident spent time training before evaluation to familiarise the task, the guidance software and to provide feedback to improve visualisation.
+% In total $28$ pseudo-tumours were resected during this time. 
+
+
+% \paragraph{AR guidance with Tool Access Visualisation.}
+% \label{sec:toolPortProj}
+
+%  Having registered, the final task is AR visualisation.
+% We briefly describe \emph{Transparent Blending} (TB) visualisation, which is the previous approach used with monocular laparoscopes.
+% It works by first rendering the tumours on the laparoscope's image plane, then a composite image is made by blending the render with the real image to give the impression the organ is transparent.
+% An example from~\cite{Collins2044} is shown in \fig{fig:visualCompare}\,(a) where two myomas are visualised with TB.
+% TB however has a serious limitation which has not been previously addressed, and we find it can actually \emph{mis-guide the surgeon}.
+% The problem is illustrated in \fig{fig:mis-guidance}\,(a) and is as follows.
+% When a surgeon actually uses TB to resect a tumour they usually assume it indicates where they should cut to access the tumour.
+% This however is incorrect.
+% It just shows the position of the tumour from the viewpoint of the laparoscope.
+% Often they assume the tumour's centre would be reached by cutting into the organ from the rendered tumour's centre $\mathbf{c}\in\mathbb{R}^2$.
+% This is not the case as shown in \fig{fig:mis-guidance}\,(a).
+% In our user study we found this is a significant problem with smaller and/or deeper tumours, and can cause them to be missed.
+% % increases as the tumour's depth increases and the separation between the tool and laparoscope trocars increases. 
+%   \begin{figure*}[h]
+%   	\centering
+%   	\includegraphics[width=0.9\textwidth]{./figs/kidneyUserStudy/visualisationCompare.pdf}
+%   	\caption{(a) AR with Transparent Blending (TB) visualisation taken from~\cite{Collins2044}. (b) Our AR visualisation combining Transparent Blending with Tool Access Visualisation. (c) Our AR system in live operation during the ex-vivo user study.% (c) Tumour margins marked on the organ's surface using Tool-port Projection visualisation with a surgical marker. The marks are then used to guide the surgon during tumour resection.
+%   	}
+%   	\label{fig:visualCompare}
+%   \end{figure*}
+
+%  \begin{figure*}%\textbf{}
+%  	\centering
+%  	\subfloat[AR with Render Blending]{{\includegraphics[width=5.4cm]{./figs/kidneyUserStudy/marginVisual1.pdf} }}%
+%  	\qquad
+%  	\subfloat[AR with Tool Access Visualisation]{{\includegraphics[width=5.4cm]{./figs/kidneyUserStudy/marginVisual2.pdf} }}%
+%  	\caption{The difference between typical AR visualisation of a tumour (a), which does not take into account the position and access direction of the incision tool, and the proposed Tool Access Visualisation (b) which does.}%
+%  	\label{fig:mis-guidance}%
+%  \end{figure*}
+ 
+% What the surgeon actually wants is to be shown how to reach the tumour using the incision tool.
+% Furthermore, surgeons typically want to also see the tumour's safe tissue margin.
+% We provide both information with what we call \emph{Tool Access Visualisation}, which is shown in \fig{fig:visualCompare}\,(b).
+% Its associated geometry is shown in \fig{fig:mis-guidance}\,(b).
+% {Tool Access Visualisation works by showing the tumour's safe tissue margin projected onto the organ's surface as a ring, which we call the \emph{tumour guidance ring}.
+% The idea is that if the surgeon were to cut into the organ along the guidance ring, they would segment the tumour with a minimal margin of $w\,$mm.
+% At present we do not visualise uncertainty in the margin's location, which is important for real clinical use, and leave this to future work.\textbf{}
+  	
+% We achieve Tool Access Visualisation with \emph{two} projections.
+% The first is a perspective projection of the margin's surface onto the organ's surface, using a centre-of-projection located at the incision tool's port centre $\mathbf{p}\in\mathbb{R}^3$.
+% The second is a perspective projection of the projected margin's perimeter onto the laparoscope's optical image (shown as rings in \fig{fig:visualCompare}\,(b)).
+% To achieve this we need to know $\mathbf{p}$.
+% Recall that the organ has been registered in laparoscope coordinates, therefore we need $\mathbf{p}$ in laparoscope coordinates.
+% It may be possible to estimate $\mathbf{p}$ automatically using external and/or internal tool tracking, however this is left to future work.
+% Here we assume $\mathbf{p}$ is given \textit{a priori}.
+% In our user study, where the ports are located on a pelvic trainer, this is simple and can be done offline by taking physical measurements.
+% We complete the visualisation by combining Tool Access Visualisation with TB visualisation (\fig{fig:visualCompare}\,(b))  to show tumours (solid fill), organ (wireframe) and safe tissue margins (wireframe).
+
+
+
+% \paragraph{Interventional Protocol and Equipment}
+% Laparosurgery was performed using the pelvic trainer, with the kidney inserted on a ground surface and the laparoscope and instruments inserted through three ports.
+% The same port configuration was used in all cases.
+% The surgeon was tasked to remove each tumour by cutting out a conic tissue section which included the tumour and its safe tissue margin.
+% The kidneys were divided into two groups (non-randomised): the \emph{AR group} and the \emph{Non-AR group}, with 13 kidneys in the AR group with 29 tumours, and 19 kidneys in the Non-AR group with 33 tumours.
+% Kidneys in the AR group were operated with the AR guidance system activated.
+% Recall that the guidance system is not designed to handle significant deformation or topology change after the initial registration, which occurs when a tumour is resected.
+% This was dealt with in the protocol by having the surgeon first mark dots along the tumour guidance ring using the marker instrument, guided by the AR visualisation.
+% Once completed they used the marks to guide the resection with AR disactivated.
+% For the Non-AR group, the surgeon first consulted the MRI using interactive slice-based visualisation~\cite{Wolf_themedical}.
+% The task was then performed without AR guidance using the same safe tissue margin of \SI{5}{\milli\metre}.
+ 
+ 
+% \paragraph{Results}
+% We present results with the negative margin rate.
+% A negative margin occurs when the tumour is contained entirely within the resected tissue.
+% A positive margin occurs when either the tumour is completely absent from the resected tissue (a \emph{complete miss}), or if it is partially contained (a \emph{contact}).
+% For three tumours the protocol was not completed properly (the conic section did not cut fully through the kidney) and were excluded.
+% There were $13$ negative margins in the Non-AR group (\SI{41.9}{\percent}), with $4$ complete misses and $14$ contacts.
+% There were $23$ negative margins in the AR group (\SI{85.2}{\percent}), with $0$ complete misses and $4$ contacts.
+% Statistical significance was measured with Fisher's exact two-tailed test with  $p=0.0010$.
+% Therefore the user study indicates a very significant benefit for using the AR guidance system.
+
+\subsection{Comparison of different tracking features}
+\label{sec:siftvssurf}
+In this section we analyse the benefits of using SIFT features over SURF within the tracking stage. SIFT features offer, in general, a more reliable and robust choice for feature matching but the major limitation is its computational time, which often prevents them from being used in real-time applications.
+We used the GPU implementation~\cite{Griwodz2018Popsift} which is a faithful, open-source implementation of the original algorithm and provides real-time performances with full HD images.
+We tested the tracker using the SIFT version and the SURF-GPU OpenCV's implementation on two different image sequences. \TC{IT IS NOT CLEAR WHAT DATASET WAS USED!} \tab{tab:matches} summarizes some statistical figures that allows us to compare the two approaches. We see that tracking using SIFT is able to establish more camera poses (\SI{99.5}{\percent} and \SI{100}{\percent} of the frames) compared with SURF features (\SI{91.2}{\percent} and \SI{89.6}{\percent}, respectively).
+Despite the fact that SURF is able to recover, on average, more matches between $\mathcal{F}$ and $\mathcal{G}$, SIFT has a higher discriminate power in selecting the winning keyframe $I^*$ to be used for the registration. As the table shows, the winning keyframe has, on average, more available matches from which the RANSAC can sample to compute the pose. This also results in a higher number of inliers found supporting the compute pose.
+\fig{fig:numMatches} shows the numbers of matches and inliers for both approaches for the first video sequence, where we see that all along the frames the number of matches used for computing the pose are always higher for SIFT. 
+
+In order to evaluate the quality of the estimated poses, we plotted in \fig{fig:SurfVsSift} the different values for the pose components during the first video sequence. The figure shows that the SIFT version provides a more stable estimation for each component, \ie the are less spikes in the estimated values, which are, instead, a typical sign of incorrect pose estimates. SIFT improves the quality of the result as it provides a more stable motion estimation. The increased stability requires also less new keyframes to be added, thus, in turn, improving the overall computational time as less descriptor comparisons are needed. 
+\todo{maybe put the videos on youtube and give links?}
+
+\subsection{Computational times}
+Our hardware is composed of a desktop PC running Linux Ubuntu and sporting an Intel Core i$7$-$5960$X CPU running at \SI{3.00}{\giga\hertz} with \SI{16}{\giga\byte} of RAM and an NVIDIA GeForce GTX $980$ Ti graphic card.
+The tracking process takes on average \SI{16.35}{\milli\second} with a full HD $1920\times1080$ image.
+On average, the SIFT extraction takes \SI{11.1}{\milli\second}, the descriptor matching between $\mathcal{F}$ and $\mathcal{G}$ takes \SI{3.21}{\milli\second}  and the pose estimation \SI{0.18}{\milli\second}.
+
+\subsection{Comparison with ORB SLAM}
+\label{sec:orbslam}
+We have compared with ORB-SLAM2, which provides state-of-the-art results monocular SLAM results on laparoscopic videos \cite{orbslam_laparo}. As discussed in \sect{sec:sotaTracking} a scene that consists of independently moving structures such as the uterus will cause difficulty for current monocular SLAM methods, because they will amalgamates features from different structures into one map. This can be extremely problematic when there is slow relative motion between the structures. \fig{fig:orbAR} shows an example of this problem. On the left, the ORB features used for tracking are shown, covering the uterus (foreground) and surrounding peritoneum. When the uterus is then moved significantly \wrt the surroundings, the pose is computed wrongly, because background features have a strong influence on the estimated pose.
+
+
+% \begin{figure}
+% \centering
+% \input{figs/numInliers.tex}
+% \caption{ My first matlab2tikz figure }
+% \label{fig:myfirstfig}
+% \end{figure}
+
+\begin{figure*}
+  \centering
+  \includegraphics[width=0.32\textwidth]{./figs/numMatches.pdf}
+  \includegraphics[width=0.32\textwidth]{./figs/numMatchesWinning.pdf}
+  \includegraphics[width=0.32\textwidth]{./figs/numInliers.pdf}
+\caption{Comparison of the number of matches found using SURF (red) and SIFT (blue) over a sequence of $5000$ frames. The leftmost image shows the number of matches between $\mathcal{F}$ and $\mathcal{G}$ after the LRT, the center image shows the number of matches of the winning kframe and the rightmost image shows the number of inliers that supports the estimated pose.}
+\label{fig:numMatches}
+\end{figure*}
+
+\begin{figure*}
+  \centering
+  \includegraphics[width=0.32\textwidth]{./figs/translationX.pdf}
+  \includegraphics[width=0.32\textwidth]{./figs/translationY.pdf}
+  \includegraphics[width=0.32\textwidth]{./figs/translationZ.pdf}
+  \includegraphics[width=0.32\textwidth]{./figs/rotationX.pdf}
+  \includegraphics[width=0.32\textwidth]{./figs/rotationY.pdf}
+  \includegraphics[width=0.32\textwidth]{./figs/rotationZ.pdf}
+\caption{Estimated pose components (top, translation $t_x$, $t_y$ and $t_z$, bottom rotation angles $r_x$, $r_y$ and $r_z$) using SURF (red) and SIFT (PopSift implementation) features over a sequence of $5000$ frames. It can be noted that SIFT enable a more stable and less jittered estimation of the components.}
+\label{fig:SurfVsSift}
+\end{figure*}
+
+
+
+\begin{table}[]
+\centering
+\begin{tabular}{rlcccc}
+\multicolumn{1}{c}{\# frames}              & \multicolumn{1}{c}{} & \# poses & \# matches & \begin{tabular}[c]{@{}c@{}}\# matches \\ winner\end{tabular} & \# inliers                 \\ \hline \hline
+\multicolumn{1}{|r}{\multirow{2}{*}{$5000$}} & SURF                 & $4569$     & $406.16$     & $46.94 $                                                       & \multicolumn{1}{c|}{$32.93$} \\
+\multicolumn{1}{|r}{}                      & SIFT                 & $4975$     & $388.06$     & $52.31$                                                        & \multicolumn{1}{c|}{$44.86$} \\ \hline
+\multicolumn{1}{|r}{\multirow{2}{*}{$3029$}} & SURF                 & $2713$     & $296.81$     & $42.60$                                                        & \multicolumn{1}{c|}{$27.74$} \\
+\multicolumn{1}{|r}{}                      & SIFT                 & $3029$     & $294.00$     & $64.87$                                                        & \multicolumn{1}{c|}{$52.81$} \\ \hline
+\end{tabular}
+\caption{For two sequences of $5000$ and $3029$ frames respectively, the table compares the number of poses estimated and the average number of matches obtained between SIFT and SURF, showing overall better performances for the SIFT version.}
+\label{tab:matches}
+\end{table}
+ 
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.45\columnwidth]{./figs/frame0001Features.png}
+  \includegraphics[width=0.45\columnwidth]{./figs/frame0107Features.png}
+  \includegraphics[width=0.45\columnwidth]{./figs/frame001.png}
+  \includegraphics[width=0.45\columnwidth]{./figs/frame107.png}  
+\caption{An example of tracking issue of SLAM approaches: even if the model is correctly registered and tracked (left), it can happen that due to the movements of the organ and the occlusions the tracker tracks the camera pose \wrt the background thus affecting the AR visualization (right). }
+\label{fig:orbAR}
+\end{figure}
+
+
+% % The input models used in the presented experiments are generated from T2 weighted MRI with segmentation done semi-automatically using MITK~\cite{Wolf_themedical}.
+% % The deformation models that we experiment with are tetrahedral Finite Element Models (FEMs) built with a 3D vertex grid (\SI{6}{\milli\metre} spacing) cropped to the organ.
+% % Therefore, $\vet{x}_t$ holds the unknown 3D positions of the FEM's vertices in laparoscope coordinates.
+% % Trilinear interpolation was used to compute $f(\vet{p};\vet{x}_t)$.
+% % For $\Einternal$ the Saint Venant-Kirchoff strain energy is used, with patient-generic values for the Young's modulus $E$ and Poisson's ratio $\nu$.
+% These were for healthy kidney tissue $E=\SI{7}{\kilo\pascal}$, $\nu=0.43$~\cite{Li_TIP08}, 
+% % For healthy uterus tissue we use $E=\SI{96}{\kilo\pascal}$, $\nu=0.45$~\cite{uterusModel} and $E=\SI{532}{\kilo\pascal}$, $\nu=0.48$ for myomas~\cite{uterusModel}.
+%Note that in the registration problem there is always a balancing weight between the internal energy and energy coming from image cues (which have no real physical meaning).
+%Therefore only the relative values of $E$ are important to us (with respect to the balancing weight), rather than their absolute values.
+
+\subsection{Use with Real Patients in the Operating Room}
+!TODO: a summary of the two clinical papers from  Nicolas!

@@ -1,0 +1,46 @@
+%!TEX root=./main.tex
+
+
+%By contrast, our approach uses \emph{several laparoscopic images simultaneously} (usually at least $4$) to perform the initial registration.  We show how to use multiple viewpoints of a mobile organ to obtain considerably more surface information and therefore a more accurate registration. Moreover, our method is the first to integrate \emph{occluding contour fragments} as additional registration constraints.
+
+%The approach has been tested in the case of the uterus but it is easily adaptable to other organs and other pre-operative 3D modalities.
+
+
+
+\section{Methodology}
+% \vspace{-0.05in}
+% \subsection{Section Overview}
+\label{sec:ARGuidanceSystem}
+%We first describe the system's requirements regarding pre-operative data (\sect{sec:inputModels}) and then a global overview of the intra-operative registration process (\sect{sec:globalOverview}). We then describe the two main components of registration, which are the \emph{initial registration} and \emph{tracking} stages (\sect{sec:initialRegistration} and \sect{sec:updateRegistration}, respectively). %CARE:Lastly we present Tool Access Visualisation (\sect{sec:toolPortProj}). 
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.95\columnwidth]{./figs/reconstructionDemo.pdf}
+	\caption{The initial registration problem illustrated with a human uterus. Four keyframes are shown in the first row with their associated silhouette contour fragments.}
+	\label{fig:initialRegOverview}
+\end{figure}
+
+\subsection{Pre-operative Data Requirements}
+\label{sec:inputModels}
+The system requires a segmented pre-operative 3D organ model, which comprises the organ's surface mesh, and meshes of internal structures that are to be visualized with AR.
+In the case of the uterus, internal structures may be the uterine cavity, tumours and safe-tissue margins. %Here the internal structures are tumours and their \emph{safe tissue margin}.
+%A safe tissue margin is a border around the tumour of healthy tissue which should also be removed, whose thickness $w$ depends on the risk factor of the particular tumour.
+Our approach does not require a specific organ deformation model to be used, because to date there is no clear consensus on the best one to use for registering organs. Models currently range from complex heterogeneous biomechanical models to simpler homogeneous algebraic models such as As-Rigid-As-Possible [ARAP]. 
+
+We require two interfaces to the deformation model. The first is the \emph{transform function} $f(\vet{p};\vet{x}_t): \Omega\rightarrow \mathbb{R}^3$, which transforms a 3D point $\vet{p}$ in the model's 3D domain $\Omega\subset \mathbb{R}^3$ to the target coordinate frame (in our case the laparoscope coordinates frame). The vector $\vet{x}_t$ denotes the model's parameters at time $t$. %The registration problem is  to determine $\vet{x}_t$ given a laparoscopic image at time $t$. 
+The second is the internal energy function $\Einternal(\vet{x}_{t}):\mathbb{R}^{d}\rightarrow\mathbb{R}^{+}$ which gives the internal energy for transforming the organ with $\vet{x}_t$, where $d$ is the dimensionality of $\vet{x}_{t}$. This internal energy is used to regularize the deformation, or in the case of bio-mechanical models, to provide internal strain energy induced by soft-tissue deformation.
+Our only requirements are that $f$ and $\Einternal$ be continuous and at least first-order differentiable, which is satisfied by virtually all models of interest. We describe the specific deformable modes used in our experiments in Section \ref{XX}.
+ 
+\subsection{Registration Pipeline Overview}
+\label{sec:globalOverview}
+Our task is to compute $\vet{x}_t$ for a given live monocular laparoscopic image streamed at time $t$. We assume the laparoscope is intrinsically calibrated.
+We break down registration into two stages. The first is the \textit{initial registration stage} and the second is the \emph{tracking stage}. The purpose of the initial registration stage is two-fold. Firstly, it estimates the change of shape of the organ between its pre-operative state and an intra-operative state, called the \emph{reference state}, caused by physiological movement between pre-operative and intra-operative states, such as patient posture difference and insufflation. Secondly, it associates texture with the organ's surface, which is required in the tracking stage.
+% To achieve high robustness we make a simplifying assumption in the tracking stage, which is that the organ does not deform significantly during this stage.
+To simplify the problem, we assume that during the tracking stage the organ does not deform significantly. Therefore, the tracking stage can be modelled with \emph{rigid update transforms}, which can be estimated far more quickly and robustly than deformable transforms.
+In practice, this assumption is reasonable when the surgeon does significantly deform the organ during the tracking stage (\ie the period that they wish to use live AR guidance). We emphasize that the intended use of AR is to assist spatial comprehension of internal structures and intra-operative resection planning. Typically this is done by guiding the marking of a tumor resection plane on the uterus surface with a coagulation instrument. Such marking is standard practice in uterine surgery. During the actual resection, AR visualization is deactivated because the assumption of rigid organ motion is no longer valid, and the surgeon can be guided by the coagulation marks.
+
+Formally, the two stages of registration break down $f(\vet{p};\vet{x}_t)$ as $f(\vet{p};\vet{x}_{t})=M(f(\vet{p};\vet{x}_{ref});\mat{R}_{t},\vet{t}_{t})$. Here $\vet{x}_{ref}$ denotes the organ's deformation corresponding to the reference state.
+The function $M(\cdot;\mat{R}_{t},\vet{t}_{t}):\mathbb{R}^3\rightarrow \mathbb{R}^3$ denotes a rigid update transform at time $t$, parameterized by a rotation $\mat{R}_{t}\in \mathcal{SO}_{3}$ and translation $\vet{t}_{t}\in \mathbb{R}^3$.
+Thus, the initial registration stage estimates $\vet{x}_{ref}$ and the tracking stage is for estimating $(\mat{R}_{t},\vet{t}_{t})$.
+To provide real-time AR, only the tracking stage needs to be real-time.
+The time to solve the initial registration (the estimation of $\vet{x}_{ref}$) causes a delay period before AR can run. To minimize workflow interruption, we require this to be computed in no longer than a few minutes. With our current implementation this takes approximately three minutes on a standard workstation PC (approximately two minutes for manual pre-processing and one minute for optimisation). 
+The tracking stage is an optimised implementation in \CC/CUDA and runs at approximately $\SI{25}{fps}$.

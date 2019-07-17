@@ -1,0 +1,123 @@
+%!TEX root=./main.tex
+\usepackage{hyperref}
+\usepackage{xspace}
+\usepackage[dvipsnames]{xcolor}
+% \usepackage{amsmath}
+% \usepackage{amssymb}
+% \usepackage{amsmath}
+% \usepackage{subcaption}
+% \usepackage{import}
+% \usepackage{commath}
+% \usepackage[capitalise]{cleveref}
+% \usepackage{algorithm}
+% \usepackage{algpseudocode}
+% \usepackage{varwidth}
+\usepackage{amsopn}
+\usepackage[binary-units]{siunitx}
+\usepackage[normalem]{ulem}
+\usepackage{multirow}
+
+\usepackage{tikz}
+\usepackage{pgfplots} 
+\usepackage{pgfgantt}
+\usepackage{pdflscape}
+\usepackage{relsize}
+\pgfplotsset{compat=newest} 
+\pgfplotsset{plot coordinates/math parser=false}
+
+\makeatletter
+\DeclareRobustCommand\onedot{\futurelet\@let@token\@onedot}
+\def\@onedot{\ifx\@let@token.\else.\null\fi\xspace}
+\DeclareRobustCommand\nodot{\futurelet\@let@token\@nodot}
+\def\@nodot{\ifx\@let@token.\else~\null\fi\xspace}
+
+\newfont{\eaddfnt}{phvr8t at 12pt}
+\def\email#1{{{\eaddfnt{\par #1}}}}
+
+\def\eg{\emph{e.g}\onedot} \def\Eg{\emph{E.g}\onedot}
+\def\ie{\emph{i.e}\onedot} \def\Ie{\emph{I.e}\onedot}
+\def\cf{\emph{c.f}\onedot} \def\Cf{\emph{C.f}\onedot}
+\def\etc{\emph{etc}\onedot} \def\vs{\emph{vs}\onedot}
+\def\na{\emph{n.a}\onedot} \def\NA{\emph{N.A}\onedot}
+\def\wrt{w.r.t\onedot} 
+\def\wlg{w.l.o.g\onedot} 
+\def\dof{d.o.f\onedot}
+\def\aka{a.k.a\onedot}
+\def\etal{\emph{et al}\onedot}
+\makeatother
+
+
+\newcommand{\CC}{C\nolinebreak\hspace{-.05em}\raisebox{.2ex}{\relsize{-1}{\textbf{+}}}\nolinebreak\hspace{-.10em}\raisebox{.2ex}{\relsize{-1}{\textbf{+}}}\xspace}
+
+% \newcommand{\fig}[1]{\mbox{Figure \ref{#1}}\xspace}
+\newcommand{\fig}[1]{\mbox{\figurename\xspace\ref{#1}}}
+% \newcommand{\subfig}[2]{\mbox{\cref{#1}#2}\xspace}
+
+%reference to Table with mbox
+\newcommand{\tab}[1]{\mbox{Table \ref{#1}}\xspace}
+
+%reference to Section with mbox 
+\newcommand{\sect}[1]{\mbox{\S\ref{#1}}\xspace}
+% \newcommand{\sect}[1]{\mbox{\cref{#1}}\xspace}
+
+\newcommand{\eq}[1]{\mbox{\eqref{#1}}}
+
+% \usepackage{amsmath}
+
+% \DeclareMathOperator*{\argmax}{arg\,max}
+
+%use this one for the final version to show all the changes in red
+% \newcommand{\textcomment}[3]{\textcolor{red}{#3}}
+\newcommand{\textcomment}[3]{\textcolor{#2}{#1: #3}}
+\newcommand{\SG}[1]{\textcomment{SG}{RawSienna}{#1}}
+\newcommand{\AB}[1]{\textcomment{AB}{purple}{#1}}
+\newcommand{\LC}[1]{\textcomment{LC}{ForestGreen}{#1}}
+\newcommand{\DP}[1]{\textcomment{DP}{WildStrawberry}{#1}}
+\newcommand{\TC}[1]{\textcomment{TC}{Periwinkle}{#1}}
+\newcommand{\todo}[1]{\textcomment{TODO}{red}{#1}}
+
+\DeclareSIUnit\inch{in}
+
+\newcommand{\bmat}[1]{\ensuremath{\begin{bmatrix} #1 \end{bmatrix}}}
+% Vector: print the argument as a vector
+\newcommand{\vet}[1]{\ensuremath{\mathbf{#1}}}
+% normal vector
+\newcommand{\nvet}[1]{\ensuremath{\hat{\vet{#1}}}}
+% Direction vector
+\newcommand{\dvet}[1]{\ensuremath{\overrightarrow{\vet{#1}}}}
+
+% Matrix: print the argument as a matrix
+\newcommand{\mat}[1]{\ensuremath{\mathtt{\uppercase{#1}}}}
+
+% Inverse: print a -1 on the top right of the argument 
+\newcommand{\inv}[1]{\ensuremath{{#1}^{\text{-}1}}}
+
+% Inverse: print a -1 on the top right of the argument 
+\newcommand{\minv}[1]{\ensuremath{\mat{{#1}}^{\text{-}1}}}
+
+% Transpose: print a T on the top right of the argument 
+\newcommand{\tra}[1]{\ensuremath{{#1}^{\mathsf{T}}}}
+
+% Transpose Matrix: print a T on the top right of the argument intended to be a matrix 
+\newcommand{\mtra}[1]{\ensuremath{\tra{\mat{#1}}}}
+
+% Transpose Vector: print a T on the top right of the argument intended to be a vector
+\newcommand{\vtra}[1]{\ensuremath{\tra{\vet{#1}}}}
+
+% minus transpose:  print a -T on the top right of the argument
+\newcommand{\ment}[1]{\ensuremath{{#1}^{\text{--}\mathsf{T}}}}
+
+% Cross Matrix:  print the argument in the cross matrix notation
+\newcommand{\crmat}[1]{\ensuremath{\left[{#1}\right]_{\times}}}
+
+
+\newcommand{\termName}[2]{\ensuremath{#1_{\text{#2}}}\xspace}
+\newcommand{\Einternal}{\termName{E}{internal}}
+\newcommand{\Econtour}{\termName{E}{contour}}
+\newcommand{\Epoint}{\termName{E}{point}}
+\newcommand{\lambdaContour}{\termName{\lambda}{contour}}
+\newcommand{\lambdaInternal}{\termName{\lambda}{internal}}
+\newcommand{\dplane}{\termName{d}{plane}}
+\newcommand{\thetaTPS}{\termName{\theta}{TPS}}
+\newcommand{\wTPS}{\termName{w}{TPS}}
+

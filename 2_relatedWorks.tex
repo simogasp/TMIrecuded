@@ -1,0 +1,113 @@
+%!TEX root=./main.tex
+
+\section{Related Work}
+\label{sec:sota}
+\subsection{Scope}
+The types of AR-guided laparosurgery with the most clinical impact involve the fusion of \emph{pre-operative} medical image data from CT or MR. We therefore limit this section to state-of-the-art approaches in this area. For a broader perspective, including fusion with intra-operative images such as Cone Beam CT (CBCT), we refer the reader to~\cite{Bernhardt2017}. 
+
+An important categorization of approaches is whether they work with monocular~\cite{affineTracking} or stereo laparoscopes ~\cite{21142942,conf/miccai/Amir-KhaliliNPHA13,Cohen2010Prostate,hamarneh2014igrs,haouchine13,Su2009}. As ours is in the former category, we focus this section on state-of-the-art in that category. We recall that any approach that works with monocular scopes can be applied to stereo scopes, however the converse is not true, because all existing
+methods using stereo laparoscopes require depthmaps obtained by stereo triangulation~\cite{DBLP:conf/miccai/StoyanovSPY10}. By contrast, depthmaps are not immediately available with monocular images. %Recently, Convolutional Neural Networks (CNNs) have been shown to recover depth information endoscopic images (colonscopy [] and bronchoscopy []), however they have been completely unsuccessful with laparoscopic images because of the large variability in image content. 
+The availability of depthmaps fundamentally changes a registration problem, because they provide 3D-to-3D registration constraints, typically implemented through a variation of Iterative Closest Point (ICP) \TC{[XX]}. This contrasts monclular registration, where 3D-to-3D constraints are unavailable.%registration cues are weaker and limited mainly to contour and/or shading \cite{10.1007/978-3-642-30618-1_2} information.
+
+In general, previous approaches solve registration in two stages: an initial registration stage and a tracking stage. We now review these stages.
+
+\subsection{Initial Registration}
+%Previous work can be broadly divided into two categories depending on whether the organ model to be registered is acquired intra-operatively in a hybrid operating room, or pre-operatively in a standard operating room. 
+%The first category involves determining a rigid transform between the sensors' 3D coordinate frames. 
+%In laparosurgery some solutions have been proposed by either externally tracking the laparoscope with optical or magnetic markers~\cite{Su2009,Liu2016Laparoscopic} or placing on tissue artificial markers that can be detected in both modalities~\cite{Simpfendrfer2011}. 
+%If additional interventional modalities are not available or not sufficiently informative then AR can be performed with pre-operative modalities. 
+%In this case the registration problem can be much more challenging due to soft tissue deformation between acquisition times. 
+%Also, once significant changes are made during surgery the pre-operative data becomes ``outdated'', and less useful. 
+
+Despite considerable research, there exists no automatic and robust solution to the initial registration with a soft-body organ. State-of-the-art approaches tend to be organ-specific and have mainly focused on registering the liver~\cite{haouchine13,haouchine:hal-01186011,plantefeve:hal-01205194}, the prostate~\cite{Cohen2010Prostate} and the kidney~\cite{Su2009,nosrati2014simultaneous,affineTracking}.
+So far the only approaches that exist for the initial registration with monocular images require a manual registration \cite{affineTracking} and an interactive Graphical User Interface (GUI), which is not practical in real OR conditions. 
+Of the stereo methods, some perform registration with a manual GUI~\cite{Cohen2010Prostate,haouchine13} and others perform it semi-automatically with manually located landmarks~\cite{21142942,conf/miccai/Amir-KhaliliNPHA13,hamarneh2014igrs,Su2009}. In some works the registration is refined by ICP~\cite{hamarneh2014igrs,Su2009}.% and in other works tracking is performed with texture features~\cite{haouchine13}. 
+The initial registration requires non-visual constraints to prevent unlikely or physically implausible deformations. Various models have been used, including the assumption of rigidity~\cite{Su2009}, the assumption of deformation smoothness with 3D splines~\cite{conf/miccai/Amir-KhaliliNPHA13} and constraints derived from bio-mechanics~\cite{hamarneh2014igrs,haouchine13}. 
+There is no general consensus on the best model to use, as it depends heavily on available boundary conditions, available knowledge of bio-mechanical tissue proprieties, and computational resources. 
+
+A general limitation of the previous works is that they only use one monocular or one stereo image pair to constrain the initial registration.
+This is limiting because registration accuracy depends strongly on how much surface of the organ is visible in the laparoscopic image or stereo image pair. 
+This can be very small, particularly for larger organs such as the liver and uterus, leading to poor registration accuracy. 
+
+%For the stereo methods a partial 3D reconstruction is computed (known as a \emph{2.5D reconstruction} in computer vision), and all regions of the organ not visible in both images have no 3D information. 
+%Thus the registration is essentially guessed at these regions from the deformation model's prior. 
+%Secondly, they do not use the organ's \emph{occluding contours} as registration constraints. Typically a stereo reconstruction never computes 3D information well at the occluding contours. 
+%The occluding contours provide powerful boundary conditions and should be exploited whenever possible.
+
+% \SG{our~\cite{Collins2017System}}
+
+\subsection{Tracking}
+\label{sec:sotaTracking}
+Almost all monocular approaches rely on the detection and tracking of features, either artificial fiducial markers~\cite{Cohen2010Prostate} inserted on the organ, or the natural features found on the texture of the organ. The former are invasive and generally not practical. The latter are generally sensitive to illumination changes, large camera motions and occlusion. These factors critically affect the performance of the tracking as they restrain the capability of maintaining the registration, and hence AR visualization, for long periods of time, especially if the organ is deformed or occluded by, \eg, the surgery tools. 
+
+To date, only one previous work have been capable of robust long duration tracking of an organ (several minutes) without artificial fiducials~\cite{affineTracking}. 
+This was developed for registering the kidney. %Similarly to~\cite{affineTracking}, we rely on an initial registration to align the model and project features onto the model, required for the tracking phase. 
+There are however three main limitations of~\cite{affineTracking}. 
+Firstly, only one reference image is used, which means features only exist on the surface region visible in the reference image. 
+Tracking therefore breaks down if the organ is seen from strong viewpoint changes. This is a common situation for the uterus, because unlike the kidney it is highly mobile, and is often moved by either the surgeon or by the surgeon's assistant with a cannule. 
+Secondly, in ~\cite{affineTracking} the initial registration is performed manually, which is not practical in real OR conditions. 
+In our approach, we overcome both of these obstacles. 
+
+%to several reference laparoscopic images (only one in~\cite{affineTracking}). 
+%Then, instead of using Shi-Tomasi corners~\cite{Shi1994Good} as~\cite{affineTracking}, we detect SIFT features~\cite{Lowe:2004:DIF:993451.996342} in the reference images and we map them onto the model's surface. 
+%Once done, the model is automatically registered to new laparoscopic images using feature-based tracking. 
+%An important difference is that the initial registration was done manually with a rigid model in~\cite{affineTracking}, whereas we propose a semi-automatically registration with a deformable model. 
+%Therefore we can handle deformation due to insufflation and other factors, which is required for accurate registration of soft organs. 
+
+
+% The only systems based on natural features that are capable of robust registration over long durations are~\cite{Collins2044} for the uterus and~\cite{affineTracking} for the kidney.
+% They both rely on an initial registration, which aligns the model to one~\cite{affineTracking} or several~\cite{Collins2044} reference laparoscopic images. 
+% Then 2D texture features, Shi-Tomasi corners~\cite{Shi1994Good} and SURF~\cite{SURF} respectively, are detected in the reference images and mapped onto the model's surface. 
+% Once done, the model is automatically registered to new laparoscopic images using feature-based tracking. 
+% An important difference between~\cite{affineTracking} and~\cite{Collins2044} is that in~\cite{affineTracking} the initial registration was done manually with a rigid model, whereas in~\cite{Collins2044} it was done semi-automatically with a deformable model. 
+% Therefore~\cite{Collins2044} could handle deformation due to insufflation and other factors, which is required for accurate registration of soft organs. 
+
+
+
+% The uterus is a flexible organ that can exhibit strong deformation when manipulated with laparoscopic tools~\cite{DBLP:conf/ipcai/MaltiBC12}.
+% However, when observing the uterus during intervention prior to resection it remains quite rigid does not deform significantly due to respiration. %We target the problem of registering the uterus before resection begins. The objective is to use our solution as the foundation for applying AR to assist intra-operative resection planning. 
+% Optical registration in laparoscopy has been studied previously for other organs using the assumption of rigid, or approximately rigid motion. 
+% This has been developed with monocular~\cite{Davison:2007:MRS:1263144.1263479,Garcia:etal:AMIARCS09,DBLP:conf/icra/GrasaCM11} and stereo laparoscopes~\cite{DBLP:conf/miccai/MountneySDY06,DBLP:conf/miccai/TotzMSY11}. 
+
+Markerless tracking can be also addressed using visual Simultaneous Localisation and Mapping (SLAM)~\cite{Thrun2002Robotic,Mahmoud2017}. 
+%Visual SLAM relies only on raw optical data, and does not need other hardware such as magnetic~\cite{Nakamoto2008, Liu2016Laparoscopic, Xiao2018} or optical~\cite{Simpfendrfer2011} tracking devices. 
+SLAM involves building a 3D representation of the environment, known as the \textit{map}, and computing the rigid transform which positions the map in the camera's coordinate frame. 
+%The core challenge in SLAM is how to achieve \textit{data association}. 
+%SLAM requires data association in two respects. 
+%The first is for \emph{map building}. %This is to determine which points from different video frames correspond to the same surface point. Solving this problem allows us to construct a map of the points in 3D space. 
+%The second is for \emph{localisation}, which is to determine where the map's points are located in a new input image. 
+%SLAM offers a fast solution to these problems and has found considerable success in man-made environments.
+However, SLAM with endoscopic video is still proving challenging and not reliable enough for routine clinical use. %This is due to the repeated nature of tissue texture, rapid camera motion and photo-constancy violations caused by blood, strong viewpoint, or strong illumination change for example. 
+In particular, monocular SLAM systems are limited because they assume the scene is rigid. They are incapable of tracking a mobile organ such as the uterus, as we show in \sect{sec:orbslam}.
+%faces considerable challenges when the scene is not globally rigid.
+%When the scene is made up of one or more independently moving structures, such as the uterus, SLAM can make errors by merging features from different structures into one map. 
+%For laparoscopic procedures involving the uterus, a typical scene will comprise the uterus, ovaries, peritoneum, small intestine, and bladder. 
+%In most procedures, a cannula is inserted into the uterus through the vagina and is operated externally
+%by an assistant. 
+%The assistant's hand movement causes the uterus to move independently of the surrounding structures. 
+
+%One problem is to ensure the map comprises features from the uterus and not background structures. 
+%Thus, this requires an additional segmentation step that computes binary masks labelling pixels as either being on the uterus body or not. 
+%A possibility would be to connect CNN based uterus segmentation with SLAM but we have not found such an approach in the literature.
+% However, achieving this automatically is difficult and has not been studied in the literature. \SG{maybe some recent DL/CNN?}
+%A naive way to proceed would be to mask the uterus manually in one or more frames and enforce that SLAM uses features found only within the masks. 
+%However, there is no guarantee that SLAM will not eventually use features from surrounding organs, thus leading to mapping and localization errors. 
+%By contrast, it is infeasible to mask frames manually for every frame.
+
+%In this work, instead, we solve the registration problem using a \emph{tracking-by-detection} paradigm, in which each frame is processed independently from one to another (\ie no feature tracking over the frames).
+%After the initial registration of the pre-operative 3D model and the MVS reconstruction from laparoscopic images, we align the MVS model and the current frame my matching the features extracted in the MVS step and the ones of the current frame.
+%This is proved to be robust to occlusions that prevent the correct tracking of the features. 
+%This also avoids the problem of background structures as we are matching the features only \wrt the features of the MVS model, thus limiting the manual segmentation only to the initial, off-line MVS reconstruction step. 
+
+\subsection{Contributions}
+\label{sec:contributions}
+This work describes the first complete pipeline to provide AR-guided uterine laparoscopic surgery without artificial markers or tracking equipment. It is therefore strongly compatible with existing workflows and hospital equipment. To achieve this we present various technical innovations that overcome the limits of previous works, and allow for robust long-duration tracking of a mobile organ whose motion is highly independent of the motion of surrounding structures.
+%The main clinical use cases are for AR-assisted tumour mass localization and resection planning of myomas (uterine fibroids) and adenomyomas. We target the most common clinical setting, using pre-operative 3D images and a standard handheld monocular laparoscope. There is no need for additional equipment such as optical or electromagnetic tracking systems. It is therefore strongly compatible with existing workflows and hospital equipment. 
+
+We combine our work on this problem from three conference papers~\cite{Collins2044,Collins2013,Collins2017System} and provides several important non-trivial extensions, which we now summarize. Concerning the initial registration solution, the main extensions on ~\cite{Collins2044} are four-fold. Firstly, the deformable model used in the previous approach was a 3D affine model. We extend the approach to work with all deformable models of interest, including biomechanical models. Secondly, the organ model geometry in ~\cite{Collins2044} was required to be topologically equivalent to a disc. This required virtually cutting the uterus model at the cervix. We release this requirement, so the approach is compatible with arbitrary organ geometries generated by automatic 3D segmentation or interactive segmentation using e.g. ITKSnap.
+Thirdly, for the first time, silhouette contours were proposed as additional registration constraints. We have considerably sped up the process of extracting contour fragments in an image with an interactive user interface, requiring only non-precise finger strokes with a touchscreen interface. %Fourthly, our approach requires dense in-vivo 3D reconstruction, previously made with proprietary Structure-from-Motion software Photoscan~\cite{AgiSoft2014}. Here we show for the first time that it is possible to densely reconstruct in-vivo environments using a free open-source library ~\cite{AliceVision}, which overcomes licensing barriers for broader use in the research community. Concerning the tracking algorithm, we now propose to use an efficient, real-time SIFT implementation, which provides a more robust and effective matching than SURF, which we show in \sect{sec:siftvssurf} to significantly improve robustness. 
+
+We emphasize that the registration pipeline has been developed for the uterus with pre-operative MR images, but it is sufficiently general to adapt to other organs, such as the kidney, most deformation models, and other pre-operative modalities.
+
+
+

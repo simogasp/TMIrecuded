@@ -35,14 +35,22 @@ We synthetically deformed the CAD model to simulate a range of different pre-ope
 %\label{fig:uterusDeformations}
 %\end{figure}
 To test the accuracy of the initial registration, we use an affine deformable model. This was chosen because the synthetic deformation we induce with the TPS model cannot be exactly approximated by the deformation model. We used this to test our system's robustness to unmodelled deformation modes, which is likely occur when dealing in real conditions with real deformations.
-Our quantitative experiment tested the influence of the number of keyframes on the registration accuracy. We randomly selected sets of $\{2,3,4,5,6,7,10,15\}$ images from the $K=20$ keyframes. For each set we generated $50$ random deformations with the TPS. \fig{fig:InitialSolutions} shows the shapes of three deformed models overlaid with the marked contours from three different views.
+Our quantitative experiment tested the influence of the number of keyframes on the registration accuracy. We randomly selected sets of $\{2,3,4,5,6,7,10,15\}$ images from the $K=20$ keyframes. For each set we generated $50$ random deformations with the TPS. \fig{fig:results}(a) shows the shapes of three deformed models overlaid with the marked contours from three different views.
     
-\begin{figure}[htb]
+%\begin{figure}[htb]
+%  \centering
+%  \includegraphics[width=0.35\textwidth]{./figs/initial_.pdf}
+%\caption{(a), (b) and (c) show the initial projection of three different pre-operative models (one model per column) in three different views (one view per row) using the $z$-buffer. We overlay on top the contours from each view given by the user.}
+%\label{fig:InitialSolutions}
+%\end{figure}
+
+\begin{figure*}[htbp]
   \centering
-  \includegraphics[width=0.35\textwidth]{./figs/initial_.pdf}
-\caption{(a), (b) and (c) show the initial projection of three different pre-operative models (one model per column) in three different views (one view per row) using the $z$-buffer. We overlay on top the contours from each view given by the user.}
-\label{fig:InitialSolutions}
-\end{figure}
+  \includegraphics[width=0.95\textwidth]{./figs/errors.pdf}
+\caption{(a) shows the initial projection of three different pre-operative models (one model per column) in three different views (one view per row) using the $z$-buffer. We overlay on top the contours from each view given by the user. (b) Registration error vs. number of views. (c) Number of iterations vs. number of views. (d) Mean surface registration error for $2$, $4$ and $15$ views.}
+\label{fig:results}
+\end{figure*}
+
 
 We measured registration error in 3D by discretizing the internal volume of the uterus model from a grid of $100\times 100 \times 100$ voxels. We denote as $\mathcal{V}$ the set of voxels in the interior of the uterus model. We defined the registration error $\epsilon_r$ as follow:
 % \begin{small}
@@ -51,40 +59,144 @@ We measured registration error in 3D by discretizing the internal volume of the 
   \epsilon^2_r=\frac{1}{N_{\mathcal{V}}}\sum_{\mathbf{q}\in \mathcal{V}} \|f(\wTPS(\mathbf{q};\thetaTPS),t_0;\theta)-\mathbf{q}\|^2. 
 \end{equation}
 % \end{small}
-\noindent \fig{fig:results}(a) shows the mean registration error we achieved as a function of the number of available keyframes. \fig{fig:results}(b) shows the mean number of iterations it takes our method to reach convergence. \fig{fig:results}(c) shows the mean registration error at each surface vertex using a heatmap visualization.What we see is a clear reduction in registration error with increased numbers of views, and saturating at approximately $8$ views beyond which the registration error is approximately \SI{1.4}{\milli\metre}. The distribution of errors at $2$ views in \fig{fig:results}(c) shows a tendency for greater error away from the uterus head towards the cervix. This is logical because with only a few views the uterus head is quite well constrained by the SfM pointcloud. However, further into the uterus the registration becomes less well constrained which leads to greater error.
+\noindent \fig{fig:results}(b) shows the mean registration error we achieved as a function of the number of available keyframes. \fig{fig:results}(c) shows the mean number of iterations it takes our method to reach convergence. \fig{fig:results}(d) shows the mean registration error at each surface vertex using a heatmap visualization.What we see is a clear reduction in registration error with increased numbers of views, and saturating at approximately $8$ views beyond which the registration error is approximately \SI{1.4}{\milli\metre}. The distribution of errors at $2$ views in \fig{fig:results}(s) shows a tendency for greater error away from the uterus head towards the cervix. This is logical because with only a few views the uterus head is quite well constrained by the SfM pointcloud. However, further into the uterus the registration becomes less well constrained which leads to greater error.
 By contrast with more views we have more constraints from the silhouette contours, as these reveal the boundaries of the uterus from a greater range of viewpoints, and the result is a significant improvement in registration. This experiment provides strong evidence for the value in using multiple viewpoints to constrain the registration problem, compared with prior works that uses only one viewpoint. We also see a significant reduction in the number of iterations for convergence with more views.
 
+
+\subsection{Evaluation with human uteri in pre-recorded videos}
+We present results on pre-recorded video from real \emph{in vivo} data captured during laroscopic surgery. We test accuracy, computational complexity and the influence of different feature detectors in our real-time organ tracking by detection system, named RT-OTD in the experiments, and we compare it with ORB-SLAM, a state-of-the-art SLAM method~\cite{orbslam_laparo} tested in laparoscopic videos. We also show augmentation results in a pre-recorded laparoscopic video of a patient with a myoma. 
+\subsubsection{Tracking accuracy and comparison with ORB-SLAM}
+We evaluate our tracking stage using three different human uteri captured before hysterectomy. They can be seen in \fig{fig:hister}.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth]{./figs/snapshots.pdf}
+\caption{First column shows the 3D models built with MVS. Second column shows the coagulation markers in the uterus. Columns 3 and 4 show the registered models.}
+\label{fig:hister}
+\end{figure}
+ Each video includes around $500$ frames showing motion of the uterus with the cannula and camera motion. The uterus intraoperative surface is obtained with an exploratory video with $10$ keyframes. To obtain Ground-Truth (GT) camera pose the surgeon marked the uterus with a coagulation instrument at $12$-$15$ locations spread over the uterus body. This gave a set of small regions approximately $3$ mm in diameter which could be accurately tracked. We show snapshots of these markers in \fig{fig:hister}, middle-left column. The markers were tracked using a small patch surrounding each marker, and fitted using a 2D affine transform. We manually verified the tracks, and manually initialised if the tracks became lost. We then compute the markers’ positions in 3D and the 3D poses of the uterus in each frame using SfM. If fewer than four markers were visible in a frame we assume that the GT pose could not be estimated for that frame. We mask each marker so that our method cannot exploit the additional texture they introduce. We compute the optimal scale factor for each method with respect to GT to resolve the scale ambiguity. This is done by solving a LLS problem.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.51\textwidth]{./figs/Accuracy_errors.pdf}
+\caption{First column shows rotation accuracy in degrees. Second column shows position accuracy in mm. Third Column shows the camera trajectory of RT-OTD, ORB-SLAM and GT. The rows correspond to $U_1$, $U_2$ and $U_3$ respectively.}
+\label{fig:hister_results}
+\end{figure}
+We summarise the results of RT-OTD, using SURF features, against ORB-SLAM in Figure \fig{fig:hister_results}.
+The three rows of the figure correspond to results for the three uteri. We plot rotation error (in degrees) in the first column and position error (in mm) in the second column. They are computed using the Euclidean norm between GT and estimated values for the translation and rotation (euler angles) vectors. There are some gaps in the graphs when GT is not available and for which errors could not be computed. In the third column of \fig{fig:hister_results} we show the camera 3D trajectories estimated by RT-ODT and ORB-SLAM. While ORB-SLAM is able to track a large portion of the first sequence, it quickly degenerates and loses the track for the other two cases. This is due to the fact that the model built with SLAM contains points from both the moving uterus and the background which violates the rigidity assumption. It is also affected by motion blur and the lack of matches with the model. The results with RT-OTD are very accurate and stable with an average position error of $2$ mm and an average rotation error of $3$ degrees.   
+\subsubsection{Comparison of different tracking features}
+\label{sec:siftvssurf}
+%In this section we analyse the benefits of using SIFT features over SURF within the tracking stage. %SIFT features offer, in general, a more reliable and robust choice for feature matching but the major limitation is its computational time, which often prevents them from being used in real-time applications.
+%We used a SIFT GPU implementation~\cite{Griwodz2018Popsift} which provides real-time performances with full HD images.
+We tested our tracking method RT-OTD using a real-time SIFT implementation~\cite{Griwodz2018Popsift} and the SURF-GPU OpenCV's implementation on two different image sequences \DP{Show some images of the sequences}. 
+\begin{table}[]
+\centering
+\begin{tabular}{rlcccc}
+\multicolumn{1}{c}{\# frames}              & \multicolumn{1}{c}{} & \# poses & \# matches & \begin{tabular}[c]{@{}c@{}}\# matches \\ winner\end{tabular} & \# inliers                 \\ \hline \hline
+\multicolumn{1}{|r}{\multirow{2}{*}{$5000$}} & SURF                 & $4569$     & $406.16$     & $46.94 $                                                       & \multicolumn{1}{c|}{$32.93$} \\
+\multicolumn{1}{|r}{}                      & SIFT                 & $4975$     & $388.06$     & $52.31$                                                        & \multicolumn{1}{c|}{$44.86$} \\ \hline
+\multicolumn{1}{|r}{\multirow{2}{*}{$3029$}} & SURF                 & $2713$     & $296.81$     & $42.60$                                                        & \multicolumn{1}{c|}{$27.74$} \\
+\multicolumn{1}{|r}{}                      & SIFT                 & $3029$     & $294.00$     & $64.87$                                                        & \multicolumn{1}{c|}{$52.81$} \\ \hline
+\end{tabular}
+\caption{For two sequences of $5000$ and $3029$ frames respectively, the table compares the number of poses estimated and the average number of matches obtained between SIFT and SURF, showing overall better performances for the SIFT version.}
+\label{tab:matches}
+\end{table}
+\tab{tab:matches} summarizes the results obtained with SIFT and SURF. We see that RT-OTD using SIFT is able to establish more camera poses (\SI{99.5}{\percent} and \SI{100}{\percent} of the frames) compared with SURF features (\SI{91.2}{\percent} and \SI{89.6}{\percent}, respectively).
+Despite the fact that SURF is able to recover, on average, more matches between $\mathcal{F}$ and $\mathcal{G}$, SIFT has a higher discriminate power in selecting the winning keyframe $I^*$ to be used for the registration. As the table shows, the winning keyframe has, on average, more available matches from which the RANSAC can sample to compute the pose. This also results in a higher number of inliers found supporting the computed pose.
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.48\textwidth]{./figs/Stability_Features.pdf}
+\caption{First column shows the estimated translation components $t_x$, $t_y$ and $t_z$ and second column shows the estimated rotation angles $r_x$, $r_y$ and $r_z$ using SURF (red) and SIFT (PopSift implementation) features over a sequence of $5000$ frames.}
+\label{fig:SurfVsSift}
+\end{figure}
+%\fig{fig:numMatches} shows the numbers of matches and inliers for both approaches for the first video sequence, where we see that all along the frames the number of matches used for computing the pose are always higher for SIFT. 
+In order to evaluate the quality of the estimated poses, we plot in \fig{fig:SurfVsSift} the pose components during a video sequence. The figure shows that SIFT provides a more stable estimation for each pose component, \ie the are less spikes in the estimated values, which are, instead, a typical sign of incorrect pose estimates. SIFT improves the quality of the result as it provides a more stable motion estimation. The increased stability requires also less new keyframes to be added, thus, in turn, improving the overall computational time as less descriptor comparisons are needed. 
+%\todo{maybe put the videos on youtube and give links?}
+\subsubsection{Computational times}
+Our hardware is composed of a desktop PC running Linux Ubuntu and sporting an Intel Core i$7$-$5960$X CPU running at \SI{3.00}{\giga\hertz} with \SI{16}{\giga\byte} of RAM and an NVIDIA GeForce GTX $980$ Ti graphic card.
+The tracking process takes on average \SI{16.35}{\milli\second} with a full HD $1920\times1080$ image.
+On average, the SIFT extraction takes \SI{11.1}{\milli\second}, the descriptor matching between $\mathcal{F}$ and $\mathcal{G}$ takes \SI{3.21}{\milli\second}  and the pose estimation \SI{0.18}{\milli\second}.
+
+% \subsubsection{Comparison with ORB SLAM}
+% \label{sec:orbslam}
+% We have compared with ORB-SLAM2, which provides state-of-the-art results monocular SLAM results on laparoscopic videos \cite{orbslam_laparo}. As discussed in \sect{sec:sotaTracking} a scene that consists of independently moving structures such as the uterus will cause difficulty for current monocular SLAM methods, because they will amalgamates features from different structures into one map. This can be extremely problematic when there is slow relative motion between the structures. \fig{fig:orbAR} shows an example of this problem. On the left, the ORB features used for tracking are shown, covering the uterus (foreground) and surrounding peritoneum. When the uterus is then moved significantly \wrt the surroundings, the pose is computed wrongly, because background features have a strong influence on the estimated pose.
+
+
+% % \begin{figure}
+% % \centering
+% % \input{figs/numInliers.tex}
+% % \caption{ My first matlab2tikz figure }
+% % \label{fig:myfirstfig}
+% % \end{figure}
+
+% \begin{figure*}
+%   \centering
+%   \includegraphics[width=0.32\textwidth]{./figs/numMatches.pdf}
+%   \includegraphics[width=0.32\textwidth]{./figs/numMatchesWinning.pdf}
+%   \includegraphics[width=0.32\textwidth]{./figs/numInliers.pdf}
+% \caption{Comparison of the number of matches found using SURF (red) and SIFT (blue) over a sequence of $5000$ frames. The leftmost image shows the number of matches between $\mathcal{F}$ and $\mathcal{G}$ after the LRT, the center image shows the number of matches of the winning kframe and the rightmost image shows the number of inliers that supports the estimated pose.}
+% \label{fig:numMatches}
+% \end{figure*}
+
+% \begin{figure*}
+%   \centering
+%   \includegraphics[width=0.32\textwidth]{./figs/translationX.pdf}
+%   \includegraphics[width=0.32\textwidth]{./figs/translationY.pdf}
+%   \includegraphics[width=0.32\textwidth]{./figs/translationZ.pdf}
+%   \includegraphics[width=0.32\textwidth]{./figs/rotationX.pdf}
+%   \includegraphics[width=0.32\textwidth]{./figs/rotationY.pdf}
+%   \includegraphics[width=0.32\textwidth]{./figs/rotationZ.pdf}
+% \caption{Estimated pose components (top, translation $t_x$, $t_y$ and $t_z$, bottom rotation angles $r_x$, $r_y$ and $r_z$) using SURF (red) and SIFT (PopSift implementation) features over a sequence of $5000$ frames. It can be noted that SIFT enable a more stable and less jittered estimation of the components.}
+% \label{fig:SurfVsSift}
+% \end{figure*}
+
+
+
+
+ 
+
+% \begin{figure}
+%   \centering
+%   \includegraphics[width=0.45\columnwidth]{./figs/frame0001Features.png}
+%   \includegraphics[width=0.45\columnwidth]{./figs/frame0107Features.png}
+%   \includegraphics[width=0.45\columnwidth]{./figs/frame001.png}
+%   \includegraphics[width=0.45\columnwidth]{./figs/frame107.png}  
+% \caption{An example of tracking issue of SLAM approaches: even if the model is correctly registered and tracked (left), it can happen that due to the movements of the organ and the occlusions the tracker tracks the camera pose \wrt the background thus affecting the AR visualization (right). }
+% \label{fig:orbAR}
+% \end{figure}
+
+
+% % The input models used in the presented experiments are generated from T2 weighted MRI with segmentation done semi-automatically using MITK~\cite{Wolf_themedical}.
+% % The deformation models that we experiment with are tetrahedral Finite Element Models (FEMs) built with a 3D vertex grid (\SI{6}{\milli\metre} spacing) cropped to the organ.
+% % Therefore, $\vet{x}_t$ holds the unknown 3D positions of the FEM's vertices in laparoscope coordinates.
+% % Trilinear interpolation was used to compute $f(\vet{p};\vet{x}_t)$.
+% % For $\Einternal$ the Saint Venant-Kirchoff strain energy is used, with patient-generic values for the Young's modulus $E$ and Poisson's ratio $\nu$.
+% These were for healthy kidney tissue $E=\SI{7}{\kilo\pascal}$, $\nu=0.43$~\cite{Li_TIP08}, 
+% % For healthy uterus tissue we use $E=\SI{96}{\kilo\pascal}$, $\nu=0.45$~\cite{uterusModel} and $E=\SI{532}{\kilo\pascal}$, $\nu=0.48$ for myomas~\cite{uterusModel}.
+%Note that in the registration problem there is always a balancing weight between the internal energy and energy coming from image cues (which have no real physical meaning).
+%Therefore only the relative values of $E$ are important to us (with respect to the balancing weight), rather than their absolute values.
+
+\subsubsection{Augmentation results}
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=0.85\textwidth]{./figs/introFig.pdf}
-\caption{(a) The MRI preoperative data, (b) the 3D preoperative model of the uterus with the two myomas as reconstructed from the MRI, (c) a frame from the live feed and (d) its AR augmentation with the myomas shown as image overlay.}
+  \includegraphics[width=\textwidth]{./figs/frames_aug.pdf}
+\caption{(a) The MRI preoperative data, (b) the 3D preoperative model of the uterus with the two myomas as reconstructed from the MRI, (c) frame from the vide feed with the mesh model of the uterus from the MRI overlaid in each image and (d) its AR augmentation with the myomas shown as image overlay.}
 \label{fig:myomas}
 \end{figure*}
-
-\begin{figure*}[htbp]
-  \centering
-  \includegraphics[width=0.85\textwidth]{./figs/errors.pdf}
-\caption{(a) Registration error vs. number of views. (b) Number of iterations vs. number of views. (c) Mean surface registration error for $2$, $4$ and $15$ views.}
-\label{fig:results}
-\end{figure*}
-
-\subsection{Qualitative retrospective evaluation with human uteri}
-% !THIS TEXT IS FROM ISMAR!
-We present qualitative results on pre-recorded video data of a patient with two myomas (see \fig{fig:myomas}). 
-One myoma was large, with a diameter of \SI{121}{\milli\metre}, and the other medium sized with a diameter of \SI{52}{\milli\metre}.
-$\mathcal{M}$ was constructed by performing an interactive segmentation of the MRI using MITK~\cite{Wolf_themedical}, followed by meshing with marching cubes, two iterations of Laplacian mesh smoothing and then mesh decimation with quadratic edge collapse~\cite{conf/siggraph/GarlandH97} to give a mesh of $6210$ vertices. The laparoscopic video was recorded during the patient's myomectomy and we performed the registration and augmentation off-line after surgery on a \SI{50}{\second} video clip before resection began (including the 20 second exploratory phase). We used $10$ keyframes to perform the SfM from the exploratory phase, and this computed correspondences for $321$ image features located on the uterus. The cost function in \eq{eq:totalCost} was optimised in $6$ iterations in approximately \SI{15}{\second}.% with our \CC implementation.
+Figures \fig{fig:myomas}(a) and \fig{fig:myomas}(b)) show the pre-recorded video data of a patient with two myomas. One myoma was large, with a diameter of \SI{121}{\milli\metre}, and the other medium sized with a diameter of \SI{52}{\milli\metre}. The preoperative mesh of the uterus has $6210$ vertices.
+%$\mathcal{M}$ was constructed by performing an interactive segmentation of the MRI using MITK~\cite{Wolf_themedical}, followed by meshing with marching cubes, two iterations of Laplacian mesh smoothing and then mesh decimation with quadratic edge collapse~\cite{conf/siggraph/GarlandH97} to give a mesh of $6210$ vertices. 
+The laparoscopic video was recorded during the patient's myomectomy and we performed the registration and augmentation off-line after surgery on a \SI{50}{\second} video clip before resection began (including the 20 second exploratory phase). We used $10$ keyframes to perform the SfM from the exploratory phase, and this computed correspondences for $321$ image features located on the uterus. The cost function in \eq{eq:totalCost} was optimised in $6$ iterations in approximately \SI{15}{\second}.% with our \CC implementation.
 % This took approximately \SI{15}{\second} to compute using an unoptimised Matlab implementation with a \CC $z$-buffer implementation. \todo{Pamir's times for optimised \CC}
-The registration for the frames after the exploratory video was achieved using the method described in \sect{sec:registration}, which processed each frame in approximately \SI{37.0}{\milli\second} (or \SI{27}{fps}). We show four frames from the clip in \fig{fig:qualResults} (top row), together with an overlay of $\mathcal{M}$ registered to each frame.
-We show with a red contour the silhouette boundary of $\mathcal{M}$ in each frame.
-Qualitatively we see that the red contours align well to the real image contours, and the supplied video shows clearly that the registration track the uterus well over the sequence. In \fig{fig:qualResults} (bottom row) we show the visual augmentation of the myomas in each frame (the larger myoma is in green and the smaller is in blue). The surgeon who conducted the myomectomy reported that localising the small myoma was difficult, and took them approximately $15$ minutes. After surgery they inspected our augmentations and confirmed that both myomas appeared to be localised well by the system. This promising result indicates the potential benefit for using our AR system during surgery.
-\begin{figure*}[ht]
-  \centering
-  \includegraphics[width=0.75\textwidth]{./figs/invivoHumanUteri/qualitative.pdf}
-  \caption{Registration between the uterus in a pre-operative MRI to intra-operative laparoscopic images, and visual augmentation of two hidden myomas.
-The top row shows $\mathcal{M}$ (the mesh model of the uterus from the MRI ) overlaid in each image.
-The red contours denote the silhouette boundaries of $\mathcal{M}$ in each image. The bottom row shows the augmented myomas.}
-	\label{fig:qualResults}
-\end{figure*}
+%The registration for the frames after the exploratory video was achieved using the method described in \sect{sec:registration}, which processed each frame in approximately \SI{37.0}{\milli\second} (or \SI{27}{fps}).
+ We show four frames from the clip in \fig{fig:myomas}(c), together with an overlay of the uterus surface registered to each frame. Its silhouette boundary is displayed in red. 
+%We show with a red contour the silhouette boundary of $\mathcal{M}$ in each frame.
+Qualitatively we see that the red contours align well to the real image contours, and the supplied video\DP{Do we have this video ?} shows clearly that the registration track the uterus well over the sequence. In \fig{fig:myomas}(d) we show the visual augmentation of the myomas in each frame (the larger myoma is in green and the smaller is in blue). The surgeon who conducted the myomectomy reported that localising the small myoma was difficult, and took them approximately $15$ minutes. After surgery they inspected our augmentations and confirmed that both myomas appeared to be localised well by the system. %This promising result indicates the potential benefit for using our AR system during surgery.
+%\begin{figure*}[ht]
+%  \centering
+%  \includegraphics[width=0.75\textwidth]{./figs/invivoHumanUteri/qualitative.pdf}
+%  \caption{Registration between the uterus in a pre-operative MRI to intra-operative laparoscopic images, and visual augmentation of two hidden myomas.
+%The top row shows $\mathcal{M}$ (the mesh model of the uterus from the MRI ) overlaid in each image.
+%The red contours denote the silhouette boundaries of $\mathcal{M}$ in each image. The bottom row shows the augmented myomas.}
+%	\label{fig:qualResults}
+%\end{figure*}
 
 
 % \subsection{Live usage and quantitative ex-vivo user evaluation with porcine kidneys}
@@ -176,92 +288,15 @@ The red contours denote the silhouette boundaries of $\mathcal{M}$ in each image
 % There were $23$ negative margins in the AR group (\SI{85.2}{\percent}), with $0$ complete misses and $4$ contacts.
 % Statistical significance was measured with Fisher's exact two-tailed test with  $p=0.0010$.
 % Therefore the user study indicates a very significant benefit for using the AR guidance system.
-
-\subsection{Comparison of different tracking features}
-\label{sec:siftvssurf}
-In this section we analyse the benefits of using SIFT features over SURF within the tracking stage. SIFT features offer, in general, a more reliable and robust choice for feature matching but the major limitation is its computational time, which often prevents them from being used in real-time applications.
-We used the GPU implementation~\cite{Griwodz2018Popsift} which is a faithful, open-source implementation of the original algorithm and provides real-time performances with full HD images.
-We tested the tracker using the SIFT version and the SURF-GPU OpenCV's implementation on two different image sequences. \TC{IT IS NOT CLEAR WHAT DATASET WAS USED!} \tab{tab:matches} summarizes some statistical figures that allows us to compare the two approaches. We see that tracking using SIFT is able to establish more camera poses (\SI{99.5}{\percent} and \SI{100}{\percent} of the frames) compared with SURF features (\SI{91.2}{\percent} and \SI{89.6}{\percent}, respectively).
-Despite the fact that SURF is able to recover, on average, more matches between $\mathcal{F}$ and $\mathcal{G}$, SIFT has a higher discriminate power in selecting the winning keyframe $I^*$ to be used for the registration. As the table shows, the winning keyframe has, on average, more available matches from which the RANSAC can sample to compute the pose. This also results in a higher number of inliers found supporting the compute pose.
-\fig{fig:numMatches} shows the numbers of matches and inliers for both approaches for the first video sequence, where we see that all along the frames the number of matches used for computing the pose are always higher for SIFT. 
-
-In order to evaluate the quality of the estimated poses, we plotted in \fig{fig:SurfVsSift} the different values for the pose components during the first video sequence. The figure shows that the SIFT version provides a more stable estimation for each component, \ie the are less spikes in the estimated values, which are, instead, a typical sign of incorrect pose estimates. SIFT improves the quality of the result as it provides a more stable motion estimation. The increased stability requires also less new keyframes to be added, thus, in turn, improving the overall computational time as less descriptor comparisons are needed. 
-\todo{maybe put the videos on youtube and give links?}
-
-\subsection{Computational times}
-Our hardware is composed of a desktop PC running Linux Ubuntu and sporting an Intel Core i$7$-$5960$X CPU running at \SI{3.00}{\giga\hertz} with \SI{16}{\giga\byte} of RAM and an NVIDIA GeForce GTX $980$ Ti graphic card.
-The tracking process takes on average \SI{16.35}{\milli\second} with a full HD $1920\times1080$ image.
-On average, the SIFT extraction takes \SI{11.1}{\milli\second}, the descriptor matching between $\mathcal{F}$ and $\mathcal{G}$ takes \SI{3.21}{\milli\second}  and the pose estimation \SI{0.18}{\milli\second}.
-
-\subsection{Comparison with ORB SLAM}
-\label{sec:orbslam}
-We have compared with ORB-SLAM2, which provides state-of-the-art results monocular SLAM results on laparoscopic videos \cite{orbslam_laparo}. As discussed in \sect{sec:sotaTracking} a scene that consists of independently moving structures such as the uterus will cause difficulty for current monocular SLAM methods, because they will amalgamates features from different structures into one map. This can be extremely problematic when there is slow relative motion between the structures. \fig{fig:orbAR} shows an example of this problem. On the left, the ORB features used for tracking are shown, covering the uterus (foreground) and surrounding peritoneum. When the uterus is then moved significantly \wrt the surroundings, the pose is computed wrongly, because background features have a strong influence on the estimated pose.
-
-
-% \begin{figure}
-% \centering
-% \input{figs/numInliers.tex}
-% \caption{ My first matlab2tikz figure }
-% \label{fig:myfirstfig}
-% \end{figure}
-
-\begin{figure*}
+\subsection{Use with Real Patients in the Operating Room}
+% !THIS TEXT IS FROM ISMAR!
+The proposed AR system has been tested during laparoscopic surgery \DP{Cite Nicolas clinical papers} with three patients with one, two and multiple uterine myomas respectively. Three-dimensional (3D) models of the patients uteri and myomas were constructed before surgery from T2-weighted magnetic resonance imaging. The intraoperative 3D shape of the uteri was determined and automatically aligned and ``fused'' with the laparoscopic video in real time. With this information we made the uteri appear semitransparent so that the surgeon can see the location of the myomas in real time. 
+\begin{figure*}[t]
   \centering
-  \includegraphics[width=0.32\textwidth]{./figs/numMatches.pdf}
-  \includegraphics[width=0.32\textwidth]{./figs/numMatchesWinning.pdf}
-  \includegraphics[width=0.32\textwidth]{./figs/numInliers.pdf}
-\caption{Comparison of the number of matches found using SURF (red) and SIFT (blue) over a sequence of $5000$ frames. The leftmost image shows the number of matches between $\mathcal{F}$ and $\mathcal{G}$ after the LRT, the center image shows the number of matches of the winning kframe and the rightmost image shows the number of inliers that supports the estimated pose.}
-\label{fig:numMatches}
+  \includegraphics[width=\textwidth]{./figs/ARinOR.pdf}
+\caption{Patient 1: (a) MRI image showing one myoma, (b) myoma augmentation, (c) resection of the myoma, (d) deployment of our AR system in the OR. Patient 2: (e) MRI image showing three myomas, (f,g,h) myoma augmentation. Patient 3: (i) two myomas segmented from the MRI images, (j,k,m) augmentation of the myomas and the uterine cavity.}
+\label{fig:realOR}
 \end{figure*}
-
-\begin{figure*}
-  \centering
-  \includegraphics[width=0.32\textwidth]{./figs/translationX.pdf}
-  \includegraphics[width=0.32\textwidth]{./figs/translationY.pdf}
-  \includegraphics[width=0.32\textwidth]{./figs/translationZ.pdf}
-  \includegraphics[width=0.32\textwidth]{./figs/rotationX.pdf}
-  \includegraphics[width=0.32\textwidth]{./figs/rotationY.pdf}
-  \includegraphics[width=0.32\textwidth]{./figs/rotationZ.pdf}
-\caption{Estimated pose components (top, translation $t_x$, $t_y$ and $t_z$, bottom rotation angles $r_x$, $r_y$ and $r_z$) using SURF (red) and SIFT (PopSift implementation) features over a sequence of $5000$ frames. It can be noted that SIFT enable a more stable and less jittered estimation of the components.}
-\label{fig:SurfVsSift}
-\end{figure*}
-
-
-
-\begin{table}[]
-\centering
-\begin{tabular}{rlcccc}
-\multicolumn{1}{c}{\# frames}              & \multicolumn{1}{c}{} & \# poses & \# matches & \begin{tabular}[c]{@{}c@{}}\# matches \\ winner\end{tabular} & \# inliers                 \\ \hline \hline
-\multicolumn{1}{|r}{\multirow{2}{*}{$5000$}} & SURF                 & $4569$     & $406.16$     & $46.94 $                                                       & \multicolumn{1}{c|}{$32.93$} \\
-\multicolumn{1}{|r}{}                      & SIFT                 & $4975$     & $388.06$     & $52.31$                                                        & \multicolumn{1}{c|}{$44.86$} \\ \hline
-\multicolumn{1}{|r}{\multirow{2}{*}{$3029$}} & SURF                 & $2713$     & $296.81$     & $42.60$                                                        & \multicolumn{1}{c|}{$27.74$} \\
-\multicolumn{1}{|r}{}                      & SIFT                 & $3029$     & $294.00$     & $64.87$                                                        & \multicolumn{1}{c|}{$52.81$} \\ \hline
-\end{tabular}
-\caption{For two sequences of $5000$ and $3029$ frames respectively, the table compares the number of poses estimated and the average number of matches obtained between SIFT and SURF, showing overall better performances for the SIFT version.}
-\label{tab:matches}
-\end{table}
+In \fig{fig:realOR}(a) we show the MRI of the first patient with a 6-cm uterine myoma. \fig{fig:realOR}(b) shows the augmentation of the myoma and \fig{fig:realOR}(c) shows its resection. At that stage our algorithm is not able to show augmentation due to the changes in the uterus surface. In \fig{fig:realOR}(d) we show our system deployed in the operating room. The MRI of the second patient is shown in \fig{fig:realOR})(e), showing three myomas that are visualized with AR in \fig{fig:realOR}(f,g,h). The third patient has two myomas whose segmentation from the MRI is visualized in \fig{fig:realOR}(i). Examples of augmentation of the myomas and the uterine cavity are displayed in \fig{fig:realOR}(j,k,m). These three experiments, conducted during real surgeries show that our system is ready to be deployed in the OR.     
  
 
-\begin{figure}
-  \centering
-  \includegraphics[width=0.45\columnwidth]{./figs/frame0001Features.png}
-  \includegraphics[width=0.45\columnwidth]{./figs/frame0107Features.png}
-  \includegraphics[width=0.45\columnwidth]{./figs/frame001.png}
-  \includegraphics[width=0.45\columnwidth]{./figs/frame107.png}  
-\caption{An example of tracking issue of SLAM approaches: even if the model is correctly registered and tracked (left), it can happen that due to the movements of the organ and the occlusions the tracker tracks the camera pose \wrt the background thus affecting the AR visualization (right). }
-\label{fig:orbAR}
-\end{figure}
-
-
-% % The input models used in the presented experiments are generated from T2 weighted MRI with segmentation done semi-automatically using MITK~\cite{Wolf_themedical}.
-% % The deformation models that we experiment with are tetrahedral Finite Element Models (FEMs) built with a 3D vertex grid (\SI{6}{\milli\metre} spacing) cropped to the organ.
-% % Therefore, $\vet{x}_t$ holds the unknown 3D positions of the FEM's vertices in laparoscope coordinates.
-% % Trilinear interpolation was used to compute $f(\vet{p};\vet{x}_t)$.
-% % For $\Einternal$ the Saint Venant-Kirchoff strain energy is used, with patient-generic values for the Young's modulus $E$ and Poisson's ratio $\nu$.
-% These were for healthy kidney tissue $E=\SI{7}{\kilo\pascal}$, $\nu=0.43$~\cite{Li_TIP08}, 
-% % For healthy uterus tissue we use $E=\SI{96}{\kilo\pascal}$, $\nu=0.45$~\cite{uterusModel} and $E=\SI{532}{\kilo\pascal}$, $\nu=0.48$ for myomas~\cite{uterusModel}.
-%Note that in the registration problem there is always a balancing weight between the internal energy and energy coming from image cues (which have no real physical meaning).
-%Therefore only the relative values of $E$ are important to us (with respect to the balancing weight), rather than their absolute values.
-
-\subsection{Use with Real Patients in the Operating Room}
-!TODO: a summary of the two clinical papers from  Nicolas!

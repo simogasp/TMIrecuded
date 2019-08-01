@@ -13,22 +13,22 @@ This approach is robust to common challenges including occlusions from \eg, surg
 
 \subsubsection{Preparing the Model for Tracking}
 \label{sec:preparing}
-For each keyframe image, we render the 3D model with OpenGL and we store the depth map ($z$-buffer) of all the pixels lying within the model's silhouette. %We use $(x,y,z)=rim(i,j)$. to be the 3D position in camera coordinates at pixel location $(i,j)$. If $x=y=z=\mathrm{nan}$ then pixel $(i,j)$ dose not lie within the silhouette of the model, otherwise it dose. We denote $\mat{M}_{i}\in SE_{4}$ to be the rigid transform mapping the model to the $i^{th}$ reference image's frame. We can compute the 3D position of an image point lying with the model's silhouette by $\mat{M}_{i}^{-1}[x,y,z,1]^{\top}$. 
+For each keyframe image, we render the 3D model and we store the depth map ($z$-buffer) of all the pixels lying within the model's silhouette. %We use $(x,y,z)=rim(i,j)$. to be the 3D position in camera coordinates at pixel location $(i,j)$. If $x=y=z=\mathrm{nan}$ then pixel $(i,j)$ dose not lie within the silhouette of the model, otherwise it dose. We denote $\mat{M}_{i}\in SE_{4}$ to be the rigid transform mapping the model to the $i^{th}$ reference image's frame. We can compute the 3D position of an image point lying with the model's silhouette by $\mat{M}_{i}^{-1}[x,y,z,1]^{\top}$. 
 %The RIM is convenient because for each texturemap image we can extract 2D image features \textit{anywhere} within the model's silhouette, 
 Thanks to the depth map, the 3D positions of any 2D image features located within the model's silhouette can be determined.
 %Note that without computing a dense 3D model this is not possible in general.
 For each keyframe, we then extract a set of image features and to each one of them we associated its corresponding depth. 
 We concatenate the features from all images into a single list $\mathcal{F}=\{(\vet{x}_{m},I_{m},\vet{d}_{m})\}$, where $\vet{x}_{m} \in \mathbb{R}^3$ denotes the $m^{th}$ feature's 3D position in the model coordinate frame, $I_{m}$ denotes the index of the keyframe from which it was detected and $\vet{d}_{m}$ denotes its descriptor.
 
-Differently than~\cite{Collins2013}, we use SIFT features~\cite{Lowe:2004:DIF:993451.996342} instead of SURF~\cite{SURF}, as they have been shown many times to obtain a better accuracy and robustness in image matching~\cite{Tuytelaars2007}. We used the open-source GPU implementation PopSift~\cite{Griwodz2018Popsift} to achieve real-time computational performances: for a typical HD $1920\times1080$ image of the uterus, up to $3000$ features can be found, taking around $\SI{11}{\milli\second}$ with a standard GPU.
+The approach can be used with any feature detector, such as SIFT~\cite{Lowe:2004:DIF:993451.996342}, ORB~\cite{orbslam_laparo} or SURF~\cite{SURF}. We find that SIFT features are superior in general, and they have been shown many times to obtain a better accuracy and robustness in image matching~\cite{Tuytelaars2007}. We used the recent open-source GPU implementation PopSift~\cite{Griwodz2018Popsift} to achieve real-time computational performances: for a typical HD $1920\times1080$ image of the uterus, up to $3000$ features can be found, taking around $\SI{11}{\milli\second}$ with a standard GPU.
 %We use the green channel to compute features, rather than the standard approach of using average intensity.
 %The reason is that the green light penetrates human tissue superficially and do not exhibit as much sub-surface scattering as with red light.
 %The difference is very prominent with the uterus~\cite{DBLP:conf/ipcai/CollinsB12}.
-To greatly reduce the problem of tracking specularities, we detect saturated pixels with an intensity threshold of $250$ and any feature with $\SI{5}{pixels}$ to a saturated pixel is discarded.
+To significantly reduce the problem of tracking specularities, we detect saturated pixels with an intensity threshold of $250$ and any feature with $\SI{5}{pixels}$ to a saturated pixel is discarded.  
 
-\subsubsection{Tracking Overview}
+\subsubsection{Pose Estimation Overview}
 \label{sec:registration}
-For a given input image we compute its SIFT features, and %using the average of its green and blue channels.
+For a given input image we compute its features, and %using the average of its green and blue channels.
 we denote this with the set $\mathcal{G}=\{(\vet{y}_{i},\tilde{\vet{d}}_{i})\}$. Here $\vet{y}_{i}$ denotes the $i^{th}$ feature's image position and $\tilde{\vet{d}}_{i}$ denotes its descriptor. Our registration scheme follows a RANSAC-based hypothesis and test framework~\cite{Fischler:1981:RSC:358669.358692}. Specifically this splits registration into three components. The first involves computing a set of candidate matches between $\mathcal{F}$ and $\mathcal{G}$. The second involves searching for a pose hypothesis that can best explain these matches. The third involves refining the pose of the best hypothesis with Levenberg-Marquardt.
 
 \subsubsection{Computing candidate matches}

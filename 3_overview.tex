@@ -28,7 +28,7 @@ Our approach does not require a specific organ deformation model to be used, bec
 
 We require two interfaces to the deformation model. The first is the \emph{transform function} $f(\vet{p};\vet{x}_t): \Omega\rightarrow \mathbb{R}^3$, which transforms a 3D point $\vet{p}$ in the model's 3D domain $\Omega\subset \mathbb{R}^3$ to the target coordinate frame (in our case the laparoscope coordinates frame). The vector $\vet{x}_t$ denotes the model's parameters at time $t$. %The registration problem is  to determine $\vet{x}_t$ given a laparoscopic image at time $t$. 
 The second is the internal energy function $\Einternal(\vet{x}_{t}):\mathbb{R}^{d}\rightarrow\mathbb{R}^{+}$ which gives the internal energy for transforming the organ with $\vet{x}_t$, where $d$ is the dimensionality of $\vet{x}_{t}$. This internal energy is used to regularize the deformation, or in the case of bio-mechanical models, to provide internal strain energy induced by soft-tissue deformation.
-Our only requirements are that $f$ and $\Einternal$ be continuous and at least first-order differentiable, which is satisfied by virtually all models of interest. We describe the specific deformable modes used in our experiments in Section \ref{XX}.
+Our only requirements are that $f$ and $\Einternal$ be continuous and at least first-order differentiable, which is satisfied by virtually all models of interest. We describe the specific deformable modes used in our experiments in Section \ref{sec:experiments_Simulation}.
  
 \subsection{Registration Pipeline Overview}
 \label{sec:globalOverview}

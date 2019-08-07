@@ -41,12 +41,12 @@ We achieve the latter condition by applying Lowe's Ratio Test (LRT)~\cite{Lowe:2
 A novelty of using \emph{multiple} keyframe images is that we can also exploit match \emph{coherence}. Specifically, consider a feature in the image that matches a feature in the $i^{th}$ keyframe. It is likely to be correct if there exists other features that also match with features in the $i^{th}$ keyframe.
 %Enforcing coherence can reduce false matches because it prevents matches occurring from wildly different keyframe.
 We enforce coherence with a winner-takes-all strategy. We first find the index $I^*$ of the keyframe with the most amount of candidate matches. This indicates the keyframe image which is ``closest'' to the input image with respect to viewpoint. Because SIFT is invariant to scale changes and image rotation, %close means a keyframe image which views the uterus from a similar viewpoint, up to a change in depth and a rotation of the laparoscope about its optical axis.
-We then recompute the candidate matches, but using \emph{only} features from $I^*$.
+we then recompute the candidate matches, but using \emph{only} features from $I^*$.
 Performing these processes is very quick because $\mathcal{F}$ is completely pre-computed, and evaluating descriptor distances can be distributed trivially on the GPU (\eg, $\sim\SI{3}{ms}$ to match $2000$ features from a HD image against $5600$ features from $16$ keyframes).
 
 \subsubsection{Computing 3D Pose}
 % !THIS TEXT IS FROM MIAR AND MUST BE EDITED!
-Given the set of candidate matches, we perform RANSAC to find the most compatible rigid 3D pose, with OpenCV's implementation with default parameters. In some images tracking maybe impossible or unreliable, if the organ is not visible or only a small part is visible in the image. A good indicator for deciding if pose can be estimated reliably is the number $n_c$ of inlier matches found by RANSAC. If this is below a threshold (default of XX), we reject the pose and consider the organ to be untrackable in that image. Finally, to reduce jitter artefacts, we feed the pose estimates into an Extended Kalman Filter (EKF). 
+Given the set of candidate matches, we perform RANSAC to find the most compatible rigid 3D pose, with OpenCV's implementation with default parameters. In some images tracking maybe impossible or unreliable, if the organ is not visible or only a small part is visible in the image. A good indicator for deciding if pose can be estimated reliably is the number $n_c$ of inlier matches found by RANSAC. If this is below a threshold (default of $8$), we reject the pose and consider the organ to be untrackable in that image. Finally, to reduce jitter artefacts, we feed the pose estimates into an Extended Kalman Filter (EKF). 
 
 
 

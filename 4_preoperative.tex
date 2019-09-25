@@ -7,7 +7,7 @@
 \label{sec:registrationOverview}
 
 \subsubsection{Solution Overview}
-We illustrate the problem in \fig{fig:initialRegOverview}. This stage is more challenging to solve than the tracking stage because \textit{(i)} we have no texture information associated with the organ's surface and \textit{(ii)} it is a deformable registration. We propose to solve this by performing a dense 3D reconstruction of the organ's surface using an \emph{exploration video} and Multi-View-Stereo (MVS) reconstruction, for which mature and open-source methods exist~\cite{Meshroom}. Given this reconstruction, we solve the initial registration with numerical optimization of a system that combines data constraints (organ-to-reconstruction distances and contour fragment distances), combined with constraints from the model's internal energy.
+We illustrate the problem in \fig{fig:initialRegOverview}. This stage is more challenging to solve than the tracking stage because \textit{(i)} we have no texture information associated with the organ's surface and \textit{(ii)} it is a deformable registration. We propose to solve this by performing a dense 3D reconstruction of the organ's surface using an \emph{exploratory video} and Multi-View-Stereo (MVS) reconstruction, for which mature and open-source methods exist~\cite{Meshroom}. Given this reconstruction, we solve the initial registration with numerical optimization of a system that combines data constraints (organ-to-reconstruction distances and contour fragment distances), combined with constraints from the model's internal energy.
 
 \subsubsection{Interventional 3D Reconstruction}
 \label{sec:sfm}
@@ -45,7 +45,7 @@ These hold the laparoscope's rotation matrix $\mat{R}_{i}\in\mathcal{SO}_3$ and 
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.99\columnwidth]{./figs/exploratory.pdf}
-  \caption{Example keyframes from an exploration video of a uterus undergoing cannula motion.}
+  \caption{Example keyframes from an exploratory video of a uterus undergoing cannula motion.}
 	\label{fig:cannula}
 \end{figure}
 

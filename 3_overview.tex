@@ -22,8 +22,8 @@
 \subsection{Pre-operative Data Requirements}
 \label{sec:inputModels}
 The system requires a segmented pre-operative 3D organ model, which comprises the organ's surface mesh, and meshes of internal structures that are to be visualized with AR.
-In the case of the uterus, internal structures may be the uterine cavity, tumours and safe-tissue margins. %Here the internal structures are tumours and their \emph{safe tissue margin}.
-%A safe tissue margin is a border around the tumour of healthy tissue which should also be removed, whose thickness $w$ depends on the risk factor of the particular tumour.
+In the case of the uterus, internal structures may be the uterine cavity, tumors and safe-tissue margins. %Here the internal structures are tumors and their \emph{safe tissue margin}.
+%A safe tissue margin is a border around the tumor of healthy tissue which should also be removed, whose thickness $w$ depends on the risk factor of the particular tumor.
 Our approach does not require a specific organ deformation model to be used, because to date there is no clear consensus on the best one to use for registering organs. Models currently range from complex heterogeneous mechanical models to simpler homogeneous algebraic models such as As-Rigid-As-Possible \cite{Sorkine:2007:ASM:1281991.1282006}. 
 
 We require two interfaces to the deformation model. The first is the \emph{transform function} $f(\vet{p};\vet{x}_t): \Omega\rightarrow \mathbb{R}^3$, which transforms a 3D point $\vet{p}$ in the model's 3D domain $\Omega\subset \mathbb{R}^3$ to the target coordinate frame (in our case the laparoscope coordinates frame). The vector $\vet{x}_t$ denotes the model's parameters at time $t$. %The registration problem is  to determine $\vet{x}_t$ given a laparoscopic image at time $t$. 

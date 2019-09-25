@@ -215,15 +215,15 @@ The full video is provided as supplemental material along with other videos from
 % \subsection{Live usage and quantitative ex-vivo user evaluation with porcine kidneys}
 % %\subsection{Overview}
 % %\paragraph{Materials.}
-%  We used $29$ porcine kidneys recovered from pigs operated after resident training. For each kidney pseudo-tumours were created by injecting alginate, a hardening hydrocolloid, of between \SI{4}{\milli\metre} and \SI{10}{\milli\metre} in diameter.
-% In total $59$ pseudo-tumours were injected at arbitrary sub-surface positions, with an average of $2.5$ per kidney.
+%  We used $29$ porcine kidneys recovered from pigs operated after resident training. For each kidney pseudo-tumors were created by injecting alginate, a hardening hydrocolloid, of between \SI{4}{\milli\metre} and \SI{10}{\milli\metre} in diameter.
+% In total $59$ pseudo-tumors were injected at arbitrary sub-surface positions, with an average of $2.5$ per kidney.
 % We used safe tissue margins of \SI{5}{\milli\metre}.
 % Kidney models were made as described in \sect{sec:inputModels} from 3T MRI images (\SI{0.4}{\milli\metre} resolution and slice thickness \SI{1.5}{\milli\metre}).
 % The interventional equipment is shown in \fig{fig:visualCompare}\,(c) and consisted of a Karl Storz \SI{10}{\milli\metre} laparoscope column with CLARA image enhancement, a surgical grasper, an incision tool, a laparoscopic pelvic trainer and an instrument with a surgical marker pen attached at the tip (referred to as the \emph{marker instrument}).
 % The AR software ran on a mid-range Intel i7 desktop workstation with an NVidia 980 Ti GPU, with visualisations shown on a \SI{26}{\inch} monitor.
 % Laparosurgery was performed by a skilled final-year resident.
 % The resident spent time training before evaluation to familiarise the task, the guidance software and to provide feedback to improve visualisation.
-% In total $28$ pseudo-tumours were resected during this time. 
+% In total $28$ pseudo-tumors were resected during this time. 
 
 
 % \paragraph{AR guidance with Tool Access Visualisation.}
@@ -231,21 +231,21 @@ The full video is provided as supplemental material along with other videos from
 
 %  Having registered, the final task is AR visualisation.
 % We briefly describe \emph{Transparent Blending} (TB) visualisation, which is the previous approach used with monocular laparoscopes.
-% It works by first rendering the tumours on the laparoscope's image plane, then a composite image is made by blending the render with the real image to give the impression the organ is transparent.
+% It works by first rendering the tumors on the laparoscope's image plane, then a composite image is made by blending the render with the real image to give the impression the organ is transparent.
 % An example from~\cite{Collins2044} is shown in \fig{fig:visualCompare}\,(a) where two myomas are visualised with TB.
 % TB however has a serious limitation which has not been previously addressed, and we find it can actually \emph{mis-guide the surgeon}.
 % The problem is illustrated in \fig{fig:mis-guidance}\,(a) and is as follows.
-% When a surgeon actually uses TB to resect a tumour they usually assume it indicates where they should cut to access the tumour.
+% When a surgeon actually uses TB to resect a tumor they usually assume it indicates where they should cut to access the tumor.
 % This however is incorrect.
-% It just shows the position of the tumour from the viewpoint of the laparoscope.
-% Often they assume the tumour's centre would be reached by cutting into the organ from the rendered tumour's centre $\mathbf{c}\in\mathbb{R}^2$.
+% It just shows the position of the tumor from the viewpoint of the laparoscope.
+% Often they assume the tumor's centre would be reached by cutting into the organ from the rendered tumor's centre $\mathbf{c}\in\mathbb{R}^2$.
 % This is not the case as shown in \fig{fig:mis-guidance}\,(a).
-% In our user study we found this is a significant problem with smaller and/or deeper tumours, and can cause them to be missed.
-% % increases as the tumour's depth increases and the separation between the tool and laparoscope trocars increases. 
+% In our user study we found this is a significant problem with smaller and/or deeper tumors, and can cause them to be missed.
+% % increases as the tumor's depth increases and the separation between the tool and laparoscope trocars increases. 
 %   \begin{figure*}[h]
 %   	\centering
 %   	\includegraphics[width=0.9\textwidth]{./figs/kidneyUserStudy/visualisationCompare.pdf}
-%   	\caption{(a) AR with Transparent Blending (TB) visualisation taken from~\cite{Collins2044}. (b) Our AR visualisation combining Transparent Blending with Tool Access Visualisation. (c) Our AR system in live operation during the ex-vivo user study.% (c) Tumour margins marked on the organ's surface using Tool-port Projection visualisation with a surgical marker. The marks are then used to guide the surgon during tumour resection.
+%   	\caption{(a) AR with Transparent Blending (TB) visualisation taken from~\cite{Collins2044}. (b) Our AR visualisation combining Transparent Blending with Tool Access Visualisation. (c) Our AR system in live operation during the ex-vivo user study.% (c) tumor margins marked on the organ's surface using Tool-port Projection visualisation with a surgical marker. The marks are then used to guide the surgon during tumor resection.
 %   	}
 %   	\label{fig:visualCompare}
 %   \end{figure*}
@@ -255,16 +255,16 @@ The full video is provided as supplemental material along with other videos from
 %  	\subfloat[AR with Render Blending]{{\includegraphics[width=5.4cm]{./figs/kidneyUserStudy/marginVisual1.pdf} }}%
 %  	\qquad
 %  	\subfloat[AR with Tool Access Visualisation]{{\includegraphics[width=5.4cm]{./figs/kidneyUserStudy/marginVisual2.pdf} }}%
-%  	\caption{The difference between typical AR visualisation of a tumour (a), which does not take into account the position and access direction of the incision tool, and the proposed Tool Access Visualisation (b) which does.}%
+%  	\caption{The difference between typical AR visualisation of a tumor (a), which does not take into account the position and access direction of the incision tool, and the proposed Tool Access Visualisation (b) which does.}%
 %  	\label{fig:mis-guidance}%
 %  \end{figure*}
  
-% What the surgeon actually wants is to be shown how to reach the tumour using the incision tool.
-% Furthermore, surgeons typically want to also see the tumour's safe tissue margin.
+% What the surgeon actually wants is to be shown how to reach the tumor using the incision tool.
+% Furthermore, surgeons typically want to also see the tumor's safe tissue margin.
 % We provide both information with what we call \emph{Tool Access Visualisation}, which is shown in \fig{fig:visualCompare}\,(b).
 % Its associated geometry is shown in \fig{fig:mis-guidance}\,(b).
-% {Tool Access Visualisation works by showing the tumour's safe tissue margin projected onto the organ's surface as a ring, which we call the \emph{tumour guidance ring}.
-% The idea is that if the surgeon were to cut into the organ along the guidance ring, they would segment the tumour with a minimal margin of $w\,$mm.
+% {Tool Access Visualisation works by showing the tumor's safe tissue margin projected onto the organ's surface as a ring, which we call the \emph{tumor guidance ring}.
+% The idea is that if the surgeon were to cut into the organ along the guidance ring, they would segment the tumor with a minimal margin of $w\,$mm.
 % At present we do not visualise uncertainty in the margin's location, which is important for real clinical use, and leave this to future work.\textbf{}
   	
 % We achieve Tool Access Visualisation with \emph{two} projections.
@@ -275,18 +275,18 @@ The full video is provided as supplemental material along with other videos from
 % It may be possible to estimate $\mathbf{p}$ automatically using external and/or internal tool tracking, however this is left to future work.
 % Here we assume $\mathbf{p}$ is given \textit{a priori}.
 % In our user study, where the ports are located on a pelvic trainer, this is simple and can be done offline by taking physical measurements.
-% We complete the visualisation by combining Tool Access Visualisation with TB visualisation (\fig{fig:visualCompare}\,(b))  to show tumours (solid fill), organ (wireframe) and safe tissue margins (wireframe).
+% We complete the visualisation by combining Tool Access Visualisation with TB visualisation (\fig{fig:visualCompare}\,(b))  to show tumors (solid fill), organ (wireframe) and safe tissue margins (wireframe).
 
 
 
 % \paragraph{Interventional Protocol and Equipment}
 % Laparosurgery was performed using the pelvic trainer, with the kidney inserted on a ground surface and the laparoscope and instruments inserted through three ports.
 % The same port configuration was used in all cases.
-% The surgeon was tasked to remove each tumour by cutting out a conic tissue section which included the tumour and its safe tissue margin.
-% The kidneys were divided into two groups (non-randomised): the \emph{AR group} and the \emph{Non-AR group}, with 13 kidneys in the AR group with 29 tumours, and 19 kidneys in the Non-AR group with 33 tumours.
+% The surgeon was tasked to remove each tumor by cutting out a conic tissue section which included the tumor and its safe tissue margin.
+% The kidneys were divided into two groups (non-randomised): the \emph{AR group} and the \emph{Non-AR group}, with 13 kidneys in the AR group with 29 tumors, and 19 kidneys in the Non-AR group with 33 tumors.
 % Kidneys in the AR group were operated with the AR guidance system activated.
-% Recall that the guidance system is not designed to handle significant deformation or topology change after the initial registration, which occurs when a tumour is resected.
-% This was dealt with in the protocol by having the surgeon first mark dots along the tumour guidance ring using the marker instrument, guided by the AR visualisation.
+% Recall that the guidance system is not designed to handle significant deformation or topology change after the initial registration, which occurs when a tumor is resected.
+% This was dealt with in the protocol by having the surgeon first mark dots along the tumor guidance ring using the marker instrument, guided by the AR visualisation.
 % Once completed they used the marks to guide the resection with AR disactivated.
 % For the Non-AR group, the surgeon first consulted the MRI using interactive slice-based visualisation~\cite{Wolf_themedical}.
 % The task was then performed without AR guidance using the same safe tissue margin of \SI{5}{\milli\metre}.
@@ -294,9 +294,9 @@ The full video is provided as supplemental material along with other videos from
  
 % \paragraph{Results}
 % We present results with the negative margin rate.
-% A negative margin occurs when the tumour is contained entirely within the resected tissue.
-% A positive margin occurs when either the tumour is completely absent from the resected tissue (a \emph{complete miss}), or if it is partially contained (a \emph{contact}).
-% For three tumours the protocol was not completed properly (the conic section did not cut fully through the kidney) and were excluded.
+% A negative margin occurs when the tumor is contained entirely within the resected tissue.
+% A positive margin occurs when either the tumor is completely absent from the resected tissue (a \emph{complete miss}), or if it is partially contained (a \emph{contact}).
+% For three tumors the protocol was not completed properly (the conic section did not cut fully through the kidney) and were excluded.
 % There were $13$ negative margins in the Non-AR group (\SI{41.9}{\percent}), with $4$ complete misses and $14$ contacts.
 % There were $23$ negative margins in the AR group (\SI{85.2}{\percent}), with $0$ complete misses and $4$ contacts.
 % Statistical significance was measured with Fisher's exact two-tailed test with  $p=0.0010$.

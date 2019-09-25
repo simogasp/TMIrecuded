@@ -11,7 +11,7 @@ This section presents qualitative and quantitative evaluation of the proposed pi
 We present a quantitative evaluation of the initial registration algorithm using a synthetic phantom that we constructed by 3D printing a uterus CAD model in a rigid material, and simulated deformations in software.
 The phantom body (\fig{fig:phantom}(a)) was $90 \times 60 \times 60~\si{\cubic\milli\metre}$ and it was printed in color with a realistic texture obtained from images of a human uterus. We introduced the phantom into a pelvic trainer (\fig{fig:phantom}(b)) to simulate the laparoscopic conditions, using a $\SI{10}{\milli\metre}$ Karl Storz HD laparoscope fixed to the pelvic trainer through a flexible arm. We performed the exploratory video by rotating the model about the cervix similarly to the motion experienced in real surgery by rotating the cannula, keeping $K=20$ keyframes (\fig{fig:reconstruction}).
  
-\begin{figure}[htb]
+\begin{figure}[t]
   \centering
   \includegraphics[width=0.5\textwidth]{./figs/phantom.pdf}
 \caption{(a) CAD model of the rigid phantom. (b) 3D printed phantom inside a pelvic trainer with a \SI{10}{\milli\metre} Karl Storz HD laparoscope. (c) Laparoscopic images of the phantom.}
@@ -93,6 +93,7 @@ We tested our tracking method RT-OTD using a real-time SIFT implementation~\cite
 \end{tabular}
 \caption{For two sequences of $5000$ and $3029$ frames respectively, the table compares the number of poses estimated and the average number of matches obtained between SIFT and SURF, showing overall better performances with SIFT.}
 \label{tab:matches}
+\vspace{-2mm}
 \end{table}
 \tab{tab:matches} summarizes the results obtained with SIFT and SURF. We see that RT-OTD using SIFT is able to establish more camera poses (\SI{99.5}{\percent} and \SI{100}{\percent} of the frames) compared with SURF features (\SI{91.2}{\percent} and \SI{89.6}{\percent}, respectively).
 Despite the fact that SURF is able to recover, on average, more matches between $\mathcal{F}$ and $\mathcal{G}$, SIFT has a higher discriminative power in selecting the winning keyframe $I^*$ to be used for the registration. As the table shows, the winning keyframe has, on average, more available matches from which RANSAC can sample to compute pose. This also results in more inliers found supporting the computed pose.

@@ -1,6 +1,6 @@
 %!TEX root=./main.tex
 
-\subsection{Stage 2: Real-time Organ Tracking-by-Detection}
+\subsection{Real-time Tracking-by-Detection}
 \label{sec:updateRegistration}
 \subsubsection{Overview}
 % !THIS TEXT IS FROM CARE AND MUST BE REPLACED!.
@@ -11,27 +11,26 @@ This approach is robust to common challenges including occlusions from \eg, surg
 %In cases when the organ is assumed to be fixed relative to background structures, we can track using features from both the organ and background structures.
 %This improves stability if the organ's texture is weak, and we do this in the ex-vivo user study. 
 
-\subsubsection{Preparing the Model for Tracking}
+\subsubsection{Feature mapping}
 \label{sec:preparing}
 For each keyframe image, we render the 3D model and we store the depth map ($z$-buffer) of all the pixels lying within the model's silhouette. %We use $(x,y,z)=rim(i,j)$. to be the 3D position in camera coordinates at pixel location $(i,j)$. If $x=y=z=\mathrm{nan}$ then pixel $(i,j)$ dose not lie within the silhouette of the model, otherwise it dose. We denote $\mat{M}_{i}\in SE_{4}$ to be the rigid transform mapping the model to the $i^{th}$ reference image's frame. We can compute the 3D position of an image point lying with the model's silhouette by $\mat{M}_{i}^{-1}[x,y,z,1]^{\top}$. 
 %The RIM is convenient because for each texturemap image we can extract 2D image features \textit{anywhere} within the model's silhouette, 
 Thanks to the depth map, the 3D positions of any 2D image features located within the model's silhouette can be determined.
 %Note that without computing a dense 3D model this is not possible in general.
-For each keyframe, we then extract a set of image features and to each one of them we associated its corresponding depth. 
+For each keyframe, we then extract a set of image features and to each one of them we associate its corresponding depth. 
 We concatenate the features from all images into a single list $\mathcal{F}=\{(\vet{x}_{m},I_{m},\vet{d}_{m})\}$, where $\vet{x}_{m} \in \mathbb{R}^3$ denotes the $m^{th}$ feature's 3D position in the model coordinate frame, $I_{m}$ denotes the index of the keyframe from which it was detected and $\vet{d}_{m}$ denotes its descriptor.
 
 The approach can be used with any feature detector, such as SIFT~\cite{Lowe:2004:DIF:993451.996342}, ORB~\cite{orbslam_laparo} or SURF~\cite{SURF}. We find that SIFT features are superior in general, and they have been shown many times to obtain a better accuracy and robustness in image matching~\cite{Tuytelaars2007}. We used the recent open-source GPU implementation PopSift~\cite{Griwodz2018Popsift} to achieve real-time computational performances: for a typical HD $1920\times1080$ image of the uterus, up to $3000$ features can be found, taking around $\SI{11}{\milli\second}$ with a standard GPU.
 %We use the green channel to compute features, rather than the standard approach of using average intensity.
 %The reason is that the green light penetrates human tissue superficially and do not exhibit as much sub-surface scattering as with red light.
 %The difference is very prominent with the uterus~\cite{DBLP:conf/ipcai/CollinsB12}.
-To significantly reduce the problem of tracking specularities, we detect saturated pixels with an intensity threshold of $250$ and any feature with $\SI{5}{pixels}$ to a saturated pixel is discarded.  
+To significantly reduce the problem of wrongly tracking specularities, we detect saturated pixels with an intensity threshold of $250$ and any feature within $\SI{5}{pixels}$ to a saturated pixel is discarded.  
 
 \subsubsection{Pose Estimation Overview}
 \label{sec:registration}
-For a given input image we compute its features, and %using the average of its green and blue channels.
-we denote this with the set $\mathcal{G}=\{(\vet{y}_{i},\tilde{\vet{d}}_{i})\}$. Here $\vet{y}_{i}$ denotes the $i^{th}$ feature's image position and $\tilde{\vet{d}}_{i}$ denotes its descriptor. Our registration scheme follows a RANSAC-based hypothesis and test framework~\cite{Fischler:1981:RSC:358669.358692}. Specifically this splits registration into three components. The first involves computing a set of candidate matches between $\mathcal{F}$ and $\mathcal{G}$. The second involves searching for a pose hypothesis that can best explain these matches. The third involves refining the pose of the best hypothesis with Levenberg-Marquardt.
+For a given input image we compute its features denoted by the set $\mathcal{G}=\{(\vet{y}_{i},\tilde{\vet{d}}_{i})\}$. Here $\vet{y}_{i}$ denotes the $i^{th}$ feature's image position and $\tilde{\vet{d}}_{i}$ denotes its descriptor. Our registration scheme follows a RANSAC-based hypothesis and test framework~\cite{Fischler:1981:RSC:358669.358692}. Specifically this splits registration into three components. The first involves computing a set of candidate matches between $\mathcal{F}$ and $\mathcal{G}$. The second involves searching for a pose hypothesis that can best explain these matches. The third involves refining the pose of the best hypothesis with Levenberg-Marquardt.
 
-\subsubsection{Computing candidate matches}
+\subsubsection{Computing Candidate Matches}
 % !THIS TEXT IS FROM MIAR AND MUST BE EDITED!
 Candidate matches are found between $\mathcal{F}$ and $\mathcal{G}$ as those pairs with \textit{(i)} strong descriptor agreement (\ie low descriptor distance) and \textit{(ii)} a low likelihood of being false.
 We achieve the latter condition by applying Lowe's Ratio Test (LRT)~\cite{Lowe:2004:DIF:993451.996342}.
@@ -40,16 +39,16 @@ We achieve the latter condition by applying Lowe's Ratio Test (LRT)~\cite{Lowe:2
 %The LRT is a very standard condition in feature-based pose estimation.
 A novelty of using \emph{multiple} keyframe images is that we can also exploit match \emph{coherence}. Specifically, consider a feature in the image that matches a feature in the $i^{th}$ keyframe. It is likely to be correct if there exists other features that also match with features in the $i^{th}$ keyframe.
 %Enforcing coherence can reduce false matches because it prevents matches occurring from wildly different keyframe.
-We enforce coherence with a winner-takes-all strategy. We first find the index $I^*$ of the keyframe with the most amount of candidate matches. This indicates the keyframe image which is ``closest'' to the input image with respect to viewpoint. Because SIFT is invariant to scale changes and image rotation, %close means a keyframe image which views the uterus from a similar viewpoint, up to a change in depth and a rotation of the laparoscope about its optical axis.
+We enforce coherence with a winner-takes-all strategy. We first find the index $I^*$ of the keyframe with the largest amount of candidate matches. This indicates the keyframe image which is `closest' to the input image with respect to viewpoint. Because SIFT is invariant to scale changes and image rotation, %close means a keyframe image which views the uterus from a similar viewpoint, up to a change in depth and a rotation of the laparoscope about its optical axis.
 we then recompute the candidate matches, but using \emph{only} features from $I^*$.
-Performing these processes is very quick because $\mathcal{F}$ is completely pre-computed, and evaluating descriptor distances can be distributed trivially on the GPU (\eg, $\sim\SI{3}{ms}$ to match $2000$ features from a HD image against $5600$ features from $16$ keyframes).
+Performing these processes is very quick because $\mathcal{F}$ is completely pre-computed, and evaluating descriptor distances can be distributed trivially on the GPU (\eg, $\sim\SI{3}{ms}$ to match $2000$ features from an HD image against $5600$ features from $16$ keyframes).
 
 \subsubsection{Computing 3D Pose}
-% !THIS TEXT IS FROM MIAR AND MUST BE EDITED!
-Given the set of candidate matches, we perform RANSAC to find the most compatible rigid 3D pose, with OpenCV's implementation with default parameters. In some images tracking maybe impossible or unreliable, if the organ is not visible or only a small part is visible in the image. A good indicator for deciding if pose can be estimated reliably is the number $n_c$ of inlier matches found by RANSAC. If this is below a threshold (default of $8$), we reject the pose and consider the organ to be untrackable in that image. Finally, to reduce jitter artefacts, we feed the pose estimates into an Extended Kalman Filter (EKF). 
+Given the set of candidate matches, we perform RANSAC to find the most compatible rigid 3D pose, with OpenCV's implementation with default parameters. In some images tracking may be impossible or unreliable, if the organ is not visible or only a small part is visible in the image. A good indicator for deciding if pose can be estimated reliably is the number $n_c$ of inlier matches found by RANSAC. If this is below a threshold (default of $8$), we reject the pose and consider the organ to be untrackable in that image. Finally, to reduce jitter artefacts, we feed the pose estimates into an Extended Kalman Filter (EKF). 
 
-
-
+\subsubsection{Adding New Keyframes}
+The operator can manually add new keyframes to $\mathcal{F}$ on the fly during the live tracking. This helps to mitigate any remaining jittering and stabilizes tracking if the organ is viewed from a viewpoint that is very dissimilar to the ones present in the keyframe set. In the supplementary material we present a video showing the benefits and the impact of adding a new keyframe to the tracking.
+We perform this by adding the features and their associated 3D points of the current image to $\mathcal{F}$. We currently refrain from automating the process of adding new keyframes because without care it can lead to drift. Specifically, errors in the estimate pose then leads to incorrectly aligned features in $\mathcal{F}$, leading to a degradation in tracking accuracy in later frames.
 
 %This involves sampling many match subsets of size $4$, and for each sample creating a pose hypothesis using PnP~\cite{Lepetit2009Epnp}.
 %Each hypothesis is tested for support by measuring how many of the other matches are predicted well by the hypothesis.
@@ -75,7 +74,7 @@ Given the set of candidate matches, we perform RANSAC to find the most compatibl
 
 %%%%%PROPOSE TO REMOVE THIS
 %\subsubsection{Adding new keyframes}
-%%In order to further stabilize and improve the pose computation, we add the possibility for an operator to add new keyframes to $\mathcal{F}$ on the fly during the live tracking. This helps to mitigate any remaining jittering and stabalizes tracking if the organ is viewed from a viewpoint that is very dissimilar to the ones present in the keyframe set.
+%%In order to further stabilize and improve the pose computation, we add the possibility for an operator to add new keyframes to $\mathcal{F}$ on the fly during the live tracking. This helps to mitigate any remaining jittering and stabilizes tracking if the organ is viewed from a viewpoint that is very dissimilar to the ones present in the keyframe set.
 %%%to complete the coverage of the organ from other viewpoints.
 %%%When a j the user decide to add a new keyframe we use a similar procedure as described in \sect{sec:preparing}.
 %%We perform this by adding the current image and its estimated pose to the keyframe set, and we add the features of the current image to $\mathcal{F}$. We currently refrain from automating the process of adding new keyframes because without care it can lead to drift. Specifically, errors in the estimate pose then leads to incorrectly aligned features in $\mathcal{F}$, leading to a degradation in tracking accuracy in later frames.

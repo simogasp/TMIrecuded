@@ -3,7 +3,7 @@
 \section{Experimental Validation}
 \label{sec:experiments}
 \subsection{Overview}
-This section presents qualitative and quantitative evaluation of the proposed pipeline. We first present a quantitative evaluation with \textit{in-silica} data. We then present qualitative results with offline videos of real human patient data. We then compare the improvements of the tracking algorithm \wrt our previous work and a state-of-the-art SLAM method. Finally we describe our experiences with deploying and running the pipeline in the real clinical setting. We emphasise that all previous works on real-time markerless monocular laparoscopic registration with pre-operative organ models have only been evaluated with pre-recoded video data. Thus they have never made the step up to live tests in the clinic and their robustness and practicality in the clinical setting has not been validated. 
+This section presents qualitative and quantitative evaluation of the proposed pipeline. We first present a quantitative evaluation with \textit{in-silica} data. We then present qualitative results with offline videos of real human patient data. We then compare the improvements of the tracking algorithm \wrt our previous work and a state-of-the-art SLAM method. Finally we describe our experiences with deploying and running the pipeline in the real clinical setting. We emphasize that all previous works on real-time markerless monocular laparoscopic registration with pre-operative organ models have only been evaluated with pre-recoded video data. Thus they have never made the step up to live tests in the clinic and their robustness and practicality in the clinical setting has not been validated. 
 
 \subsection{Quantitative evaluation with Simulation experiments}
 % !THIS TEXT IS FROM ISMAR!
@@ -74,14 +74,14 @@ We evaluate our tracking stage using three different human uteri captured before
 \label{fig:hister}
 \end{figure}
  Each video includes motion of the uterus with the cannula and camera motion. The uterus intraoperative surface is obtain with an exploratory video with $10$ keyframes. To obtain Ground-Truth (GT) camera pose the surgeon marked the uterus with a coagulation instrument at $12$-$15$ locations spread over the uterus body. This gave a set of small regions approximately $3$mm in diameter which could be accurately tracked. We show snapshots of these markers in \fig{fig:hister}, middle-left column. We performed marker tracking using a small patch surrounding each marker and a 2D affine fitting model.
-We manually verified the tracks, and manually initialised if the tracks became lost. We then compute the markers’ positions in 3D and the 3D poses of the uterus in each frame using SfM. If fewer than four markers were visible in a frame we said GT pose could not be estimated for that frame. We mask each marker so that our method cannot exploit the additional texture they introduce. We compute the optimal scale factor for each method with respect to GT to resolve the scale ambiguity. This is done with LLS. 
+We manually verified the tracks, and manually initialized if the tracks became lost. We then compute the markers’ positions in 3D and the 3D poses of the uterus in each frame using SfM. If fewer than four markers were visible in a frame we said GT pose could not be estimated for that frame. We mask each marker so that our method cannot exploit the additional texture they introduce. We compute the optimal scale factor for each method with respect to GT to resolve the scale ambiguity. This is done with LLS. 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.51\textwidth]{./figs/Accuracy_errors.pdf}
 \caption{First column shows rotation accuracy in degrees. Second column shows position accuracy in mm. Third Column shows the camera trayectory of RT-OTD, ORB-SLAM and GT. The rows correspond to $U_1$, $U_2$ and $U_3$ respectively}
 \label{fig:hister_results}
 \end{figure}
-We summarise the results of RT-OTD against ORB-SLAM in Figure \fig{fig:hister_results}.
+We summarize the results of RT-OTD against ORB-SLAM in Figure \fig{fig:hister_results}.
 The three rows of the figure correspond to results for the three uteri. We plot rotation error in the first column and position error in the second column. There are some gaps in the
 graphs for which errors could not be computed. These occur when fewer than four markers were visible in a frame. In the third column of \fig{fig:hister_results} we show the 3D trajectories of the camera estimated by RT-ODT and ORB-SLAM. While ORB-SLAM is able to track a large portion of the first sequence, it quickly degenerates and loses the track for the other two cases. This is due to the fact that the model built with SLAM contains points from both the moving uterus and the background which violates the rigidity assumption. The results with RT-OTD are very accurate with an average position error of $2$ mm and an average rotation error of $3$ degrees.   
 \subsubsection{Comparison of different tracking features}
@@ -185,12 +185,12 @@ On average, the SIFT extraction takes \SI{11.1}{\milli\second}, the descriptor m
 \end{figure*}
 Figures \fig{fig:myomas}(a) and \fig{fig:myomas}(b)) show the pre-recorded video data of a patient with two myomas. One myoma was large, with a diameter of \SI{121}{\milli\metre}, and the other medium sized with a diameter of \SI{52}{\milli\metre}. The preoperative mesh of the uterus has $6210$ vertices.
 %$\mathcal{M}$ was constructed by performing an interactive segmentation of the MRI using MITK~\cite{Wolf_themedical}, followed by meshing with marching cubes, two iterations of Laplacian mesh smoothing and then mesh decimation with quadratic edge collapse~\cite{conf/siggraph/GarlandH97} to give a mesh of $6210$ vertices. 
-The laparoscopic video was recorded during the patient's myomectomy and we performed the registration and augmentation off-line after surgery on a \SI{50}{\second} video clip before resection began (including the 20 second exploratory phase). We used $10$ keyframes to perform the SfM from the exploratory phase, and this computed correspondences for $321$ image features located on the uterus. The cost function in \eq{eq:totalCost} was optimised in $6$ iterations in approximately \SI{15}{\second}.% with our \CC implementation.
-% This took approximately \SI{15}{\second} to compute using an unoptimised Matlab implementation with a \CC $z$-buffer implementation. \todo{Pamir's times for optimised \CC}
+The laparoscopic video was recorded during the patient's myomectomy and we performed the registration and augmentation off-line after surgery on a \SI{50}{\second} video clip before resection began (including the 20 second exploratory phase). We used $10$ keyframes to perform the SfM from the exploratory phase, and this computed correspondences for $321$ image features located on the uterus. The cost function in \eq{eq:totalCost} was optimized in $6$ iterations in approximately \SI{15}{\second}.% with our \CC implementation.
+% This took approximately \SI{15}{\second} to compute using an unoptimized Matlab implementation with a \CC $z$-buffer implementation. \todo{Pamir's times for optimized \CC}
 %The registration for the frames after the exploratory video was achieved using the method described in \sect{sec:registration}, which processed each frame in approximately \SI{37.0}{\milli\second} (or \SI{27}{fps}).
  We show four frames from the clip in \fig{fig:myomas}(c), together with an overlay of the uterus surface registered to each frame. Its silhouette boundary is displayed in red. 
 %We show with a red contour the silhouette boundary of $\mathcal{M}$ in each frame.
-Qualitatively we see that the red contours align well to the real image contours, and the supplied video\DP{Do we have this video ?} shows clearly that the registration track the uterus well over the sequence. In \fig{fig:myomas}(d) we show the visual augmentation of the myomas in each frame (the larger myoma is in green and the smaller is in blue). The surgeon who conducted the myomectomy reported that localising the small myoma was difficult, and took them approximately $15$ minutes. After surgery they inspected our augmentations and confirmed that both myomas appeared to be localised well by the system. This promising result indicates the potential benefit for using our AR system during surgery.
+Qualitatively we see that the red contours align well to the real image contours, and the supplied video\DP{Do we have this video ?} shows clearly that the registration track the uterus well over the sequence. In \fig{fig:myomas}(d) we show the visual augmentation of the myomas in each frame (the larger myoma is in green and the smaller is in blue). The surgeon who conducted the myomectomy reported that localising the small myoma was difficult, and took them approximately $15$ minutes. After surgery they inspected our augmentations and confirmed that both myomas appeared to be localized well by the system. This promising result indicates the potential benefit for using our AR system during surgery.
 %\begin{figure*}[ht]
 %  \centering
 %  \includegraphics[width=0.75\textwidth]{./figs/invivoHumanUteri/qualitative.pdf}
@@ -211,7 +211,7 @@ Qualitatively we see that the red contours align well to the real image contours
 % The interventional equipment is shown in \fig{fig:visualCompare}\,(c) and consisted of a Karl Storz \SI{10}{\milli\metre} laparoscope column with CLARA image enhancement, a surgical grasper, an incision tool, a laparoscopic pelvic trainer and an instrument with a surgical marker pen attached at the tip (referred to as the \emph{marker instrument}).
 % The AR software ran on a mid-range Intel i7 desktop workstation with an NVidia 980 Ti GPU, with visualisations shown on a \SI{26}{\inch} monitor.
 % Laparosurgery was performed by a skilled final-year resident.
-% The resident spent time training before evaluation to familiarise the task, the guidance software and to provide feedback to improve visualisation.
+% The resident spent time training before evaluation to familiarize the task, the guidance software and to provide feedback to improve visualisation.
 % In total $28$ pseudo-tumours were resected during this time. 
 
 
@@ -221,7 +221,7 @@ Qualitatively we see that the red contours align well to the real image contours
 %  Having registered, the final task is AR visualisation.
 % We briefly describe \emph{Transparent Blending} (TB) visualisation, which is the previous approach used with monocular laparoscopes.
 % It works by first rendering the tumours on the laparoscope's image plane, then a composite image is made by blending the render with the real image to give the impression the organ is transparent.
-% An example from~\cite{Collins2044} is shown in \fig{fig:visualCompare}\,(a) where two myomas are visualised with TB.
+% An example from~\cite{Collins2044} is shown in \fig{fig:visualCompare}\,(a) where two myomas are visualized with TB.
 % TB however has a serious limitation which has not been previously addressed, and we find it can actually \emph{mis-guide the surgeon}.
 % The problem is illustrated in \fig{fig:mis-guidance}\,(a) and is as follows.
 % When a surgeon actually uses TB to resect a tumour they usually assume it indicates where they should cut to access the tumour.
@@ -254,7 +254,7 @@ Qualitatively we see that the red contours align well to the real image contours
 % Its associated geometry is shown in \fig{fig:mis-guidance}\,(b).
 % {Tool Access Visualisation works by showing the tumour's safe tissue margin projected onto the organ's surface as a ring, which we call the \emph{tumour guidance ring}.
 % The idea is that if the surgeon were to cut into the organ along the guidance ring, they would segment the tumour with a minimal margin of $w\,$mm.
-% At present we do not visualise uncertainty in the margin's location, which is important for real clinical use, and leave this to future work.\textbf{}
+% At present we do not visualize uncertainty in the margin's location, which is important for real clinical use, and leave this to future work.\textbf{}
   	
 % We achieve Tool Access Visualisation with \emph{two} projections.
 % The first is a perspective projection of the margin's surface onto the organ's surface, using a centre-of-projection located at the incision tool's port centre $\mathbf{p}\in\mathbb{R}^3$.

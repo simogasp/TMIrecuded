@@ -55,7 +55,6 @@ Our quantitative experiment tested the influence of the number of keyframes on t
   \epsilon^2_r=\frac{1}{N_{\mathcal{V}}}\sum_{\mathbf{q}\in \mathcal{V}} \|f(\wTPS(\mathbf{q};\thetaTPS),t_0;\theta)-\mathbf{q}\|^2. 
 \end{equation}
 % \end{small}
-
 \fig{fig:results}(b) shows the mean registration error we achieved as a function of the number of available keyframes. \fig{fig:results}(c) shows the mean number of iterations it takes our method to reach convergence. \fig{fig:results}(d) shows the mean registration error at each surface vertex using a heatmap visualization. What we see is a clear reduction in registration error with increased numbers of views, and saturating at approximately $8$ views beyond which the registration error is approximately \SI{1.4}{\milli\metre}. The distribution of errors at $2$ views in \fig{fig:results}(s) shows a tendency for greater error away from the uterus head towards the cervix. This is logical because with only a few views the uterus head is quite well constrained by the SfM pointcloud. However, further into the uterus the registration becomes less well constrained which leads to greater error.
 By contrast, with more views we have more constraints from the silhouette contours, as these reveal the boundaries of the uterus from a greater range of viewpoints, and the result is a significant improvement in registration. This experiment provides strong evidence for the value in using multiple viewpoints to constrain the registration problem, compared with prior works that uses only one viewpoint. We also see a significant reduction in the number of iterations for convergence with more views.
 \subsection{Evaluation with Human Uteri in Pre-recorded Videos}
@@ -65,7 +64,7 @@ We present results on pre-recorded video from real \emph{in vivo} data captured 
 We evaluate our tracking stage using three different human uteri captured before hysterectomy. They can be seen in \fig{fig:hister} and we refer to them as $U_1$, $U_2$ and $U_3$.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.5\textwidth]{./figs/snapshots.pdf}
+  \includegraphics[width=0.4\textwidth]{./figs/snapshots.pdf}
 \caption{Column 1 shows the 3D models built with MVS. Column 2 shows the coagulation marks in the uterus. Columns 3 and 4 show the registered models.}
 \label{fig:hister}
 \end{figure}
@@ -106,7 +105,8 @@ Despite the fact that SURF is able to recover, on average, more matches between 
 \end{figure}
 
 %\fig{fig:numMatches} shows the numbers of matches and inliers for both approaches for the first video sequence, where we see that all along the frames the number of matches used for computing the pose are always higher for SIFT. 
-In order to evaluate the quality of the estimated poses, we plot in \fig{fig:SurfVsSift} the pose components during a video sequence. The figure shows that SIFT provides a more stable estimation for each pose component, \ie there are less spikes in the estimated values, which are a typical sign of incorrect pose estimates. SIFT improves the quality of the result as it provides a more stable motion estimate. 
+%In order to evaluate the quality of the estimated poses, 
+We plot in \fig{fig:SurfVsSift} the pose components during a video sequence. The figure shows that SIFT provides a more stable estimation for each pose component, \ie there are less spikes in the estimated values, which are a typical sign of incorrect pose estimates. SIFT improves the quality of the result as it provides a more stable motion estimate. 
 % The increased stability requires also less new keyframes to be added, thus, in turn, improving the overall computational time as less descriptor comparisons are needed.
 The two sequences and further results are shown in the video material. 
 %\todo{maybe put the videos on youtube and give links?}
@@ -177,7 +177,7 @@ On average, the SIFT extraction takes \SI{11.1}{\milli\second}, the descriptor m
 \subsubsection{Augmentation Results}
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=\textwidth]{./figs/frames_aug_new.pdf}
+  \includegraphics[width=0.85\textwidth]{./figs/frames_aug_new.pdf}
 \caption{(a) The 3D preoperative model of the uterus with the  myoma as reconstructed from the MR, (b) the preoperative model registered with the intraoperative model obtained from the MVS reconstruction (c) some of the keyframes used for MVS with the AR augmentation  (d) some frames of the video with the myoma shown as image overlay.}
 \label{fig:myomas}
 \end{figure*}
@@ -309,7 +309,7 @@ Our AR system has been tested during laparoscopic surgery~\cite{bourdel2017} wit
 so that the surgeon could see the location of the myomas in real time. 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=0.9\textwidth]{./figs/ARinOR.pdf}
+  \includegraphics[width=0.85\textwidth]{./figs/ARinOR.pdf}
 \caption{Patient 1: (a) MR image showing one myoma, (b) myoma augmentation, (c) resection of the myoma, (d) deployment of our AR system in the OR. Patient 2: (e) MR image showing three myomas, (f,g,h) myoma augmentation. Patient 3: (i) two myomas segmented from the MR images, (j,k,m) augmentation of the myomas and the uterine cavity.}
 \label{fig:realOR}
 \end{figure*}

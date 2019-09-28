@@ -74,6 +74,7 @@ We evaluate our tracking stage using three different human uteri captured before
   \includegraphics[width=0.51\textwidth]{./figs/Accuracy_errors.pdf}
 \caption{Column 1 shows rotation accuracy in degrees. Column 2 shows position accuracy in mm. Column 3 shows the camera trajectory of RT-OTD, ORB-SLAM and GT. The rows correspond to $U_1$, $U_2$ and $U_3$ respectively.}
 \label{fig:hister_results}
+% \vspace{-3mm}
 \end{figure}
 We summarize the results of RT-OTD, using SURF features, against ORB-SLAM in \fig{fig:hister_results} for the three uteri. The rotation error (in degrees) and position error (in mm) are computed using the Euclidean norm between GT and estimated values for the translation and rotation (euler angles) vectors. There are some gaps in the graphs when GT is not available and for which errors could not be computed. We also show the camera 3D trajectories estimated by RT-OTD and ORB-SLAM. While ORB-SLAM is able to track a large portion of the first sequence, it quickly degenerates and loses the track for the other two cases. Track loss is due to the fact that the model built with SLAM add points from both the moving uterus and the background, violating the rigidity assumption. It is also affected by motion blur and the lack of matches with the model. The results with RT-OTD are very accurate  and stable in all cases with an average position error of $2$ mm and an average rotation error of $3$ degrees.   
 \subsubsection{Comparison of Different Tracking Features}
@@ -104,11 +105,25 @@ Despite the fact that SURF is able to recover, on average, more matches between 
 \vspace{-5mm}
 \end{figure}
 
+\begin{figure*}[ht]
+  \centering
+  \includegraphics[width=0.88\textwidth]{./figs/frames_aug_new.pdf}
+\caption{(a) The 3D preoperative model of the uterus with the  myoma as reconstructed from the MR, (b) the preoperative model registered with the intraoperative model obtained from the MVS reconstruction (c) some of the keyframes used for MVS with the AR augmentation  (d) some frames of the video with the myoma shown as image overlay.}
+\label{fig:myomas}
+\end{figure*}
+\begin{figure*}[ht]
+  \centering
+  \includegraphics[width=0.88\textwidth]{./figs/ARinOR.pdf}
+\caption{Patient 1: (a) MR image showing one myoma, (b) myoma augmentation, (c) resection of the myoma, (d) deployment of our AR system in the OR. Patient 2: (e) MR image showing three myomas, (f,g,h) myoma augmentation. Patient 3: (i) two myomas segmented from the MR images, (j,k,m) augmentation of the myomas and the uterine cavity.}
+\label{fig:realOR}
+\end{figure*}
+
 %\fig{fig:numMatches} shows the numbers of matches and inliers for both approaches for the first video sequence, where we see that all along the frames the number of matches used for computing the pose are always higher for SIFT. 
 %In order to evaluate the quality of the estimated poses, 
 We plot in \fig{fig:SurfVsSift} the pose components during a video sequence. The figure shows that SIFT provides a more stable estimation for each pose component, \ie there are less spikes in the estimated values, which are a typical sign of incorrect pose estimates. SIFT improves the quality of the result as it provides a more stable motion estimate. 
 % The increased stability requires also less new keyframes to be added, thus, in turn, improving the overall computational time as less descriptor comparisons are needed.
 The two sequences and further results are shown in the video material. 
+
 %\todo{maybe put the videos on youtube and give links?}
 \subsubsection{Computational Times}
 Our hardware is composed of a desktop PC running Linux Ubuntu with an Intel Core i$7$-$5960$X CPU running at \SI{3.00}{\giga\hertz} with \SI{16}{\giga\byte} of RAM and an NVIDIA GeForce GTX $980$ Ti graphic card.
@@ -174,13 +189,9 @@ On average, the SIFT extraction takes \SI{11.1}{\milli\second}, the descriptor m
 %Note that in the registration problem there is always a balancing weight between the internal energy and energy coming from image cues (which have no real physical meaning).
 %Therefore only the relative values of $E$ are important to us (with respect to the balancing weight), rather than their absolute values.
 
+
+
 \subsubsection{Augmentation Results}
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=0.85\textwidth]{./figs/frames_aug_new.pdf}
-\caption{(a) The 3D preoperative model of the uterus with the  myoma as reconstructed from the MR, (b) the preoperative model registered with the intraoperative model obtained from the MVS reconstruction (c) some of the keyframes used for MVS with the AR augmentation  (d) some frames of the video with the myoma shown as image overlay.}
-\label{fig:myomas}
-\end{figure*}
 \fig{fig:myomas}(a) shows the preoperative data of a patient whose uterus contains a myoma (in green) of a size of $\SI{11.3}{\milli\metre}\times\SI{22.9}{\milli\metre}\times\SI{17.5}{\milli\metre}$. The preoperative mesh of the uterus has $2488$ vertices and $4972$ faces. 
 From the exploratory video $16$ keyframes were extracted to perform the MVS reconstruction, obtaining a 3D model of $1760$ vertices.
 \fig{fig:myomas}(b) shows the successful alignment between the preoperative data and the 3D model obtained by MVS reconstruction. The cost function in \eq{eq:totalCost} was optimized in $6$ iterations in approximately \SI{21}{\second}. 
@@ -307,12 +318,7 @@ The full video is provided as supplemental material along with other videos from
 Our AR system has been tested during laparoscopic surgery~\cite{bourdel2017} with three patients with one, two and multiple uterine myomas respectively. Three-dimensional models of the patient uteri and myomas were constructed before surgery from T2-weighted MR. We used our system to augment the intraoperative 3D shape of the uteri aligned with the laparoscopic video
 % in real time. With this information we made the uteri appear semitransparent 
 so that the surgeon could see the location of the myomas in real time. 
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=0.85\textwidth]{./figs/ARinOR.pdf}
-\caption{Patient 1: (a) MR image showing one myoma, (b) myoma augmentation, (c) resection of the myoma, (d) deployment of our AR system in the OR. Patient 2: (e) MR image showing three myomas, (f,g,h) myoma augmentation. Patient 3: (i) two myomas segmented from the MR images, (j,k,m) augmentation of the myomas and the uterine cavity.}
-\label{fig:realOR}
-\end{figure*}
+
 In \fig{fig:realOR}(a) we show the MR of the first patient with a 6~cm uterine myoma. \fig{fig:realOR}(b) shows the augmentation of the myoma and \fig{fig:realOR}(c) shows its resection. At that stage our algorithm is not showing augmentation due to the changes in the uterus surface. In \fig{fig:realOR}(d) we show our system deployed in the operating room. The MR of the second patient is shown in \fig{fig:realOR}(e), showing three myomas that are visualized with AR in \fig{fig:realOR}(f,g,h). The third patient had two myomas whose segmentation from MR is shown in \fig{fig:realOR}(i). Examples of augmentation of the myomas using bright colors and the uterine cavity mesh are displayed in \fig{fig:realOR}(j,k,m). We recall that this is the first time one demonstrates markerless registration and AR during \emph{live} laparoscopic surgery.     
  
 

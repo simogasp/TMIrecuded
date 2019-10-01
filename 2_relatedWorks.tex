@@ -68,7 +68,8 @@ In our approach, we overcome both of these obstacles.
 
 Markerless tracking can also be addressed using visual Simultaneous Localisation and Mapping (SLAM)~\cite{Thrun2002Robotic,Mahmoud2017}. 
 %Visual SLAM relies only on raw optical data, and does not need other hardware such as magnetic~\cite{Nakamoto2008, Liu2016Laparoscopic, Xiao2018} or optical~\cite{Simpfendrfer2011} tracking devices. 
-SLAM involves building a 3D representation of the environment, known as the \textit{map}, and computing the rigid transform which positions the map in the camera's coordinate frame. 
+In the SLAM framework a 3D representation or \textit{map} of the environment is incrementally built and updated and, at the same time, the camera is localized \wrt to the map.
+% SLAM involves building a 3D representation of the environment, known as the \textit{map}, and computing the rigid transform which positions the map in the camera's coordinate frame. 
 %The core challenge in SLAM is how to achieve \textit{data association}. 
 %SLAM requires data association in two respects. 
 %The first is for \emph{map building}. %This is to determine which points from different video frames correspond to the same surface point. Solving this problem allows us to construct a map of the points in 3D space. 

@@ -3,9 +3,10 @@
 \subsection{Real-time Tracking-by-Detection}
 \label{sec:updateRegistration}
 \subsubsection{Overview}
-% !THIS TEXT IS FROM CARE AND MUST BE REPLACED!.
-Having solved the initial registration we initiate the tracking stage, which updates the initial registration in real-time using live laparoscopic images. %First we extract features in the keyframe images, then matching them to each new image in a RANSAC framework. 
-This approach is robust to common challenges including occlusions from \eg, surgical tools, partial views and viewpoint changes.
+\SG{Once the initial registration is computed, the tracking stage is performed in real-time from the live feed of the laparoscope. 
+Our approach updates the initial registration at each frame and it is robust to common challenges including occlusions from \eg, surgical tools, partial views and viewpoint changes.}.
+% Having solved the initial registration we initiate the tracking stage, which updates the initial registration in real-time using live laparoscopic images. %First we extract features in the keyframe images, then matching them to each new image in a RANSAC framework. 
+% This approach is robust to common challenges including occlusions from \eg, surgical tools, partial views and viewpoint changes.
 
 %Unlike SLAM-based tracking methods it does not use frame-to-frame tracking. Instead it performs \emph{tracking-by-detection}. This allows it to keep the registration over long durations and can trivially recover when the organ is not visible for certain periods, such as when the surgeon removes and then reinserts the laparoscope or cleans the lens.
 %In cases when the organ is assumed to be fixed relative to background structures, we can track using features from both the organ and background structures.

@@ -7,9 +7,13 @@ This section presents qualitative and quantitative evaluation of the proposed pi
 
 \subsection{Quantitative Evaluation with Simulation experiments}
 \label{sec:experiments_Simulation}
-% !THIS TEXT IS FROM ISMAR!
-We present evaluation of our initial registration stage using a 3D printed rigid uterus phantom where its preoperative shape deformation is simulated in software.
-The phantom body (\fig{fig:phantom}(a)) was $90 \times 60 \times 60~\si{\cubic\milli\metre}$ and was color printed with a realistic texture obtained from images of a human uterus. We introduced the phantom into a pelvic trainer (\fig{fig:phantom}(b)) to simulate the laparoscopic conditions, using a $\SI{10}{\milli\metre}$ Karl Storz HD laparoscope fixed to the pelvic trainer through a flexible arm. We performed the exploratory video by rotating the model about the cervix similarly to the motion experienced in real surgery by rotating the cannula, keeping $K=20$ keyframes (\fig{fig:reconstruction}).
+
+We present an evaluation of our initial registration stage using a $90 \times 60 \times 60~\si{\cubic\milli\metre}$  3D printed rigid uterus phantom where its preoperative shape deformation is simulated in software.
+\fig{fig:phantom}(a)) shows the phantom body with a printed realistic texture extracted from images of a human uterus and placed inside a pelvic trainer (\fig{fig:phantom}(b)) to simulate the laparoscopic conditions. 
+The exploratory video is taken with a $\SI{10}{\milli\metre}$ Karl Storz HD laparoscope fixed to the pelvic trainer through a flexible arm. 
+To simulate the rotation of the cannula as in real surgery, we rotated the model about the cervix and we acquired $K=20$ keyframes (\fig{fig:reconstruction}).
+% We introduced the phantom into a pelvic trainer (\fig{fig:phantom}(b)) to simulate the laparoscopic conditions, using a $\SI{10}{\milli\metre}$ Karl Storz HD laparoscope fixed to the pelvic trainer through a flexible arm. 
+% We performed the exploratory video by rotating the model about the cervix similarly to the motion experienced in real surgery by rotating the cannula, keeping $K=20$ keyframes (\fig{fig:reconstruction}).
  
 \begin{figure}[t]
   \centering
@@ -22,11 +26,20 @@ The phantom body (\fig{fig:phantom}(a)) was $90 \times 60 \times 60~\si{\cubic\m
 \begin{figure*}[htb]
   \centering
   \includegraphics[width=0.9\textwidth]{./figs/markupWithDefSimCompressed.pdf}
-\caption{Left: Exploratory keyframes with occluding contour fragments. Middle: Sparse 3D cloud from SfM. Right, up: Pre-operative model overlaid with the TPS grid of control points. Right, down: Synthetic deformations obtained with the TPS.}
+\caption{Left: Exploratory keyframes with occluding contour fragments. Middle: Sparse 3D cloud from SfM. Right: The grid of control points  with the 3D pre-operative model (up) and an example of the generated synthetic deformations (bottom).}
 \label{fig:reconstruction}
 \end{figure*}
 
-We synthetically deformed the CAD model to simulate a range of different pre-operative shapes of the uterus. To this end we used a volumetric deformation model represented with the Thin-Plate Spline (TPS). The TPS was defined by a set of $2\times 3 \times 3$ control points uniformly spaced over the CAD model. By perturbing the control point grid we could create non-linear volumetric deformations (see \fig{fig:reconstruction}, right). We generated many pre-operative deformations first applying a random global affine transform to the reference control points followed by a random displacement of standard deviation $\sigma_p=\SI{10}{\milli\metre}$. We define the TPS as $\wTPS(\cdot,\thetaTPS)$, where $\thetaTPS$ holds the control centers (\ie $18\times 3$ parameters in total).
+We synthetically deformed the CAD model to simulate a range of different pre-operative shapes of the uterus. 
+We employed Thin-Plate Spline (TPS) to represent the volumetric deformation model.
+We uniformly sampled the CAD model with a grid of $2\times 3 \times 3$ control points.
+% To this end we used a volumetric deformation model represented with the Thin-Plate Spline (TPS). 
+% The TPS was defined by a set of $2\times 3 \times 3$ control points uniformly spaced over the CAD model. 
+\fig{fig:reconstruction} shows the non-linear volumetric deformations that we could generate by perturbing the control point set.
+% By perturbing the control point grid we could create non-linear volumetric deformations (see \fig{fig:reconstruction}, right).
+This enabled us to create many pre-operative deformations: first the reference control points were transformed with a random global affine transformation and then they underwent a random displacement of standard deviation $\sigma_p=\SI{10}{\milli\metre}$.
+% We generated many pre-operative deformations first applying a random global affine transform to the reference control points followed by a random displacement of standard deviation $\sigma_p=\SI{10}{\milli\metre}$. 
+We define the TPS as $\wTPS(\cdot,\thetaTPS)$, where $\thetaTPS$ holds the control centers (\ie $18\times 3$ parameters in total).
 
 %
 %\begin{figure}[htb]
@@ -35,8 +48,14 @@ We synthetically deformed the CAD model to simulate a range of different pre-ope
 %\caption{Up: Intra-operative phantom surface, overlaid with the TPS grid of control points. Down: Several synthetic deformations obtained with the TPS.}
 %\label{fig:uterusDeformations}
 %\end{figure}
-To test the accuracy of the initial registration, we use an affine deformable model. This was chosen because the synthetic deformation we induce with the TPS model cannot be exactly approximated by the deformation model. We used this to test our system's robustness to unmodelled deformation modes, which likely occur when dealing in real conditions with real deformations.
-Our quantitative experiment tested the influence of the number of keyframes on the registration accuracy. We randomly selected sets of $\{2,3,4,5,6,7,10,15\}$ images from the $K=20$ keyframes. For each set we generated $50$ random deformations with the TPS. \fig{fig:results}(a) shows the marked contours from three different views overlaid with the shape of three deformed models. We measured registration error in 3D by discretizing the internal volume of the uterus model with a grid of $100\times 100 \times 100$ voxels. We defined the registration error $\epsilon_r$ as follows:
+To test the accuracy of the initial registration, we use an affine deformable model.
+This was chosen because the synthetic deformation we induce with the TPS model cannot be exactly approximated by the deformation model. 
+We used this to test our system's robustness to unmodelled deformation modes, which likely occur when dealing in real conditions with real deformations.
+To assess the influence of the number of keyframes on the registration accuracy, we randomly selected sets of $\{2,3,4,5,6,7,10,15\}$ images from the initial $K=20$ keyframes.
+For each of them we generated $50$ random deformations with the TPS.
+% Our quantitative experiment tested the influence of the number of keyframes on the registration accuracy. We randomly selected sets of $\{2,3,4,5,6,7,10,15\}$ images from the $K=20$ keyframes. For each set we generated $50$ random deformations with the TPS. 
+\fig{fig:results}(a) shows the marked contours from $3$ different keyframe overlaid with the shape of three deformed models. 
+We measured registration error in 3D by discretizing the internal volume of the uterus model with a grid of $100\times 100 \times 100$ voxels. We defined the registration error $\epsilon_r$ as follows:
 %\begin{figure}[htb]
 %  \centering
 %  \includegraphics[width=0.35\textwidth]{./figs/initial_.pdf}
@@ -46,30 +65,40 @@ Our quantitative experiment tested the influence of the number of keyframes on t
 \begin{figure*}[htbp]
   \centering
   \includegraphics[width=0.95\textwidth]{./figs/errors.pdf}
-\caption{(a) Initial projection of three different pre-operative models (one model per column) in three different views (one view per row) using the $z$-buffer. The contours given by the user are shown on top. (b) Registration error vs. number of views. (c) Number of iterations vs. number of views. (d) Mean surface registration error for $2$, $4$ and $15$ views.}
+\caption{(a) Each column shows the initial projection of a different pre-operative model in $3$ views (one per row). The red curves show the contours marked by the user. (b) Registration error vs. number of views. (c) Number of iterations vs. number of views. (d) Mean surface registration error for $2$, $4$ and $15$ views.}
 \label{fig:results}
 \end{figure*}
-% \begin{small}
+
 \begin{equation}
   \label{eq:regerror}
   \epsilon^2_r=\frac{1}{N_{\mathcal{V}}}\sum_{\mathbf{q}\in \mathcal{V}} \|f(\wTPS(\mathbf{q};\thetaTPS),t_0;\theta)-\mathbf{q}\|^2,
 \end{equation}
 where $\mathcal{V}$ is the set of voxels in the interior of the uterus volume.
-% \end{small}
-\fig{fig:results}(b) shows the mean registration error as a function of the number of available keyframes. \fig{fig:results}(c) shows the mean number of iterations our method requires to reach convergence. \fig{fig:results}(d) shows the distribution of registration error over the uterus surface using a heatmap. The registration error clearly decreases with the number of views, and saturates approximately at \SI{1.4}{\milli\metre} for more than $8$ views. With $2$ views the registration error distribution in \fig{fig:results}(d) tends to increase towards the cervix, away from the uterus head. This makes sense as the uterus head is quite well constrained by the SfM pointcloud as opposed to the area near the cervix.
+We report in \fig{fig:results}(b) the mean registration error as a function of the number of the available keyframes.
+In \fig{fig:results}(c) we show the mean number of iterations our method requires to reach convergence.
+% \fig{fig:results}(b) shows the mean registration error as a function of the number of available keyframes. \fig{fig:results}(c) shows the mean number of iterations our method requires to reach convergence. 
+\fig{fig:results}(d) shows the distribution of registration error over the uterus surface using a heatmap. The registration error clearly decreases with the number of views, and saturates approximately at \SI{1.4}{\milli\metre} for more than $8$ views. With $2$ views the registration error distribution in \fig{fig:results}(d) tends to increase towards the cervix, away from the uterus head. This makes sense as the uterus head is quite well constrained by the SfM pointcloud as opposed to the area near the cervix.
 By contrast, with more views we have more constraints from the silhouette contours, as these reveal the boundaries of the uterus from a greater range of viewpoints, and the result is a significant improvement in registration. This experiment provides strong evidence for the value in using multiple viewpoints to constrain the registration problem, compared with prior works that uses only one viewpoint. In addition we that more views significantly reduce the number of iterations required for convergence.
 \subsection{Evaluation with Human Uteri in Pre-recorded Videos}
 \label{sec:orbslam}
 We present results on pre-recorded video from real \emph{in vivo} data captured during laroscopic surgery. We test accuracy, computational complexity and the influence of different feature detectors in our real-time organ tracking by detection system, named RT-OTD in the experiments, and we compare it with ORB-SLAM, which is state-of-the-art for SLAM-based tracking in laparoscopic videos ~\cite{orbslam_laparo}. We also show augmentation results, completing the AR pipeline.
 \subsubsection{Tracking Accuracy and Comparison with ORB-SLAM}
 We evaluate our tracking stage using three different human uteri captured before hysterectomy. They can be seen in \fig{fig:hister} and we refer to them as $U_1$, $U_2$ and $U_3$.
+
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.4\textwidth]{./figs/snapshotsCompressed.pdf}
 \caption{Column 1 shows the 3D models built with MVS. Column 2 shows the coagulation marks in the uterus. Columns 3 and 4 show the registered models.}
 \label{fig:hister}
 \end{figure}
- Each video includes around $500$ frames showing image motion of the uterus due to motion induced with the cannula and camera motion. The uterus intraoperative surface is obtained with an exploratory video with $10$ keyframes. To obtain Ground-Truth (GT) camera pose the surgeon marked the uterus with a coagulation instrument at $12-15$  locations over the uterus body. This produced a set of small regions approximately $3$ mm in diameter which could be accurately tracked. We show examples of these markers in \fig{fig:hister}. The marks were tracked using a small patch surrounding the image position of each marker, and fitted using a 2D affine transform. We verified all tracks and reinitialized them if they were lost. We then computed the marks’ 3D positions and the uterus 3D poses in each frame using SfM. If fewer than four marks were visible in a frame we considered that the GT pose could not be estimated for that frame. We masked each mark so that the methods under comparison could not exploit the artificial texture each mark introduces. We computed the optimal scale factor for each method with respect to GT to resolve the scale ambiguity.
+
+Each video includes around $500$ frames showing image motion of the uterus due to motion induced with the cannula and camera motion. The uterus intraoperative surface is obtained with an exploratory video with $10$ keyframes. 
+The uterus body was marked by the surgeon with a bipolar grasper in $12-15$ different locations.
+% To obtain Ground-Truth (GT) camera pose the surgeon marked the uterus with a coagulation instrument at $12-15$  locations over the uterus body. 
+This enabled us to generate Ground-Truth (GT) camera poses by tracking the obtained set of small marked regions ($\sim\SI{3}{\milli\metre}$ in diameter).
+% This produced a set of small regions approximately $\SI{3}{\milli\metre}$ in diameter which could be accurately tracked. 
+We show examples of these markers in \fig{fig:hister}. 
+The marks were tracked using a small patch surrounding the image position of each marker, and fitted using a 2D affine transform. We verified all tracks and reinitialized them if they were lost. We then computed the marks’ 3D positions and the uterus 3D poses in each frame using SfM. If fewer than four marks were visible in a frame we considered that the GT pose could not be estimated for that frame. We masked each mark so that the methods under comparison could not exploit the artificial texture each mark introduces. We computed the optimal scale factor for each method with respect to GT to resolve the scale ambiguity.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.51\textwidth]{./figs/Accuracy_errors.pdf}
@@ -77,7 +106,8 @@ We evaluate our tracking stage using three different human uteri captured before
 \label{fig:hister_results}
 % \vspace{-3mm}
 \end{figure}
-We summarize the results of RT-OTD, using SURF features, against ORB-SLAM in \fig{fig:hister_results} for the three uteri. The rotation error (in degrees) and position error (in mm) are computed using the Euclidean norm between GT and estimated values for the translation and rotation (euler angles) vectors. There are some gaps in the graphs when GT is not available and for which errors could not be computed. We also show the camera 3D trajectories estimated by RT-OTD and ORB-SLAM. While ORB-SLAM is able to track a large portion of the first sequence, it quickly degenerates and loses the track for the other two cases. Track loss is due to the fact that the model built with SLAM add points from both the moving uterus and the background, violating the rigidity assumption. It is also affected by motion blur and the lack of matches with the model. The results with RT-OTD are very accurate  and stable in all cases with an average position error of $2$ mm and an average rotation error of $3$ degrees.   
+We summarize the results of RT-OTD, using SURF features, against ORB-SLAM in \fig{fig:hister_results} for the three uteri. The rotation error (in degrees) and position error (in mm) are computed using the Euclidean norm between GT and estimated values for the translation and rotation (euler angles) vectors. There are some gaps in the graphs when GT is not available and for which errors could not be computed. We also show the camera 3D trajectories estimated by RT-OTD and ORB-SLAM. While ORB-SLAM is able to track a large portion of the first sequence, it quickly degenerates and loses the track for the other two cases. Track loss is due to the fact that the model built with SLAM add points from both the moving uterus and the background, violating the rigidity assumption. It is also affected by motion blur and the lack of matches with the model. The results with RT-OTD are very accurate  and stable in all cases with an average position error of $\SI{2}{\milli\metre}$  and an average rotation error of $\ang{3}$.   
+
 \subsubsection{Comparison of Different Tracking Features}
 \label{sec:siftvssurf}
 %In this section we analyse the benefits of using SIFT features over SURF within the tracking stage. %SIFT features offer, in general, a more reliable and robust choice for feature matching but the major limitation is its computational time, which often prevents them from being used in real-time applications.
@@ -315,11 +345,14 @@ The full video is provided as supplemental material along with other videos from
 % Statistical significance was measured with Fisher's exact two-tailed test with  $p=0.0010$.
 % Therefore the user study indicates a very significant benefit for using the AR guidance system.
 \subsection{Use with Real Patients in the Operating Room}
-% !THIS TEXT IS FROM ISMAR!
-Our AR system has been tested during laparoscopic surgery~\cite{bourdel2017} with three patients with one, two and multiple uterine myomas respectively. Three-dimensional models of the patient uteri and myomas were constructed before surgery from T2-weighted MR. We used our system to augment the intraoperative 3D shape of the uteri aligned with the laparoscopic video
+
+Our AR system has been tested during laparoscopic surgery~\cite{bourdel2017} with three patients with one, two and multiple uterine myomas respectively. 
+For each patient, we constructed the 3D preoperative models of the organ and the myoma(s) from T2-weighted MR acquired before the surgery.
+% Three-dimensional models of the patient uteri and myomas were constructed before surgery from T2-weighted MR. 
+We used our system to augment the intraoperative 3D shape of the uteri aligned with the laparoscopic video
 % in real time. With this information we made the uteri appear semitransparent 
 so that the surgeon could see the location of the myomas in real time. 
 
-In \fig{fig:realOR}(a) we show the MR of the first patient with a 6~cm uterine myoma. \fig{fig:realOR}(b) shows the augmentation of the myoma and \fig{fig:realOR}(c) shows its resection. At that stage our algorithm is not showing augmentation due to the changes in the uterus surface. In \fig{fig:realOR}(d) we show our system deployed in the operating room. The MR of the second patient is shown in \fig{fig:realOR}(e), showing three myomas that are visualized with AR in \fig{fig:realOR}(f,g,h). The third patient had two myomas whose segmentation from MR is shown in \fig{fig:realOR}(i). Examples of augmentation of the myomas using bright colors and the uterine cavity mesh are displayed in \fig{fig:realOR}(j,k,m). We recall that this is the first time one demonstrates markerless registration and AR during \emph{live} laparoscopic surgery.     
+In \fig{fig:realOR}(a) we show the MR of the first patient with a $\SI{6}{\centi\metre}$ uterine myoma. \fig{fig:realOR}(b) shows the augmentation of the myoma and \fig{fig:realOR}(c) shows its resection. At that stage our algorithm is not showing augmentation due to the changes in the uterus surface. In \fig{fig:realOR}(d) we show our system deployed in the operating room. The MR of the second patient is shown in \fig{fig:realOR}(e), showing three myomas that are visualized with AR in \fig{fig:realOR}(f,g,h). The third patient had two myomas whose segmentation from MR is shown in \fig{fig:realOR}(i). Examples of augmentation of the myomas using bright colors and the uterine cavity mesh are displayed in \fig{fig:realOR}(j,k,m). We recall that this is the first time one demonstrates markerless registration and AR during \emph{live} laparoscopic surgery.     
  
 

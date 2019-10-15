@@ -502,10 +502,10 @@ year={2014},
  title = "Contour-Pruned Skeletonization",
  }
 @inproceedings{TCollins,
-year={2013},
-BOOKTITLE={MIAR},
-title={Realtime Wide-Baseline Registration of the Uterus in Laparoscopic Videos Using Multiple Texture Maps},
 author={Collins, Toby and Pizarro, Daniel and Bartoli, Adrien and Canis, Michel and Bourdel, Nicolas},
+year={2013},
+journal={MIAR},
+title={Realtime Wide-Baseline Registration of the Uterus in Laparoscopic Videos Using Multiple Texture Maps},
 }
 @inproceedings{Strasbourg,
   TITLE = {{Automatic Alignment of pre and intraoperative Data using Anatomical Landmarks for Augmented Laparoscopic Liver Surgery}},
@@ -545,14 +545,6 @@ author={Collins, Toby and Pizarro, Daniel and Bartoli, Adrien and Canis, Michel 
 	journal = {Endourology},
 	YEAR = {2010},
 }
-
-@article {affineTracking,
-	author = {G.A. Puerto-Souza and Jeffrey A. Cadeddu and G.L. Mariottini},
-	title = {Toward Long-term and Accurate {AR} for Monocular Endoscopic Videos},
-	journal = {Biomedical Engineering},
-	year =  2014
-}
-
 
 @inproceedings{conf/miccai/Amir-KhaliliNPHA13,
 	author = {Amir-Khalili, Alborz and Nosrati, Masoud S. and Peyrat, Jean-Marc and Hamarneh, Ghassan and Abugharbieh, Rafeef},
@@ -595,11 +587,16 @@ author={Collins, Toby and Pizarro, Daniel and Bartoli, Adrien and Canis, Michel 
 
 
 @article{8714,
-	author = {Mirota, Daniel J. and Ishii, Masaru and Hager, Gregory D.},
-	journal = {Biomedical Engineering},
-	title = {Vision-based navigation in image-guided interventions.},
-	volume = {13},
-	year = {2011}
+  doi = {10.1146/annurev-bioeng-071910-124757},
+  year = {2011},
+  month = aug,
+  publisher = {Annual Reviews},
+  volume = {13},
+  number = {1},
+  pages = {297--319},
+  author = {Daniel J. Mirota and Masaru Ishii and Gregory D. Hager},
+  title = {Vision-Based Navigation in Image-Guided Interventions},
+  journal = ANN_REV_BIO_ENG
 }
 
 
@@ -646,10 +643,16 @@ author={Collins, Toby and Pizarro, Daniel and Bartoli, Adrien and Canis, Michel 
 }
 
 @article {1732,
-	title = {Computer Assisted Minimally Invasive Surgery: Is Medical Computer Vision the Answer to Improving Laparosurgery?},
-	journal = {Medical Hypotheses},
-	year = {2012},
-	author = {Bartoli, A and Collins, T and Bourdel, N and Canis, M}
+  doi = {10.1016/j.mehy.2012.09.007},
+  year = {2012},
+  month = dec,
+  publisher = {Elsevier {BV}},
+  volume = {79},
+  number = {6},
+  pages = {858--863},
+  author = {Adrien Bartoli and Toby Collins and Nicolas Bourdel and Michel Canis},
+  title = {Computer assisted Minimally Invasive Surgery: Is medical Computer Vision the answer to improving laparosurgery?},
+  journal = {Medical Hypotheses}
 }
 
 @inproceedings{conf/siggraph/GarlandH97,
@@ -999,16 +1002,16 @@ year = {1981}
 
 
 @article{haouchine:hal-01186011,
-	TITLE = {{Monocular 3D Reconstruction and Augmentation of Elastic Surfaces with Self-occlusion Handling}},
-	AUTHOR = {Haouchine, Nazim and Dequidt, Jeremie and Berger, Marie-Odile and Cotin, Stephane},
-	JOURNAL = {{Transactions on Visualization and Computer Graphics}},
-	PUBLISHER = {{Institute of Electrical and Electronics Engineers}},
-	PAGES = {14},
-	YEAR = {2015},
-	DOI = {10.1109/TVCG.2015.2452905},
-	KEYWORDS = {Elastic Augmented Reality ; Non-rigid Registration ; Computer Assisted Surgery ; Index Terms-Image-guided Simulation ; Physics-based Modeling},
-	HAL_ID = {hal-01186011},
-	HAL_VERSION = {v1},
+  doi = {10.1109/tvcg.2015.2452905},
+  year = {2015},
+  month = dec,
+  publisher = {{IEEE}},
+  volume = {21},
+  number = {12},
+  pages = {1363--1376},
+  author = {Nazim Haouchine and Jeremie Dequidt and Marie-Odile Berger and Stephane Cotin},
+  title = {Monocular 3D Reconstruction and Augmentation of Elastic Surfaces with Self-Occlusion Handling},
+  journal = IEEE_J_VCG
 }
 
 
@@ -1094,17 +1097,15 @@ year = {1981}
   journal = {Foundations and Trends{\textregistered} in Computer Graphics and Vision}
 }
 
-@Article{PuMa_TBME13,
+@Article{affineTracking,
 	title = {Toward Long-term and Accurate Augmented-Reality for Monocular Endoscopic Videos},
 	author = {Puerto-Souza, G. and Cadeddu, J. and Mariottini, G.L.},
-	journal = {IEEE Transactions on Biomedical Engineering},
+	journal = IEEE_J_BME,
 	volume = {61},
 	number = {10},
 	pages = {2609--2620},
 	year = {2014},
-	doi = {10.1109/TBME.2014.2323999},
-	url = {http://ranger.uta.edu/~gianluca/research/surgicalvision_augmentedreality.html},
-	pdf = ./../../papers/PuMa_TBME14.pdf 
+	doi = {10.1109/TBME.2014.2323999}
 }
 
 
@@ -1183,17 +1184,29 @@ year = {1981}
 
 
 @article{plantefeve:hal-01205194,
-	TITLE = {{Patient-specific Biomechanical Modeling for Guidance during Minimally-invasive Hepatic Surgery}},
-	AUTHOR = {Plantef{\`e}ve, Rosalie and Peterlik, Igor and Haouchine, Nazim and Cotin, St{\'e}phane},
-	JOURNAL = {{Annals of Biomedical Engineering}},
-	YEAR = {2015},
+  doi = {10.1007/s10439-015-1419-z},
+  year = {2015},
+  month = aug,
+  publisher = {Springer Science and Business Media {LLC}},
+  volume = {44},
+  number = {1},
+  pages = {139--153},
+  author = {Rosalie Plantef{\`{e}}ve and Igor Peterlik and Nazim Haouchine and St{\'{e}}phane Cotin},
+  title = {Patient-Specific Biomechanical Modeling for Guidance During Minimally-Invasive Hepatic Surgery},
+  journal = ANN_BIO_ENG
 }
 
 @article{orbslam_laparo,
-	TITLE = {Live tracking and dense reconstruction for handheld monocular endoscopy},
-	AUTHOR = {N Mahmoud and T Collins and A Hostettler and L Soler and C Doignon and JMM Montiel},
-	JOURNAL = {{IEEE transactions on medical imaging}},
-	YEAR = {2018},
+  doi = {10.1109/tmi.2018.2856109},
+  year = {2019},
+  month = jan,
+  publisher = {Institute of Electrical and Electronics Engineers ({IEEE})},
+  volume = {38},
+  number = {1},
+  pages = {79--89},
+  author = {Nader Mahmoud and Toby Collins and Alexandre Hostettler and Luc Soler and Christophe Doignon and Jose Maria Martinez Montiel},
+  title = {Live Tracking and Dense Reconstruction for Handheld Monocular Endoscopy},
+  journal = IEEE_J_MI
 }
 
 

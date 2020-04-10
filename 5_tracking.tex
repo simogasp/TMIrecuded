@@ -55,8 +55,15 @@ From the set of candidate matches, we find the best pose hypothesis that explain
 In some images tracking may be impossible or unreliable, if the organ is not visible or only a small part is visible in the image. A good indicator for deciding if pose can be estimated reliably is the number $n_c$ of inlier matches found by RANSAC. If this is below a threshold (default of $8$), we reject the pose and consider the organ to be untrackable in that image. Finally, to reduce jitter artefacts, we feed the pose estimates into an Extended Kalman Filter (EKF). 
 
 \subsubsection{Adding New Keyframes}
-The operator can manually add new keyframes to $\mathcal{F}$ on the fly during the live tracking. This helps to mitigate any remaining jittering and stabilizes tracking if the organ is viewed from a viewpoint that is very dissimilar to the ones present in the keyframe set. In the supplementary material we present a video showing the benefits and the impact of adding a new keyframe to the tracking.
-We perform this by adding the features and their associated 3D points of the current image to $\mathcal{F}$. We currently refrain from automating the process of adding new keyframes because without care it can lead to drift. Specifically, errors in the estimate pose then leads to incorrectly aligned features in $\mathcal{F}$, leading to a degradation in tracking accuracy in later frames.
+The operator can manually add new keyframes to $\mathcal{F}$ on the fly during the live tracking.
+This helps to mitigate any remaining jittering and stabilizes tracking if the organ is viewed from a viewpoint that is very dissimilar to the ones present in the keyframe set.
+\SG{New keyframes can also help to stabilize the jittering when relatively small changes happens between the exploratory  and the tracking phase, due, \eg, to changes in appearance (bleeding spots, change of texture because of the clamping) and in shape (manipulation of the organ in between the two phases).}
+%In the supplementary material we present a video showing the benefits and the impact of adding a new keyframe to the tracking.
+We perform this by adding the features and their associated 3D points of the current image to $\mathcal{F}$.
+We currently refrain from automating the process of adding new keyframes because without care it can lead to drift.
+Specifically, errors in the estimate pose then leads to incorrectly aligned features in $\mathcal{F}$, leading to a degradation in tracking accuracy in later frames.
+\SG{The operator can add the current frame as a new keyframe by pressing a bottom on the interface: a still image of the frame with the augmented reality superposed is shown to the operator for validation.
+If the augmentation is correctly aligned \wrt to the image then the operator validates and the new keyframe is added, otherwise it is discarded.}
 
 %This involves sampling many match subsets of size $4$, and for each sample creating a pose hypothesis using PnP~\cite{Lepetit2009Epnp}.
 %Each hypothesis is tested for support by measuring how many of the other matches are predicted well by the hypothesis.

@@ -394,3 +394,82 @@ The reprojection error is also slightly better than all the other methods, espec
 Overall, we show that automatic keyframe selection helps to improve the quality of the reconstruction and hence the tracking.
 Any sampling method is always potentially affected by motion blur whereas guiding the acquisition of the keyframe reduces the risk and improves the results.}
 %$\SI{46.14}{\percent}$ $\SI{52.48}{\percent}$ $\SI{31.08}{\percent}$ $\SI{53.33}{\percent}$ $\SI{55.18}{\percent}$
+
+\subsection{Robustness test for tracking}
+\label{subsec:robustTracking}
+
+\SG{We evaluated the robustness of the real-time tracking \wrt occlusions that could affect the registration accuracy.
+To this end, we performed some tests using the images of the keyframes of $5$ different patients.
+we used the keyframes because the ground truth data for comparing the pose error is readily available from the reconstruction step.
+We considered two types of experiments in which we simulated occlusions occurring on the surface of the uterus for each keyframe.
+In the first experiment, since the mask of the uters is available, we added a black region starting from the external contour of the uterus going towards the center of the uterus.
+At each step we increased the size of the black region and we launch the tracking of the occluded image.
+\fig{fig:stressTest} shows the overall percentage of frames that could be tracked according to the occlusion ratio of the uterus image.
+The occlusion ratio is computed as the ratio of the number of pixel of the black region and the number of pixel of the uterus (which can be computed from the mask).
+The graph shows that the tracking is in general fairly robust up to a $\SI{60}{\percent}$ of occlusion ($\sim\SI{80}{\percent}$ of frames are tracked).
+For the same experiment, \fig{fig:stressTest} shows the box plot for the rotational error of the estimated pose.
+The error is below $\sim\ang{1}$ for occlusions up to $\SI{50}{\percent}$ occlusion.}
+
+  \SG{In a second experiment we simulated the occlusions as growing black spots randomly distributed on the surface of the uterus.
+This can simulate, \eg, the presence of tools or bleedings covering or changing the appearance of the uterus.
+\fig{fig:stressTest} shows that the tracker can overall successfully estimate the pose for occlusions up to $\SI{60}{\percent}$ ($\sim\SI{90}{\percent}$ of frames are tracked) with rotational errors below or of the order of $\sim\ang{1}$.}
+
+
+\begin{figure*}
+  \centering
+  \includegraphics[width=0.17\textwidth]{./figs/kframeSelection/beginning.png}
+  \includegraphics[width=0.17\textwidth]{./figs/kframeSelection/middle.png}
+  \includegraphics[width=0.17\textwidth]{./figs/kframeSelection/end.png}
+  \includegraphics[width=0.17\textwidth]{./figs/kframeSelection/equally.png}
+  \includegraphics[width=0.215\textwidth]{./figs/kframeSelection/auto.png}
+  \caption{From left to right, the 3D models generated using the keyframes extracted with \emph{beginning}, \emph{middle}, \emph{end}, \emph{equally}, \emph{auto}, respectively.}
+  \label{fig:3DresultsKframeSelection}
+\end{figure*}
+
+\begin{figure*}
+  \centering
+  \includegraphics[width=0.24\textwidth]{./figs/kframeSelection/matching.pdf}
+  \includegraphics[width=0.24\textwidth]{./figs/kframeSelection/matcheswinningKF.pdf}
+  \includegraphics[width=0.24\textwidth]{./figs/kframeSelection/matching.pdf}
+  \includegraphics[width=0.24\textwidth]{./figs/kframeSelection/rmsePnP.pdf}
+\caption{In each graph, the box plot represents the statistical distribution of the data, the blue box represents the second and third quartiles with a notch on the median value, while the whiskers represents the max and min values.}
+\label{fig:statsKframeSelection}
+\end{figure*}
+
+\begin{figure*}
+  \centering
+%  \include{./figs/stresstest/histo_all}
+  \includegraphics[width=0.24\textwidth]{./figs/stresstest/trackingHisto.pdf}
+  \includegraphics[width=0.24\textwidth]{./figs/stresstest/rotError.pdf}
+  \includegraphics[width=0.24\textwidth]{./figs/stresstest/trackingHistoPois.pdf}
+  \includegraphics[width=0.24\textwidth]{./figs/stresstest/rotErrorPois.pdf}
+  \caption{From left to right, the histogram of successfully tracked frames and the rotation error for the estimated pose, for both experiments.}
+  \label{fig:stressTest}
+\end{figure*}
+
+
+\SG{TODO: ADD VIDEO WITH A ``STRESS TEST'' WITH THE PHANTOM SHOWING AT WHICH EXTENT IT IS ROBUST TO OCCLUSIONS AND SMALL DEFORMATIONS. BUT THIS CAN BE ONLY QUALITATIVE (MAYBE PUT SOME FRAMES?)}
+
+
+\subsection{Additional keyframes}
+\label{sec:exp_additionalkeyframes}
+
+\SG{We present some results to show the impact of adding new keyframes during the tracking.
+We refer the reader to the supplementary material to show the qualitative impact on the stability of the pose estimation and quality of the resulting compositing (\url{https://bit.ly/34wEhXu}).
+\tab{tab:addKf} shows for three different video sequence the number of tracked keyframe with and without additional frames.
+We can note that at times even a single new keyframe can greatly improve the number of tracked frames, as the case for the video 20190801 in which the number of tracked frames is almost doubled.
+In other cases, and more in general, the number of tracked frames does not vary considerably but the tracking is more stable as shown by the videos.}
+
+
+\begin{table}[]
+  \begin{tabular}{ll|l|ll}
+    video id & \# frames & \begin{tabular}[c]{@{}l@{}}\% tracked w/o \\ additional keyframes\end{tabular} & \begin{tabular}[c]{@{}l@{}}added \\ keyframes\end{tabular} & \% tracked \\
+    \hline
+    \hline
+    20190801 & $1943$      & $\SI{55.58}{\percent}$                             & $1$              & $\SI{99.90}{\percent}$     \\
+    20190612 & $5119$      &  $\SI{95.64}{\percent}$                                   & $8$                & $\SI{97.15}{\percent}$     \\
+    20190724 & $2444$          & $\SI{87.52}{\percent}$                                    & $4$               & $\SI{87.96}{\percent}$
+  \end{tabular}
+  \caption{Number of tracked frames with and without adding new keyframes during tracking.}
+  \label{tab:addKf}
+\end{table}

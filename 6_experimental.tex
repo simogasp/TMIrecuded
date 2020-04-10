@@ -375,3 +375,22 @@ Examples of augmentation of the myomas using bright colors and the uterine cavit
 We recall that this is the first time one demonstrates markerless registration and AR during \emph{live} laparoscopic surgery.
  
 
+\subsection{Automatic keyframe selection for 3D reconstruction}
+\label{subsec:automatic-keyframe-selection}
+
+\SG{In order to validate the automatic keyframe selection, we compare the results obtained with the automatic method and the results obtained by sampling the exploratory video.
+We recorded the raw video ($\sim \SI{60}{\second} $) from the automatic method (\emph{auto}) and we sampled it to obtain the same number of keyframes ($15$) with different sampling methods: \emph{equally} samples the video uniformly over the whole length, \emph{beginning}, \emph{middle} \emph{end} takes a new keyframe every $t=\SI{2}{\second}$ from the beginning, around the middle and towards the end of the video, respectively.
+We then proceed with the reconstruction and tracking step for each different dataset of keyframe.
+\fig{fig:3DresultsKframeSelection} shows the 3D models obtained from the datasets: qualitatively, \emph{auto} gave a better model while all the others produced a 3D model with many ``holes''.
+This can be explained by the fact that often the selected keyframes are blurry and that there are many (visually) similar keyframe, thus preventing a complete coverage of the full organ shape.}
+
+\SG{We then recorded another video ($\sim \SI{60}{\second}$) in order to test the tracking algorithm using the 3D models obtained from each method.
+Note that the video was purposely quite challenging, with the camera looking at parts of the uterus that were not completely reconstructed by any of the models.
+Moreover no additional keyframe were added during the tracking.
+The automatic method was able to track the largest number of frames ($\SI{55.18}{\percent}$), followed by \emph{equally} ($\SI{53.33}{\percent}$), \emph{middle} ($\SI{52.48}{\percent}$), \emph{beginning} ($\SI{46.14}{\percent}$) and \emph{end} ($\SI{31.08}{\percent}$).
+\fig{fig:statsKframeSelection} reports some tracking statistics for each method.
+In general, \emph{auto} can recover a better number of valid matches, both \wrt all the keyframes in the database (\fig{fig:statsKframeSelection}.a) and the winning keyframe (\fig{fig:statsKframeSelection}.b) and compute the pose with a larger number of supporting inliers.
+The reprojection error is also slightly better than all the other methods, especially considering the higher number of inliers over which it is computed.
+Overall, we show that automatic keyframe selection helps to improve the quality of the reconstruction and hence the tracking.
+Any sampling method is always potentially affected by motion blur whereas guiding the acquisition of the keyframe reduces the risk and improves the results.}
+%$\SI{46.14}{\percent}$ $\SI{52.48}{\percent}$ $\SI{31.08}{\percent}$ $\SI{53.33}{\percent}$ $\SI{55.18}{\percent}$

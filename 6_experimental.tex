@@ -3,82 +3,89 @@
 \section{Experimental Validation}
 \label{sec:experiments}
 \subsection{Overview}
-This section presents qualitative and quantitative evaluation of the proposed pipeline. We first present a quantitative evaluation with \textit{in-silico} data. We then present qualitative results with offline videos of real surgery data. We then compare the improvements of the tracking algorithm \wrt our previous work and a state-of-the-art SLAM method. Finally we describe our experiences with deploying and running the pipeline in the real clinical setting. We emphasize that all previous works on real-time markerless monocular laparoscopic registration with pre-operative organ models have only been evaluated with pre-recorded video data. Thus they have never made the step up to live tests in the clinic and their robustness and practicality in the clinical setting have not been validated. 
+This section presents qualitative and quantitative evaluation of the proposed pipeline.
+%We first present a quantitative evaluation with \textit{in-silico} data.
+We first present qualitative results with offline videos of real surgery data.
+We first compare the improvements of the tracking algorithm \wrt our previous work and a state-of-the-art SLAM method.
+We then describe our experiences with deploying and running the pipeline in the real clinical setting.
+We emphasize that all previous works on real-time markerless monocular laparoscopic registration with pre-operative organ models have only been evaluated with pre-recorded video data.
+Thus they have never made the step up to live tests in the clinic and their robustness and practicality in the clinical setting have not been validated.
 
-\subsection{Quantitative Evaluation with Simulation experiments}
-\label{sec:experiments_Simulation}
-
-We present an evaluation of our initial registration stage using a $90 \times 60 \times 60~\si{\cubic\milli\metre}$  3D printed rigid uterus phantom where its preoperative shape deformation is simulated in software.
-\fig{fig:phantom}(a)) shows the phantom body with a printed realistic texture extracted from images of a human uterus and placed inside a pelvic trainer (\fig{fig:phantom}(b)) to simulate the laparoscopic conditions. 
-The exploratory video is taken with a $\SI{10}{\milli\metre}$ Karl Storz HD laparoscope fixed to the pelvic trainer through a flexible arm. 
-To simulate the rotation of the cannula as in real surgery, we rotated the model about the cervix and we acquired $K=20$ keyframes (\fig{fig:reconstruction}).
-% We introduced the phantom into a pelvic trainer (\fig{fig:phantom}(b)) to simulate the laparoscopic conditions, using a $\SI{10}{\milli\metre}$ Karl Storz HD laparoscope fixed to the pelvic trainer through a flexible arm. 
-% We performed the exploratory video by rotating the model about the cervix similarly to the motion experienced in real surgery by rotating the cannula, keeping $K=20$ keyframes (\fig{fig:reconstruction}).
- 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.5\textwidth]{./figs/phantom.pdf}
-\caption{(a) Uterus CAD model. (b) 3D printed phantom inside a pelvic trainer with a \SI{10}{\milli\metre} Karl Storz HD laparoscope. (c) Laparoscopic images of the phantom.}
-\label{fig:phantom}
-\end{figure}
-
-
-\begin{figure*}[htb]
-  \centering
-  \includegraphics[width=0.9\textwidth]{./figs/markupWithDefSimCompressed.pdf}
-\caption{Left: Exploratory keyframes with occluding contour fragments. Middle: Sparse 3D cloud from SfM. Right: The grid of control points  with the 3D pre-operative model (up) and an example of the generated synthetic deformations (bottom).}
-\label{fig:reconstruction}
-\end{figure*}
-
-We synthetically deformed the CAD model to simulate a range of different pre-operative shapes of the uterus. 
-We employed Thin-Plate Spline (TPS) to represent the volumetric deformation model.
-We uniformly sampled the CAD model with a grid of $2\times 3 \times 3$ control points.
-% To this end we used a volumetric deformation model represented with the Thin-Plate Spline (TPS). 
-% The TPS was defined by a set of $2\times 3 \times 3$ control points uniformly spaced over the CAD model. 
-\fig{fig:reconstruction} shows the non-linear volumetric deformations that we could generate by perturbing the control point set.
-% By perturbing the control point grid we could create non-linear volumetric deformations (see \fig{fig:reconstruction}, right).
-This enabled us to create many pre-operative deformations: first the reference control points were transformed with a random global affine transformation and then they underwent a random displacement of standard deviation $\sigma_p=\SI{10}{\milli\metre}$.
-% We generated many pre-operative deformations first applying a random global affine transform to the reference control points followed by a random displacement of standard deviation $\sigma_p=\SI{10}{\milli\metre}$. 
-We define the TPS as $\wTPS(\cdot,\thetaTPS)$, where $\thetaTPS$ holds the control centers (\ie $18\times 3$ parameters in total).
-
+%\subsection{Quantitative Evaluation with Simulation experiments}
+%\label{sec:experiments_Simulation}
 %
-%\begin{figure}[htb]
-  %\centering
-  %\includegraphics[width=0.3\textwidth]{./figsSimulation/deformSimulation.pdf}
-%\caption{Up: Intra-operative phantom surface, overlaid with the TPS grid of control points. Down: Several synthetic deformations obtained with the TPS.}
-%\label{fig:uterusDeformations}
-%\end{figure}
-To test the accuracy of the initial registration, we use an affine deformable model.
-This was chosen because the synthetic deformation we induce with the TPS model cannot be exactly approximated by the deformation model. 
-We used this to test our system's robustness to unmodelled deformation modes, which likely occur when dealing in real conditions with real deformations.
-To assess the influence of the number of keyframes on the registration accuracy, we randomly selected sets of $\{2,3,4,5,6,7,10,15\}$ images from the initial $K=20$ keyframes.
-For each of them we generated $50$ random deformations with the TPS.
-% Our quantitative experiment tested the influence of the number of keyframes on the registration accuracy. We randomly selected sets of $\{2,3,4,5,6,7,10,15\}$ images from the $K=20$ keyframes. For each set we generated $50$ random deformations with the TPS. 
-\fig{fig:results}(a) shows the marked contours from $3$ different keyframe overlaid with the shape of three deformed models. 
-We measured registration error in 3D by discretizing the internal volume of the uterus model with a grid of $100\times 100 \times 100$ voxels. We defined the registration error $\epsilon_r$ as follows:
-%\begin{figure}[htb]
+%We present an evaluation of our initial registration stage using a $90 \times 60 \times 60~\si{\cubic\milli\metre}$  3D printed rigid uterus phantom where its preoperative shape deformation is simulated in software.
+%\fig{fig:phantom}(a)) shows the phantom body with a printed realistic texture extracted from images of a human uterus and placed inside a pelvic trainer (\fig{fig:phantom}(b)) to simulate the laparoscopic conditions.
+%The exploratory video is taken with a $\SI{10}{\milli\metre}$ Karl Storz HD laparoscope fixed to the pelvic trainer through a flexible arm.
+%To simulate the rotation of the cannula as in real surgery, we rotated the model about the cervix and we acquired $K=20$ keyframes (\fig{fig:reconstruction}).
+%% We introduced the phantom into a pelvic trainer (\fig{fig:phantom}(b)) to simulate the laparoscopic conditions, using a $\SI{10}{\milli\metre}$ Karl Storz HD laparoscope fixed to the pelvic trainer through a flexible arm.
+%% We performed the exploratory video by rotating the model about the cervix similarly to the motion experienced in real surgery by rotating the cannula, keeping $K=20$ keyframes (\fig{fig:reconstruction}).
+%
+%\begin{figure}[t]
 %  \centering
-%  \includegraphics[width=0.35\textwidth]{./figs/initial_.pdf}
-%\caption{(a), (b) and (c) show the initial projection of three different pre-operative models (one model per column) in three different views (one view per row) using the $z$-buffer. We overlay on top the contours from each view given by the user.}
-%\label{fig:InitialSolutions}
+%  \includegraphics[width=0.5\textwidth]{./figs/phantom.pdf}
+%\caption{(a) Uterus CAD model. (b) 3D printed phantom inside a pelvic trainer with a \SI{10}{\milli\metre} Karl Storz HD laparoscope. (c) Laparoscopic images of the phantom.}
+%\label{fig:phantom}
 %\end{figure}
-\begin{figure*}[htbp]
-  \centering
-  \includegraphics[width=0.95\textwidth]{./figs/errors.pdf}
-\caption{(a) Each column shows the initial projection of a different pre-operative model in $3$ views (one per row). The red curves show the contours marked by the user. (b) Registration error vs. number of views. (c) Number of iterations vs. number of views. (d) Mean surface registration error for $2$, $4$ and $15$ views.}
-\label{fig:results}
-\end{figure*}
+%
+%
+%\begin{figure*}[htb]
+%  \centering
+%  \includegraphics[width=0.9\textwidth]{./figs/markupWithDefSimCompressed.pdf}
+%\caption{Left: Exploratory keyframes with occluding contour fragments. Middle: Sparse 3D cloud from SfM. Right: The grid of control points  with the 3D pre-operative model (up) and an example of the generated synthetic deformations (bottom).}
+%\label{fig:reconstruction}
+%\end{figure*}
+%
+%We synthetically deformed the CAD model to simulate a range of different pre-operative shapes of the uterus.
+%We employed Thin-Plate Spline (TPS) to represent the volumetric deformation model.
+%We uniformly sampled the CAD model with a grid of $2\times 3 \times 3$ control points.
+%% To this end we used a volumetric deformation model represented with the Thin-Plate Spline (TPS).
+%% The TPS was defined by a set of $2\times 3 \times 3$ control points uniformly spaced over the CAD model.
+%\fig{fig:reconstruction} shows the non-linear volumetric deformations that we could generate by perturbing the control point set.
+%% By perturbing the control point grid we could create non-linear volumetric deformations (see \fig{fig:reconstruction}, right).
+%This enabled us to create many pre-operative deformations: first the reference control points were transformed with a random global affine transformation and then they underwent a random displacement of standard deviation $\sigma_p=\SI{10}{\milli\metre}$.
+%% We generated many pre-operative deformations first applying a random global affine transform to the reference control points followed by a random displacement of standard deviation $\sigma_p=\SI{10}{\milli\metre}$.
+%We define the TPS as $\wTPS(\cdot,\thetaTPS)$, where $\thetaTPS$ holds the control centers (\ie $18\times 3$ parameters in total).
+%
+%%
+%%\begin{figure}[htb]
+%  %\centering
+%  %\includegraphics[width=0.3\textwidth]{./figsSimulation/deformSimulation.pdf}
+%%\caption{Up: Intra-operative phantom surface, overlaid with the TPS grid of control points. Down: Several synthetic deformations obtained with the TPS.}
+%%\label{fig:uterusDeformations}
+%%\end{figure}
+%To test the accuracy of the initial registration, we use an affine deformable model.
+%This was chosen because the synthetic deformation we induce with the TPS model cannot be exactly approximated by the deformation model.
+%We used this to test our system's robustness to unmodelled deformation modes, which likely occur when dealing in real conditions with real deformations.
+%To assess the influence of the number of keyframes on the registration accuracy, we randomly selected sets of $\{2,3,4,5,6,7,10,15\}$ images from the initial $K=20$ keyframes.
+%For each of them we generated $50$ random deformations with the TPS.
+%% Our quantitative experiment tested the influence of the number of keyframes on the registration accuracy. We randomly selected sets of $\{2,3,4,5,6,7,10,15\}$ images from the $K=20$ keyframes. For each set we generated $50$ random deformations with the TPS.
+%\fig{fig:results}(a) shows the marked contours from $3$ different keyframe overlaid with the shape of three deformed models.
+%We measured registration error in 3D by discretizing the internal volume of the uterus model with a grid of $100\times 100 \times 100$ voxels. We defined the registration error $\epsilon_r$ as follows:
+%%\begin{figure}[htb]
+%%  \centering
+%%  \includegraphics[width=0.35\textwidth]{./figs/initial_.pdf}
+%%\caption{(a), (b) and (c) show the initial projection of three different pre-operative models (one model per column) in three different views (one view per row) using the $z$-buffer. We overlay on top the contours from each view given by the user.}
+%%\label{fig:InitialSolutions}
+%%\end{figure}
+%\begin{figure*}[htbp]
+%  \centering
+%  \includegraphics[width=0.95\textwidth]{./figs/errors.pdf}
+%\caption{(a) Each column shows the initial projection of a different pre-operative model in $3$ views (one per row). The red curves show the contours marked by the user. (b) Registration error vs. number of views. (c) Number of iterations vs. number of views. (d) Mean surface registration error for $2$, $4$ and $15$ views.}
+%\label{fig:results}
+%\end{figure*}
+%
+%\begin{equation}
+%  \label{eq:regerror}
+%  \epsilon^2_r=\frac{1}{N_{\mathcal{V}}}\sum_{\mathbf{q}\in \mathcal{V}} \|f(\wTPS(\mathbf{q};\thetaTPS),t_0;\theta)-\mathbf{q}\|^2,
+%\end{equation}
+%where $\mathcal{V}$ is the set of voxels in the interior of the uterus volume.
+%We report in \fig{fig:results}(b) the mean registration error as a function of the number of the available keyframes.
+%In \fig{fig:results}(c) we show the mean number of iterations our method requires to reach convergence.
+%% \fig{fig:results}(b) shows the mean registration error as a function of the number of available keyframes. \fig{fig:results}(c) shows the mean number of iterations our method requires to reach convergence.
+%\fig{fig:results}(d) shows the distribution of registration error over the uterus surface using a heatmap. The registration error clearly decreases with the number of views, and saturates approximately at \SI{1.4}{\milli\metre} for more than $8$ views. With $2$ views the registration error distribution in \fig{fig:results}(d) tends to increase towards the cervix, away from the uterus head. This makes sense as the uterus head is quite well constrained by the SfM pointcloud as opposed to the area near the cervix.
+%By contrast, with more views we have more constraints from the silhouette contours, as these reveal the boundaries of the uterus from a greater range of viewpoints, and the result is a significant improvement in registration. This experiment provides strong evidence for the value in using multiple viewpoints to constrain the registration problem, compared with prior works that uses only one viewpoint. In addition we that more views significantly reduce the number of iterations required for convergence.
 
-\begin{equation}
-  \label{eq:regerror}
-  \epsilon^2_r=\frac{1}{N_{\mathcal{V}}}\sum_{\mathbf{q}\in \mathcal{V}} \|f(\wTPS(\mathbf{q};\thetaTPS),t_0;\theta)-\mathbf{q}\|^2,
-\end{equation}
-where $\mathcal{V}$ is the set of voxels in the interior of the uterus volume.
-We report in \fig{fig:results}(b) the mean registration error as a function of the number of the available keyframes.
-In \fig{fig:results}(c) we show the mean number of iterations our method requires to reach convergence.
-% \fig{fig:results}(b) shows the mean registration error as a function of the number of available keyframes. \fig{fig:results}(c) shows the mean number of iterations our method requires to reach convergence. 
-\fig{fig:results}(d) shows the distribution of registration error over the uterus surface using a heatmap. The registration error clearly decreases with the number of views, and saturates approximately at \SI{1.4}{\milli\metre} for more than $8$ views. With $2$ views the registration error distribution in \fig{fig:results}(d) tends to increase towards the cervix, away from the uterus head. This makes sense as the uterus head is quite well constrained by the SfM pointcloud as opposed to the area near the cervix.
-By contrast, with more views we have more constraints from the silhouette contours, as these reveal the boundaries of the uterus from a greater range of viewpoints, and the result is a significant improvement in registration. This experiment provides strong evidence for the value in using multiple viewpoints to constrain the registration problem, compared with prior works that uses only one viewpoint. In addition we that more views significantly reduce the number of iterations required for convergence.
 \subsection{Evaluation with Human Uteri in Pre-recorded Videos}
 \label{sec:orbslam}
 We present results on pre-recorded video from real \emph{in vivo} data captured during laroscopic surgery. We test accuracy, computational complexity and the influence of different feature detectors in our real-time organ tracking by detection system, named RT-OTD in the experiments, and we compare it with ORB-SLAM, which is state-of-the-art for SLAM-based tracking in laparoscopic videos ~\cite{orbslam_laparo}. We also show augmentation results, completing the AR pipeline.

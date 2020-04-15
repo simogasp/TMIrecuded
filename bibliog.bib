@@ -15,13 +15,6 @@ CTLnames_show_etal       = "6"
 }
 
 
-@article{Li_TIP08,
-	author       = {V.  Egorov and  S.  Tsyuryupa and  S.  Kanilo and  M.  Kogit  and A. Sarvazyan},
-	title       = {Soft tissue elastometer},
-	journal     = {Medical Engineering and Physics},
-	year        = {2008},
-}
-
 @inproceedings{Sorkine:2007:ASM:1281991.1282006,
  author = {Sorkine, Olga and Alexa, Marc},
  title = {As-rigid-as-possible Surface Modeling},
@@ -330,16 +323,6 @@ year={2014},
 }
 
 
-@inproceedings{DBLP:conf/ipcai/MaltiBC12,
-  author    = {Abed Malti and
-               Adrien Bartoli and
-               Toby Collins},
-  title     = {Template-Based Conformal Shape-from-Motion-and-Shading for Laparoscopy},
-  booktitle = {IPCAI},
-  year      = {2012},
-}
-
-
 
 @INPROCEEDINGS{miccai2014b,
    AUTHOR       = {Masoud Nosrati and Jean-Marc Peyrat and Julien Abi-Nahed and 
@@ -542,15 +525,13 @@ title={Realtime Wide-Baseline Registration of the Uterus in Laparoscopic Videos 
 	},
 	journal = {Proc. SPIE},
 	volume = {8671},
-	number = {},
 	pages = {86710B-86710B-6},
 	abstract = {
 	In the context of open abdominal image-guided liver surgery, the efficacy of an image-guidance system relies on its ability to (1) accurately depict tool locations with respect to the anatomy, and (2) maintain the work flow of the surgical team. Laser-range scanned (LRS) partial surface measurements can be taken intraoperatively with relatively little impact on the surgical work flow, as opposed to other intraoperative imaging modalities. Previous research has demonstrated that this kind of partial surface data may be (1) used to drive a rigid registration of the preoperative CT image volume to intraoperative patient space, and (2) extrapolated and combined with a tissue-mechanics-based organ model to drive a non-rigid registration, thus compensating for organ deformations. In this paper we present a novel approach for intraoperative nonrigid liver registration which iteratively reconstructs a displacement  field on the posterior side of the organ in order to minimize the error between the deformed model and the intraopreative surface data. Experimental results with a phantom liver undergoing large deformations demonstrate that this method achieves target registration errors (TRE) with a mean of 4.0 mm in the prediction of a set of 58 locations inside the phantom, which represents a 50% improvement over rigid registration alone, and a 44% improvement over the prior non-iterative single-solve method of extrapolating boundary conditions via a surface Laplacian.
 	},
 	year = {2013},
 	doi = {10.1117/12.2007991},
-	URL = { http://dx.doi.org/10.1117/12.2007991},
-	eprint = {}
+	URL = { http://dx.doi.org/10.1117/12.2007991}
 }
 
 
@@ -1235,5 +1216,53 @@ year = {1981}
   publisher={Elsevier}
 }
 
+@article{Pfeiffer2019,
+	author = {Pfeiffer, Micha and Riediger, Carina and Weitz, J{\"{u}}rgen and Speidel, Stefanie},
+	doi = {10.1007/s11548-019-01965-7},
+	issn = {1861-6410},
+	journal = {International Journal of Computer Assisted Radiology and Surgery},
+	mendeley-groups = {deep},
+	month = {jul},
+	number = {7},
+	pages = {1147--1155},
+	title = {{Learning soft tissue behavior of organs for surgical navigation with convolutional neural networks}},
+	volume = {14},
+	year = {2019}
+}
 
+@inproceedings{Brunet2019,
+	author = {Brunet, Jean-Nicolas and Mendizabal, Andrea and Petit, Antoine and Golse, Nicolas and Vibert, Eric and Cotin, St{\'{e}}phane},
+	booktitle = {Proceedings of the International Conference on Medical Image Computing and Computer-Assisted Intervention (MICCAI)},
+	doi = {10.1007/978-3-030-32254-0_16},
+	mendeley-groups = {deep},
+	pages = {137--145},
+	title = {{Physics-Based Deep Neural Network for Augmented Reality During Liver Surgery}},
+	url = {http://link.springer.com/10.1007/978-3-030-32254-0{\_}16},
+	year = {2019}
+}
+
+@article{Visentini2017,
+	author = {Visentini-Scarzanella, Marco and Sugiura, Takamasa and Kaneko, Toshimitsu and Koto, Shinichiro},
+	doi = {10.1007/s11548-017-1609-2},
+	issn = {1861-6410},
+	journal = {International Journal of Computer Assisted Radiology and Surgery},
+	mendeley-groups = {deep},
+	month = {jul},
+	number = {7},
+	pages = {1089--1099},
+	title = {{Deep monocular 3D reconstruction for assisted navigation in bronchoscopy}},
+	volume = {12},
+	year = {2017}
+}
+
+@inproceedings{Liu2018,
+	author = {Liu, Xingtong and Sinha, Ayushi and Unberath, Mathias and Ishii, Masaru and Hager, Gregory D. and Taylor, Russell H. and Reiter, Austin},
+	booktitle = {Proceedings of the Context-Aware Operating Theaters, Computer Assisted Robotic Endoscopy, Clinical Image-Based Procedures, and Skin Image Analysis},
+	doi = {10.1007/978-3-030-01201-4_15},
+	mendeley-groups = {deep},
+	pages = {128--138},
+	title = {{Self-supervised Learning for Dense Depth Estimation in Monocular Endoscopy}},
+	url = {http://link.springer.com/10.1007/978-3-030-01201-4{\_}15},
+	year = {2018}
+}
 

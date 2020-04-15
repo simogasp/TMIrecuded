@@ -9,7 +9,8 @@ An important categorization of approaches is whether they work with monocular~\c
 As ours is in the former category, we mostly focus this section on state-of-the-art in that category.
 We recall that any approach that works with monocular scopes can be applied to stereo scopes, however the converse is not true, because all existing
 methods using stereo laparoscopes require depthmaps obtained by stereo triangulation~\cite{DBLP:conf/miccai/StoyanovSPY10}.
-By contrast, depthmaps are not immediately available with monocular images. %Recently, Convolutional Neural Networks (CNNs) have been shown to recover depth information endoscopic images (colonscopy [] and bronchoscopy []), however they have been completely unsuccessful with laparoscopic images because of the large variability in image content.
+By contrast, depthmaps are not immediately available with monocular images.
+\SG{Recently, Convolutional Neural Networks (CNNs) have been shown to recover depth information endoscopic images (colonscopy~\cite{Liu2018} and bronchoscopy~\cite{Visentini2017}), however they have been completely unsuccessful with laparoscopic images because of the large variability in image content.}
 The availability of depthmaps fundamentally changes a registration problem, because they provide 3D-to-3D registration constraints.
 This contrasts with monocular registration, where 3D-to-3D constraints are unavailable.
 Like us, previous approaches solve monocular registration in two stages: an initial registration stage and a tracking stage.
@@ -24,14 +25,16 @@ We now review these stages.
 %Also, once significant changes are made during surgery the pre-operative data becomes ``outdated'', and less useful. 
 
 Despite considerable research, there exists no automatic and robust solution to the initial registration with a soft-body organ. State-of-the-art approaches tend to be organ-specific and have mainly focused on registering the liver~\cite{haouchine13,haouchine:hal-01186011,plantefeve:hal-01205194}, the prostate~\cite{Cohen2010Prostate} and the kidney~\cite{Su2009,nosrati2014simultaneous,affineTracking}.
-So far the only existing approaches for the initial registration with monocular images require a manual registration \cite{affineTracking} and an interactive Graphical User Interface (GUI), which is not practical in real OR conditions. 
+So far the only existing approaches for the initial registration with monocular images require a manual registration~\cite{affineTracking} and an interactive Graphical User Interface (GUI), which is not practical in real OR conditions.
 Of the stereo methods, some perform registration with a manual GUI~\cite{Cohen2010Prostate,haouchine13} and others perform it semi-automatically with manually located landmarks~\cite{21142942,conf/miccai/Amir-KhaliliNPHA13,hamarneh2014igrs,Su2009}. In some works the registration is refined by Iterative Closest Point (ICP)~\cite{hamarneh2014igrs,Su2009}. % and in other works tracking is performed with texture features~\cite{haouchine13}. 
 The initial registration requires non-visual constraints to prevent unlikely or physically implausible deformations. Various models have been used, including the assumption of rigidity~\cite{Su2009}, the assumption of deformation smoothness with 3D splines~\cite{conf/miccai/Amir-KhaliliNPHA13} and constraints derived from bio-mechanics~\cite{hamarneh2014igrs,haouchine13}. 
-There is no general consensus on the best model to use, as it depends heavily on available boundary conditions, available knowledge of mechanical tissue properties, and computational resources. 
+There is no general consensus on the best model to use, as it depends heavily on available boundary conditions, available knowledge of mechanical tissue properties, and computational resources.
+\SG{Recent works have proposed to use learning techniques to estimate the deformations of the organs~\cite{Brunet2019,Pfeiffer2019}.
+Even if the preliminary results on synthetic data are promising they still need to be proven to work in real case scenario.}
 
 A general limitation of the previous works is that they only use one monocular or one stereo image pair to constrain the initial registration.
 This is limiting because registration accuracy depends strongly on how much surface of the organ is visible in the laparoscopic image or stereo image pair. 
-This can be very small, particularly for larger organs such as the liver and uterus, leading to poor registration accuracy. 
+This can be very small, particularly for larger organs such as the liver and uterus, leading to poor registration accuracy.
 
 %For the stereo methods a partial 3D reconstruction is computed (known as a \emph{2.5D reconstruction} in computer vision), and all regions of the organ not visible in both images have no 3D information. 
 %Thus the registration is essentially guessed at these regions from the deformation model's prior. 

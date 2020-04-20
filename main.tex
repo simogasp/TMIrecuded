@@ -155,11 +155,30 @@ Augmented Reality, Laparoscopy, Gynecology, Registration, Tracking, Markerless, 
 
 \section{Discussion}
 \label{sec:discussion}
-\SG{SHALL WE DISCUSS PROPOSE HERE FUTURE WORKS DEEP LEARNING ORIENTED?}
+\SG{The proposed framework is the first complete markerless real-time
+AR guidance system for laparascopic surgery of the uterus.
+One of the major advantages of the method is that it does not require a special hardware but it works with a standard monocular laparoscope and with an off-the-shelf computer.
+This enables a quick set-up in the surgery room and no other hardware that may interfere, perturb or distract the work of the surgeon.
+Overall, the required steps for calibration, 3D reconstruction and registration take around $\sim \SI{10}{\minute}$.
+Most of the interactive and manual operations, such as the masking and the contour annotations are carried out by an operator and can be done in parallel while the surgeon can proceed with other surgery tasks (\eg clamping).
+Thus the impact on the clinical activity of the surgeon is reduced and limited to acquiring images for the calibration and the 3D reconstruction.
+Concerning the augmented reality and the visual feedback, the experiment shows that the proposed approach for the tracking is robust and responsive.
+It runs in real-time and the jittering is usually very low and can be adjusted by adding new keyframes.
+One of the limitations of our system is that it still rely on manual interactions that will drive our research directions to further improve the usability and the accuracy of the system.
+The masking of the images for the 3D reconstruction still require the user to draw the contour for each image.
+Even if the effort is mitigate by the use of a touchscreen that eases the task and reduce the time to around a minute, automatically detecting the organ in the image would further the usability.
+We are currently investigating the use of Convolutional Neural Networks to automate the task by training a network that can automatically segment the image.
+In that case the user interaction will be limited to validate or remove possible spurious detections.
+Similarly, the neural network can also be used to automatically extract the occluding contour fragments needed for the initial registration.
+This, again, will significantly improve the required effort.
+As for the tracking part, one current limitation is the manual step for adding new keyframe.
+An interesting and challeging research direction is to automate this step in order  to account for appearance change during surgery.
+This is non-trivial because of the potential for drift caused by the accumulation of small registration errors.
+}
   
-\section{Conclusion}
-\label{sec:conclusion}
-We have presented the first complete markerless real-time AR guidance system for laparascopic surgery of the uterus. This works with a standard monocular laparoscope and does not require any additional tracking equipment. Numerous technical challenges are overcome with novel contributions as summarized in \S\ref{sec:contributions}. There are several directions for future work. Firstly we will extend the tracking approach to automatically add new keyframes to the keyframe set, to account for appearance change during surgery. This is non-trivial because of the potential for drift caused by the accumulation of small registration errors. Secondly, we aim to automate the extraction of occluding contour fragments using Convolutional Neural Networks, thus reducing need for manual effort during the initial registration. Unlike previous works we have demonstrated the viability of the approach in real clinical settings in the OR, and our objective now is to start a clinical trial to measure the clinical benefit in terms of reduction of procedure time and complication rate.
+%\section{Conclusion}
+%\label{sec:conclusion}
+%We have presented the first complete markerless real-time AR guidance system for laparascopic surgery of the uterus. This works with a standard monocular laparoscope and does not require any additional tracking equipment. Numerous technical challenges are overcome with novel contributions as summarized in \S\ref{sec:contributions}. There are several directions for future work. Firstly we will extend the tracking approach to automatically add new keyframes to the keyframe set, to account for appearance change during surgery. This is non-trivial because of the potential for drift caused by the accumulation of small registration errors. Secondly, we aim to automate the extraction of occluding contour fragments using Convolutional Neural Networks, thus reducing need for manual effort during the initial registration. Unlike previous works we have demonstrated the viability of the approach in real clinical settings in the OR, and our objective now is to start a clinical trial to measure the clinical benefit in terms of reduction of procedure time and complication rate.
 
 %The pipeline is composed of two main registration steps. The initial registration is performed at the early stage of surgery and it registers an MVS 3D reconstruction of laparoscopic images with the pre-operative model. To this end, we described a novel registration method that determines the change of state of the organ between its pre-operative state and the intra-operative reference state, while simultaneously resolving the reconstruction scale ambiguity. This has not been previously achieved for the uterus or indeed any other organ in previous literature. The second step is robust real-time tracking, which is performed live and registers each frame of the laparoscope video to the organ model with a
 %novel tracking-by-detection approach. This outperforms previous state-of-the-art tracking, based on SLAM, by a wide margin. %The main technical novelties expand from the use of multiple reference images to assist both steps. For the initial registration, it allows us to obtain occluding contour and surface matching constraints from multiple viewpoints, which through quantitative evaluation is shown to significantly improve registration accuracy. Secondly, it allows us to obtain a diverse set of photometric features from different viewpoints, thus allowing better surface coverage of features, and to overcome the limited viewpoint invariance of state-of-the-art feature detectors such as SIFT and SURF. Unlike previous works for long-duration markerless tracking of monocular laparoscopic environments based on SLAM, we do not assume the scene is globally rigid, and this allows us to tackle the registration of a highly mobile organ such as the uterus. 

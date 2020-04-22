@@ -3,13 +3,13 @@
 \section{Experimental Validation}
 \label{sec:experiments}
 \subsection{Overview}
-This section presents qualitative and quantitative evaluation of the proposed pipeline.
+We present a qualitative and quantitative evaluation of the proposed pipeline.
 %We first present a quantitative evaluation with \textit{in-silico} data.
-We first present qualitative results with offline videos of real surgery data.
-We first compare the improvements of the tracking algorithm \wrt our previous work and a state-of-the-art SLAM method.
-We then describe our experiences with deploying and running the pipeline in the real clinical setting.
+We first present results with offline videos of real surgery data, where we compare our new tracking algorithm \wrt our previous work and SLAM, then describe our experiences with deploying and running the pipeline in the real clinical setting.
 We emphasize that all previous works on real-time markerless monocular laparoscopic registration with pre-operative organ models have only been evaluated with pre-recorded video data.
 Thus they have never made the step up to live tests in the clinic and their robustness and practicality in the clinical setting have not been validated.
+We finally evaluate three specific points of our pipeline: our method of automatic keyframe selection, occlusion resistance in tracking and the use of additional keyframes created during tracking.
+Additional video material is available here: \url{https://bit.ly/2m9rGHH}.
 
 %\subsection{Quantitative Evaluation with Simulation experiments}
 %\label{sec:experiments_Simulation}
@@ -88,7 +88,7 @@ Thus they have never made the step up to live tests in the clinic and their robu
 
 \subsection{Evaluation with Human Uteri in Pre-recorded Videos}
 \label{sec:orbslam}
-We present results on pre-recorded video from real \emph{in vivo} data captured during laroscopic surgery. We test accuracy, computational complexity and the influence of different feature detectors in our real-time organ tracking by detection system, named RT-OTD in the experiments, and we compare it with ORB-SLAM, which is state-of-the-art for SLAM-based tracking in laparoscopic videos ~\cite{orbslam_laparo}. We also show augmentation results, completing the AR pipeline.
+We present results on recorded video captured during laparoscopic surgery. We test accuracy, computational complexity and the influence of different feature detectors in our real-time organ tracking by detection system, named RT-OTD in the experiments, and we compare it with ORB-SLAM, which is state-of-the-art for SLAM-based tracking in laparoscopic videos~\cite{orbslam_laparo}. We also show augmentation results, completing the AR pipeline.
 \subsubsection{Tracking Accuracy and Comparison with ORB-SLAM}
 We evaluate our tracking stage using three different human uteri captured before hysterectomy. They can be seen in \fig{fig:hister} and we refer to them as $U_1$, $U_2$ and $U_3$.
 
@@ -99,7 +99,7 @@ We evaluate our tracking stage using three different human uteri captured before
 \label{fig:hister}
 \end{figure}
 
-Each video includes around $500$ frames showing image motion of the uterus due to motion induced with the cannula and camera motion. The uterus intraoperative surface is obtained with an exploratory video with $10$ keyframes. 
+Each video includes around $500$ frames showing image motion of the uterus due to motion induced with the cannula and camera motion. The uterus intraoperative surface is obtained with an exploratory video with $15$ keyframes. 
 The uterus body was marked by the surgeon with a bipolar grasper in $12-15$ different locations.
 % To obtain Ground-Truth (GT) camera pose the surgeon marked the uterus with a coagulation instrument at $12-15$  locations over the uterus body. 
 This enabled us to generate Ground-Truth (GT) camera poses by tracking the obtained set of small marked regions ($\sim\SI{3}{\milli\metre}$ in diameter).
@@ -117,7 +117,7 @@ We summarize the results of RT-OTD, using \SG{SIFT} features, against ORB-SLAM i
 The rotation error (in degrees) and position error (in mm) are computed using the Euclidean norm between GT and estimated values for the translation and rotation (euler angles) vectors.
 There are some gaps in the graphs when GT is not available and for which errors could not be computed.
 We also show the camera 3D trajectories estimated by RT-OTD and ORB-SLAM. While ORB-SLAM is able to track a large portion of the first sequence, it quickly degenerates and loses the track for the other two cases.
-Track loss is due to the fact that the model built with SLAM add points from both the moving uterus and the background, violating the rigidity assumption.
+Track loss is due to the fact that SLAM builds a model with points from both the moving uterus and the background, violating the rigidity assumption.
 It is also affected by motion blur and the lack of matches with the model.
 The results with RT-OTD are very accurate  and stable in all cases with an average position error of $\SI{2}{\milli\metre}$  and an average rotation error of $\ang{3}$.
 
@@ -125,7 +125,7 @@ The results with RT-OTD are very accurate  and stable in all cases with an avera
 \label{sec:siftvssurf}
 %In this section we analyse the benefits of using SIFT features over SURF within the tracking stage. %SIFT features offer, in general, a more reliable and robust choice for feature matching but the major limitation is its computational time, which often prevents them from being used in real-time applications.
 %We used a SIFT GPU implementation~\cite{Griwodz2018Popsift} which provides real-time performances with full HD images.
-We tested our tracking method RT-OTD using a real-time SIFT implementation~\cite{Griwodz2018Popsift} and the SURF-GPU OpenCV's implementation on two different image sequences that correspond to the same uterus.  
+We tested our tracking method RT-OTD using a real-time SIFT implementation~\cite{Griwodz2018Popsift} and the SURF-GPU OpenCV's implementation on two videos.  
 \begin{table}[]
 \centering
 \begin{tabular}{rlcccc}
@@ -139,12 +139,12 @@ We tested our tracking method RT-OTD using a real-time SIFT implementation~\cite
 \label{tab:matches}
 \vspace{-2mm}
 \end{table}
-\tab{tab:matches} summarizes the results obtained with SIFT and SURF. We see that RT-OTD using SIFT is able to establish more camera poses (\SI{99.5}{\percent} and \SI{100}{\percent} of the frames) compared with SURF features (\SI{91.2}{\percent} and \SI{89.6}{\percent}, respectively).
-Despite the fact that SURF is able to recover, on average, more matches between $\mathcal{F}$ and $\mathcal{G}$, SIFT has a higher discriminative power in selecting the winning keyframe $I^*$ to be used for the registration. As the table shows, the winning keyframe has, on average, more available matches from which RANSAC can sample to compute pose. This also results in more inliers found supporting the computed pose.
+We see from \tab{tab:matches} that RT-OTD using SIFT is able to establish more camera poses (\SI{99.5}{\percent} and \SI{100}{\percent} of the frames) compared with SURF features (\SI{91.2}{\percent} and \SI{89.6}{\percent}, respectively).
+Despite the fact that SURF is able to recover, on average, more matches between $\mathcal{F}$ and $\mathcal{G}$, SIFT has a higher discriminative power in selecting the winning keyframe $I^*$. As the table shows, the winning keyframe has, on average, more available matches from which RANSAC can sample to compute pose. This also results in more inliers found to support the computed pose.
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.48\textwidth]{./figs/Stability_Features.pdf}
-\caption{Column 1 shows the estimated translation components and column 2 shows the estimated rotation angles using SURF (red) and SIFT (PopSift implementation) features over a sequence of $5000$ frames.}
+\caption{Columns 1 and 2 show the estimated translation and rotation using SURF and SIFT for a $5000$ frame video.}
 \label{fig:SurfVsSift}
 \vspace{-5mm}
 \end{figure}
@@ -164,15 +164,15 @@ Despite the fact that SURF is able to recover, on average, more matches between 
 
 %\fig{fig:numMatches} shows the numbers of matches and inliers for both approaches for the first video sequence, where we see that all along the frames the number of matches used for computing the pose are always higher for SIFT. 
 %In order to evaluate the quality of the estimated poses, 
-We plot in \fig{fig:SurfVsSift} the pose components during a video sequence. The figure shows that SIFT provides a more stable estimation for each pose component, \ie there are less spikes in the estimated values, which are a typical sign of incorrect pose estimates. SIFT improves the quality of the result as it provides a more stable motion estimate. 
+We show in \fig{fig:SurfVsSift} the pose components over the $5000$ frame video. This  shows that SIFT provides a more stable estimate for both pose component, \ie there are much fewer spikes in the estimates, which are a typical sign of incorrect pose estimates. This translates to a more stable motion estimate, improving overall AR quality with SIFT.
 % The increased stability requires also less new keyframes to be added, thus, in turn, improving the overall computational time as less descriptor comparisons are needed.
-The two sequences and further results are shown in the video material. 
+The two videos and further results are shown in the video material. 
 
 %\todo{maybe put the videos on youtube and give links?}
 \subsubsection{Computational Times}
-Our hardware is composed of a desktop PC running Linux Ubuntu with an Intel Core i$7$-$5960$X CPU running at \SI{3.00}{\giga\hertz} with \SI{16}{\giga\byte} of RAM and an NVIDIA GeForce GTX $980$ Ti graphic card.
-The tracking process takes on average \SI{16.35}{\milli\second} with a full HD $1920\times1080$ image.
-On average, the SIFT extraction takes \SI{11.1}{\milli\second}, the descriptor matching between $\mathcal{F}$ and $\mathcal{G}$ takes \SI{3.21}{\milli\second}  and the pose estimation \SI{0.18}{\milli\second}.
+Our hardware is composed of a desktop PC running Linux Ubuntu with an Intel Core i$7$-$5960$X CPU running at \SI{3.00}{\giga\hertz} with \SI{16}{\giga\byte} of RAM and an NVIDIA GeForce GTX $980$ Ti graphics card.
+On average, tracking takes \SI{16.35}{\milli\second} with a full HD $1920\times1080$ image.
+SIFT takes \SI{11.1}{\milli\second}, descriptor matching between $\mathcal{F}$ and $\mathcal{G}$ takes \SI{3.21}{\milli\second}  and pose estimation takes \SI{0.18}{\milli\second}.
 
 % \subsubsection{Comparison with ORB SLAM}
 % \label{sec:orbslam}
@@ -233,15 +233,13 @@ On average, the SIFT extraction takes \SI{11.1}{\milli\second}, the descriptor m
 %Note that in the registration problem there is always a balancing weight between the internal energy and energy coming from image cues (which have no real physical meaning).
 %Therefore only the relative values of $E$ are important to us (with respect to the balancing weight), rather than their absolute values.
 
-
-
 \subsubsection{Augmentation Results}
 \fig{fig:myomas}(a) shows the preoperative data of a patient whose uterus contains a myoma (in green) of a size of $\SI{11.3}{\milli\metre}\times\SI{22.9}{\milli\metre}\times\SI{17.5}{\milli\metre}$. The preoperative mesh of the uterus has $2488$ vertices and $4972$ faces. 
-From the exploratory video $16$ keyframes were extracted to perform the MVS reconstruction, obtaining a 3D model of $1760$ vertices.
-\fig{fig:myomas}(b) shows the successful alignment between the preoperative data and the 3D model obtained by MVS reconstruction. The cost function in \eq{eq:totalCost} was optimized in $6$ iterations in approximately \SI{21}{\second}. 
+From the exploratory video $15$ keyframes were extracted to perform MVS reconstruction, obtaining a 3D model of $1760$ vertices.
+\fig{fig:myomas}(b) shows the successful alignment between the preoperative data and the MVS reconstruction. The cost function \eq{eq:totalCost} was optimized in $6$ iterations in approximately \SI{21}{\second}. 
 In \fig{fig:myomas}(c) we show four keyframes used for the reconstruction together with an overlay of the uterus surface registered to each frame. Qualitatively we see that the 3D preoperative model aligns well to the image of the uterus.
-Finally, \fig{fig:myomas}(d) reports the visual augmentation of the myoma in some frames of a video recorded during the surgery, clearly showing that the registration track the uterus well over the sequence. 
-The full video is provided as supplemental material along with other videos from other patients (\url{https://bit.ly/2m9rGHH}).
+Finally, \fig{fig:myomas}(d) reports the visual augmentation of the myoma in some frames of a video recorded during the surgery, clearly showing that the uterus is tracked well over the video. 
+The full video is provided as supplemental material along with other videos from other patients.
 
 
 % \begin{figure*}[t]
@@ -357,17 +355,14 @@ The full video is provided as supplemental material along with other videos from
 % There were $23$ negative margins in the AR group (\SI{85.2}{\percent}), with $0$ complete misses and $4$ contacts.
 % Statistical significance was measured with Fisher's exact two-tailed test with  $p=0.0010$.
 % Therefore the user study indicates a very significant benefit for using the AR guidance system.
-\subsection{Use with Real Patients in the Operating Room}
-
-Our AR system has been tested during laparoscopic surgery~\cite{bourdel2017} with three patients with one, two and multiple uterine myomas respectively. 
-For each patient, we constructed the 3D preoperative models of the organ and the myoma(s) from T2-weighted MR acquired before the surgery.
+\subsection{Use with Patients in the Operating Room}
+We tested our AR system in laparoscopic surgery~\cite{bourdel2017} with three patients with one, two and three uterine myomas respectively. 
+For each patient, we built the 3D preoperative models of the organ and the myomas from preoperative T2-weighted MR.
 % Three-dimensional models of the patient uteri and myomas were constructed before surgery from T2-weighted MR. 
-We used our system to augment the intraoperative 3D shape of the uteri aligned with the laparoscopic video
-% in real time. With this information we made the uteri appear semitransparent 
-so that the surgeon could see the location of the myomas in real time. 
+We used our system to augment the laparoscopic video so that the surgeon could see the location of the myomas in real time. 
 
 In \fig{fig:realOR}(a) we show the MR of the first patient with a $\SI{6}{\centi\metre}$ uterine myoma. \fig{fig:realOR}(b) shows the augmentation of the myoma and \fig{fig:realOR}(c) shows its resection.
-At that stage our algorithm is not showing augmentation due to the changes in the uterus surface.
+At that stage our algorithm shows a past augmentation due to the changes in the uterus surface.
 In \fig{fig:realOR}(d) we show our system deployed in the operating room.
 The MR of the second patient is shown in \fig{fig:realOR}(e), showing three myomas that are visualized with AR in \fig{fig:realOR}(f,g,h).
 The third patient had two myomas whose segmentation from MR is shown in \fig{fig:realOR}(i).
@@ -375,45 +370,41 @@ Examples of augmentation of the myomas using bright colors and the uterine cavit
 We recall that this is the first time one demonstrates markerless registration and AR during \emph{live} laparoscopic surgery.
  
 
-\subsection{Automatic keyframe selection for 3D reconstruction}
+\subsection{Automatic Keyframe Selection for 3D Reconstruction}
 \label{subsec:automatic-keyframe-selection}
-
-\SG{In order to validate the automatic keyframe selection, we compare the results obtained with the automatic method and the results obtained by sampling the exploratory video.
-We recorded the raw video ($\sim \SI{60}{\second} $) from the automatic method (\emph{auto}) and we sampled it to obtain the same number of keyframes ($15$) with different sampling methods: \emph{equally} samples the video uniformly over the whole length, \emph{beginning}, \emph{middle} \emph{end} takes a new keyframe every $t=\SI{2}{\second}$ from the beginning, around the middle and towards the end of the video, respectively.
-We then proceed with the reconstruction and tracking step for each different dataset of keyframe.
-\fig{fig:3DresultsKframeSelection} shows the 3D models obtained from the datasets: qualitatively, \emph{auto} gave a better model while all the others produced a 3D model with many ``holes''.
-This can be explained by the fact that often the selected keyframes are blurry and that there are many (visually) similar keyframe, thus preventing a complete coverage of the full organ shape.}
+\SG{We compare the automatic keyframe selection method \emph{auto} to results obtained by sampling the exploratory video ($\sim \SI{60}{\second}$) to obtain the $15$ keyframes, with different sampling methods: \emph{equally} samples the video uniformly, \emph{beginning}, \emph{middle} and \emph{end} takes a keyframe every $t=\SI{2}{\second}$ from the beginning, around the middle and towards the end of the video, respectively.
+We then proceed with reconstruction and tracking for each strategy.
+\fig{fig:3DresultsKframeSelection} shows the 3D models.
+Qualitatively, \emph{auto} gave a better model as all the others have many holes.
+This is explained by 1) some selected keyframes are blurry and 2) there are many similar keyframes, thus preventing a complete coverage of the full organ shape.}
 
 \SG{We then recorded another video ($\sim \SI{60}{\second}$) in order to test the tracking algorithm using the 3D models obtained from each method.
-Note that the video was purposely quite challenging, with the camera looking at parts of the uterus that were not completely reconstructed by any of the models.
-Moreover no additional keyframe were added during the tracking.
-The automatic method was able to track the largest number of frames ($\SI{55.18}{\percent}$), followed by \emph{equally} ($\SI{53.33}{\percent}$), \emph{middle} ($\SI{52.48}{\percent}$), \emph{beginning} ($\SI{46.14}{\percent}$) and \emph{end} ($\SI{31.08}{\percent}$).
-\fig{fig:statsKframeSelection} reports some tracking statistics for each method.
-In general, \emph{auto} can recover a better number of valid matches, both \wrt all the keyframes in the database (\fig{fig:statsKframeSelection}.a) and the winning keyframe (\fig{fig:statsKframeSelection}.b) and compute the pose with a larger number of supporting inliers.
+The video was purposely challenging, with the camera looking at parts of the uterus that were not completely reconstructed in any of the models, and no additional keyframes added during tracking.
+\emph{auto} was able to track the largest number of frames ($\SI{55.18}{\percent}$), followed by \emph{equally} ($\SI{53.33}{\percent}$), \emph{middle} ($\SI{52.48}{\percent}$), \emph{beginning} ($\SI{46.14}{\percent}$) and \emph{end} ($\SI{31.08}{\percent}$).
+\fig{fig:statsKframeSelection} reports tracking statistics.
+In general, \emph{auto} recovers a larger number of valid matches, both \wrt all the keyframes in the database (\fig{fig:statsKframeSelection}.a) and the winning keyframe (\fig{fig:statsKframeSelection}.b) and computes the pose with a larger number of inliers.
 The reprojection error is also slightly better than all the other methods, especially considering the higher number of inliers over which it is computed.
-Overall, we show that automatic keyframe selection helps to improve the quality of the reconstruction and hence the tracking.
-Any sampling method is always potentially affected by motion blur whereas guiding the acquisition of the keyframe reduces the risk and improves the results.}
+Overall, we show that automatic keyframe selection improves the quality of reconstruction and  tracking.
+Any sampling method is always potentially affected by motion blur whereas guiding the acquisition of the keyframe reduces the risk.}
 %$\SI{46.14}{\percent}$ $\SI{52.48}{\percent}$ $\SI{31.08}{\percent}$ $\SI{53.33}{\percent}$ $\SI{55.18}{\percent}$
 
-\subsection{Robustness test for tracking}
+\subsection{Robustness Test for Tracking}
 \label{subsec:robustTracking}
+\SG{We evaluated the robustness of tracking \wrt occlusions.
+To this end, we performed tests using the keyframes of $5$ patients.
+We used the keyframes because the GT pose is readily available from SfM reconstruction.
+We considered two types of experiments in which we simulated occlusions of the uterus.
+In the first experiment, we used the mask of the uterus to add a black occluder starting from the external contour and towards the center of the uterus.
+We gradually increased the size of the occluder and launched tracking on the keyframe.
+\fig{fig:stressTest} shows the overall percentage of frames that could be tracked against the occlusion ratio.
+The occlusion ratio is computed from the number of pixels of the occluder and of the uterus.
+The graph shows that tracking copes with occlusion up to $\SI{60}{\percent}$ occlusion, where $\sim\SI{80}{\percent}$ of the frames are tracked.
+For the same experiment, \fig{fig:stressTest} shows the box plot for pose rotational error.
+The error is below $\sim\ang{1}$ for up to $\SI{50}{\percent}$ occlusion.}
 
-\SG{We evaluated the robustness of the real-time tracking \wrt occlusions that could affect the registration accuracy.
-To this end, we performed some tests using the images of the keyframes of $5$ different patients.
-we used the keyframes because the ground truth data for comparing the pose error is readily available from the reconstruction step.
-We considered two types of experiments in which we simulated occlusions occurring on the surface of the uterus for each keyframe.
-In the first experiment, since the mask of the uters is available, we added a black region starting from the external contour of the uterus going towards the center of the uterus.
-At each step we increased the size of the black region and we launch the tracking of the occluded image.
-\fig{fig:stressTest} shows the overall percentage of frames that could be tracked according to the occlusion ratio of the uterus image.
-The occlusion ratio is computed as the ratio of the number of pixel of the black region and the number of pixel of the uterus (which can be computed from the mask).
-The graph shows that the tracking is in general fairly robust up to a $\SI{60}{\percent}$ of occlusion ($\sim\SI{80}{\percent}$ of frames are tracked).
-For the same experiment, \fig{fig:stressTest} shows the box plot for the rotational error of the estimated pose.
-The error is below $\sim\ang{1}$ for occlusions up to $\SI{50}{\percent}$ occlusion.}
-
-  \SG{In a second experiment we simulated the occlusions as growing black spots randomly distributed on the surface of the uterus.
-This can simulate, \eg, the presence of tools or bleedings covering or changing the appearance of the uterus.
-\fig{fig:stressTest} shows that the tracker can overall successfully estimate the pose for occlusions up to $\SI{60}{\percent}$ ($\sim\SI{90}{\percent}$ of frames are tracked) with rotational errors below or of the order of $\sim\ang{1}$.}
-
+\SG{In the second experiment we simulated the occlusions as growing black spots randomly distributed on the the uterus.
+This can simulate, \eg, the presence of tools or bleeding covering or changing the appearance of the uterus.
+\fig{fig:stressTest} shows that tracking successfully estimates pose for up to $\SI{60}{\percent}$ occlusion, where $\sim\SI{90}{\percent}$ of the frames are tracked, with rotational error below or of the order of $\sim\ang{1}$.}
 
 \begin{figure*}
   \centering
@@ -422,7 +413,7 @@ This can simulate, \eg, the presence of tools or bleedings covering or changing 
   \includegraphics[width=0.17\textwidth]{./figs/kframeSelection/end.png}
   \includegraphics[width=0.17\textwidth]{./figs/kframeSelection/equally.png}
   \includegraphics[width=0.215\textwidth]{./figs/kframeSelection/auto.png}
-  \caption{From left to right, the 3D models generated using the keyframes extracted with \emph{beginning}, \emph{middle}, \emph{end}, \emph{equally}, \emph{auto}, respectively.}
+  \caption{From left to right, the 3D models generated using the keyframes extracted with \emph{beginning}, \emph{middle}, \emph{end}, \emph{equally}, \emph{auto}.}
   \label{fig:3DresultsKframeSelection}
 \end{figure*}
 
@@ -443,7 +434,7 @@ This can simulate, \eg, the presence of tools or bleedings covering or changing 
   \includegraphics[width=0.24\textwidth]{./figs/stresstest/rotError.pdf}
   \includegraphics[width=0.24\textwidth]{./figs/stresstest/trackingHistoPois.pdf}
   \includegraphics[width=0.24\textwidth]{./figs/stresstest/rotErrorPois.pdf}
-  \caption{From left to right, the histogram of successfully tracked frames and the rotation error for the estimated pose, for both experiments.}
+  \caption{From left to right, histogram of successfully tracked frames and rotation error of estimated pose, for both experiments.}
   \label{fig:stressTest}
 \end{figure*}
 
@@ -451,14 +442,13 @@ This can simulate, \eg, the presence of tools or bleedings covering or changing 
 \SG{TODO: ADD VIDEO WITH A ``STRESS TEST'' WITH THE PHANTOM SHOWING AT WHICH EXTENT IT IS ROBUST TO OCCLUSIONS AND SMALL DEFORMATIONS. BUT THIS CAN BE ONLY QUALITATIVE (MAYBE PUT SOME FRAMES?)}
 
 
-\subsection{Additional keyframes}
+\subsection{Additional Keyframes During Tracking}
 \label{sec:exp_additionalkeyframes}
-
-\SG{We present some results to show the impact of adding new keyframes during the tracking.
-We refer the reader to the supplementary material to show the qualitative impact on the stability of the pose estimation and quality of the resulting compositing (\url{https://bit.ly/34wEhXu}).
-\tab{tab:addKf} shows for three different video sequence the number of tracked keyframe with and without additional frames.
-We can note that at times even a single new keyframe can greatly improve the number of tracked frames, as the case for the video 20190801 in which the number of tracked frames is almost doubled.
-In other cases, and more in general, the number of tracked frames does not vary considerably but the tracking is more stable as shown by the videos.}
+\SG{We present results to show the impact of adding keyframes during tracking.
+We refer the reader to the video material to observe the qualitative impact on the stability of pose and quality of AR (\url{https://bit.ly/34wEhXu}).
+\tab{tab:addKf} shows the number of tracked keyframes for three videos with and without additional frames.
+Importantly, even a single new keyframe can greatly improve the number of tracked frames, as in video 20190801 in which it almost doubles the number of tracked frames.
+In general however, the number of tracked frames does not vary considerably but the tracking is much more stable.}
 
 
 \begin{table}[]

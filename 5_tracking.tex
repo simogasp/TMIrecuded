@@ -3,8 +3,8 @@
 \subsection{Real-time Tracking-by-Detection}
 \label{sec:updateRegistration}
 \subsubsection{Overview}
-Once the initial registration is computed, the tracking stage is performed in real-time from the live feed of the laparoscope. 
-Our approach updates the initial registration at each frame and it is robust to common challenges including occlusions from \eg, surgical tools, partial views and viewpoint changes.
+Once the initial registration is computed, the real-time tracking stage starts from the live feed of the laparoscope. 
+Our approach updates the initial registration at each frame and is robust to common challenges including occlusions from \eg, surgical tools, partial views and viewpoint changes.
 % Having solved the initial registration we initiate the tracking stage, which updates the initial registration in real-time using live laparoscopic images. %First we extract features in the keyframe images, then matching them to each new image in a RANSAC framework. 
 % This approach is robust to common challenges including occlusions from \eg, surgical tools, partial views and viewpoint changes.
 
@@ -14,16 +14,16 @@ Our approach updates the initial registration at each frame and it is robust to 
 
 \subsubsection{Feature mapping}
 \label{sec:preparing}
-For each keyframe image, we render the 3D model and we store the depth map ($z$-buffer) of all the pixels lying within the model's silhouette. %We use $(x,y,z)=rim(i,j)$. to be the 3D position in camera coordinates at pixel location $(i,j)$. If $x=y=z=\mathrm{nan}$ then pixel $(i,j)$ dose not lie within the silhouette of the model, otherwise it dose. We denote $\mat{M}_{i}\in SE_{4}$ to be the rigid transform mapping the model to the $i^{th}$ reference image's frame. We can compute the 3D position of an image point lying with the model's silhouette by $\mat{M}_{i}^{-1}[x,y,z,1]^{\top}$. 
+For each keyframe, we render the 3D model and we store the depth map of all the pixels lying within the model's silhouette. %We use $(x,y,z)=rim(i,j)$. to be the 3D position in camera coordinates at pixel location $(i,j)$. If $x=y=z=\mathrm{nan}$ then pixel $(i,j)$ dose not lie within the silhouette of the model, otherwise it dose. We denote $\mat{M}_{i}\in SE_{4}$ to be the rigid transform mapping the model to the $i^{th}$ reference image's frame. We can compute the 3D position of an image point lying with the model's silhouette by $\mat{M}_{i}^{-1}[x,y,z,1]^{\top}$. 
 %The RIM is convenient because for each texturemap image we can extract 2D image features \textit{anywhere} within the model's silhouette, 
-Thanks to the depth map, the 3D positions of any 2D image features located within the model's silhouette can be determined.
+From this, the 3D position of any 2D image feature located within the model's silhouette can be determined.
 %Note that without computing a dense 3D model this is not possible in general.
 For each keyframe, we then extract a set of image features and to each one of them we associate its corresponding depth. 
 We concatenate the features from all images into a single list $\mathcal{F}=\{(\vet{x}_{m},I_{m},\vet{d}_{m})\}$, where $\vet{x}_{m} \in \mathbb{R}^3$ 
 % denotes the $m^{th}$ feature's 3D position in the model coordinate frame, $I_{m}$ denotes the index of the keyframe from which it was detected and $\vet{d}_{m}$ denotes its descriptor.
 is the 3D point associated to the $m^{th}$ feature detected in the keyframe $I_{m}$, with $\vet{d}_{m}$ its associated descriptor.
 
-The approach can be used with any feature detector, such as SIFT~\cite{Lowe:2004:DIF:993451.996342}, ORB~\cite{orbslam_laparo} or SURF~\cite{SURF}. We find that SIFT features are superior in general, and they have been shown many times to obtain a better accuracy and robustness in image matching~\cite{Tuytelaars2007}. We used the recent open-source GPU implementation PopSift~\cite{Griwodz2018Popsift} to achieve real-time computational performances: for a typical HD $1920\times1080$ image of the uterus, up to $3000$ features can be found, taking around $\SI{11}{\milli\second}$ with a standard GPU.
+The approach can be used with any feature detector, such as SIFT~\cite{Lowe:2004:DIF:993451.996342}, ORB~\cite{orbslam_laparo} or SURF~\cite{SURF}. We find that SIFT features are superior in general, and they have been shown many times to obtain a better accuracy and robustness in image matching~\cite{Tuytelaars2007}. We used the recent open-source GPU implementation PopSift~\cite{Griwodz2018Popsift} to achieve real-time computation: for a typical HD $1920\times1080$ image of the uterus, up to $3000$ features can be found, taking around $\SI{11}{\milli\second}$ with a standard GPU.
 %We use the green channel to compute features, rather than the standard approach of using average intensity.
 %The reason is that the green light penetrates human tissue superficially and do not exhibit as much sub-surface scattering as with red light.
 %The difference is very prominent with the uterus~\cite{DBLP:conf/ipcai/CollinsB12}.
@@ -39,10 +39,10 @@ We achieve the latter condition by applying Lowe's Ratio Test (LRT)~\cite{Lowe:2
 %For each member of $\mathcal{F}$ we compute the member in $\mathcal{G}$ with the nearest descriptor.
 %If this descriptor distance is greater than $\tau$ times the distance to the second nearest descriptor in $\mathcal{G}$, it is deemed a candidate match.
 %The LRT is a very standard condition in feature-based pose estimation.
-A novelty of using \emph{multiple} keyframe images is that we can also exploit match \emph{coherence}. Specifically, consider a feature in the image that matches a feature in the $i^{th}$ keyframe. It is likely to be correct if there exists other features that also match with features in the $i^{th}$ keyframe.
+A novelty of using \emph{multiple} keyframes is that we can also exploit match \emph{coherence}. Specifically, consider a feature in the image that matches a feature in the $i^{th}$ keyframe. It is likely to be correct if there exists other features that also match with features in the $i^{th}$ keyframe.
 %Enforcing coherence can reduce false matches because it prevents matches occurring from wildly different keyframe.
 We adopt a ``winner-takes-all'' strategy to enforce coherence and reduce false matches.
-Let $I^*$ the index of the keyframe with the largest amount of candidate matches.
+Let $I^*$ be the index of the keyframe with the largest amount of candidate matches.
 Since SIFT is invariant to scale changes and image rotation, $K_{I^*}$ can be considered as the visually ``closest'' to the input image. 
 % We enforce coherence with a winner-takes-all strategy. We first find the index $I^*$ of the keyframe with the largest amount of candidate matches. This indicates the keyframe image which is ``closest'' to the input image \wrt the viewpoint. Because SIFT is invariant to scale changes and image rotation, %close means a keyframe image which views the uterus from a similar viewpoint, up to a change in depth and a rotation of the laparoscope about its optical axis.
 we then recompute the candidate matches, but using \emph{only} features from $K_{I^*}$.
@@ -51,19 +51,19 @@ Computational efficiency can be easily achieved as $\mathcal{F}$ is completely p
 
 \subsubsection{Computing 3D Pose}
 % Given the set of candidate matches, we perform RANSAC~\cite{Fischler:1981:RSC:358669.358692} to find the most compatible rigid 3D pose, with OpenCV's implementation with default parameters. 
-From the set of candidate matches, we find the best pose hypothesis that explains these  matches using the robust RANSAC~\cite{Fischler:1981:RSC:358669.358692} framework, relying on the OpenCV's default implementation.
-In some images tracking may be impossible or unreliable, if the organ is not visible or only a small part is visible in the image. A good indicator for deciding if pose can be estimated reliably is the number $n_c$ of inlier matches found by RANSAC. If this is below a threshold (default of $8$), we reject the pose and consider the organ to be untrackable in that image. Finally, to reduce jitter artefacts, we feed the pose estimates into an Extended Kalman Filter (EKF). 
+From the set of candidate matches, we find the best pose hypothesis that explains these  matches using   RANSAC~\cite{Fischler:1981:RSC:358669.358692} from OpenCV's default implementation.
+In some images tracking may be impossible or unreliable, if the organ is not visible or very partially. A good indicator for deciding if pose can be estimated reliably is the number $n_c$ of inlier matches found by RANSAC. If this is below a threshold (default of $8$), we reject the pose and consider the organ to be untrackable in that image. Finally, to reduce jitter artefacts, we feed the pose estimates into an Extended Kalman Filter (EKF). 
 
 \subsubsection{Adding New Keyframes}
 The operator can manually add new keyframes to $\mathcal{F}$ on the fly during the live tracking.
-This helps to mitigate any remaining jittering and stabilizes tracking if the organ is viewed from a viewpoint that is very dissimilar to the ones present in the keyframe set.
-\SG{New keyframes can also help to stabilize the jittering when relatively small changes happens between the exploratory  and the tracking phase, due, \eg, to changes in appearance (bleeding spots, change of texture because of the clamping) and in shape (manipulation of the organ in between the two phases).}
+This mitigates any remaining jitter and stabilizes tracking if the organ is viewed from a viewpoint that is very dissimilar to the keyframes.
+\SG{New keyframes also stabilize the jitter when changes occur between the reference and current peroperative states in organ appearance (bleeding spots, change of texture because of the clamping) and shape (due to mobilization).}
 %In the supplementary material we present a video showing the benefits and the impact of adding a new keyframe to the tracking.
-We perform this by adding the features and their associated 3D points of the current image to $\mathcal{F}$.
+We perform this by adding the features of the current image and their associated 3D points to $\mathcal{F}$.
 We currently refrain from automating the process of adding new keyframes because without care it can lead to drift.
-Specifically, errors in the estimate pose then leads to incorrectly aligned features in $\mathcal{F}$, leading to a degradation in tracking accuracy in later frames.
-\SG{The operator can add the current frame as a new keyframe by pressing a bottom on the interface: a still image of the frame with the augmented reality superposed is shown to the operator for validation.
-If the augmentation is correctly aligned \wrt to the image then the operator validates and the new keyframe is added, otherwise it is discarded.}
+Specifically, errors in the estimate pose then lead to incorrectly aligned features in $\mathcal{F}$, leading to a degradation in tracking accuracy in later frames.
+\SG{The operator can add the current frame as a new keyframe by pressing a bottom on the interface: a still image of the current frame with AR is shown to the operator for validation.
+If the augmentation is correctly aligned then the operator validates and otherwise discards the current frame.}
 
 %This involves sampling many match subsets of size $4$, and for each sample creating a pose hypothesis using PnP~\cite{Lepetit2009Epnp}.
 %Each hypothesis is tested for support by measuring how many of the other matches are predicted well by the hypothesis.

@@ -24,22 +24,23 @@
 The system requires a segmented pre-operative 3D organ model, which comprises the organ's surface mesh, and meshes of internal structures that are to be visualized with AR.
 In the case of the uterus, internal structures may be the uterine cavity, tumors and safe-tissue margins. %Here the internal structures are tumors and their \emph{safe tissue margin}.
 %A safe tissue margin is a border around the tumor of healthy tissue which should also be removed, whose thickness $w$ depends on the risk factor of the particular tumor.
-Our approach does not require a specific organ deformation model to be used, because to date there is no clear consensus on the best one to use for registering organs. Models currently range from complex heterogeneous mechanical models to simpler homogeneous algebraic models such as As-Rigid-As-Possible \cite{Sorkine:2007:ASM:1281991.1282006}. 
+Our approach does not require a specific organ deformation model to be used, because to date there is no clear consensus on the best one to use for registering organs. %Models currently range from complex heterogeneous mechanical models to simpler homogeneous algebraic models such as As-Rigid-As-Possible \cite{Sorkine:2007:ASM:1281991.1282006}. 
 
 We require two interfaces to the deformation model. 
-The first is the \emph{transform function} $f(\vet{p};\vet{x}_t): \Omega\rightarrow \mathbb{R}^3$: given the model's parameters $\vet{x}_t$ at time $t$, it transforms a 3D point $\vet{p}$ of the model's 3D domain $\Omega\subset \mathbb{R}^3$ to the target coordinate frame (in our case, the laparoscope coordinates frame). 
+The first is the \emph{transform function} $f(\vet{p};\vet{x}_t): \Omega\rightarrow \mathbb{R}^3$.
+Given the model's parameters $\vet{x}_t$ at time $t$, it transforms a 3D point $\vet{p}$ of the model's 3D domain $\Omega\subset \mathbb{R}^3$ to the laparoscope coordinate frame. 
 The second interface is the internal energy function $\Einternal(\vet{x}_{t}):\mathbb{R}^{d}\rightarrow\mathbb{R}^{+}$, with $d$ the dimensionality of $\vet{x}_{t}$. This returns the internal energy for transforming the organ according to  $\vet{x}_t$.
 % We require two interfaces to the deformation model. The first is the \emph{transform function} $f(\vet{p};\vet{x}_t): \Omega\rightarrow \mathbb{R}^3$: it is used to transforms a 3D point $\vet{p}$ of the model's 3D domain $\Omega\subset \mathbb{R}^3$ to the target coordinate frame (in our case, the laparoscope coordinates frame). The vector $\vet{x}_t$ denotes the model's parameters at time $t$. %The registration problem is  to determine $\vet{x}_t$ given a laparoscopic image at time $t$. 
 % The second is the internal energy function $\Einternal(\vet{x}_{t}):\mathbb{R}^{d}\rightarrow\mathbb{R}^{+}$ which gives the internal energy for transforming the organ with $\vet{x}_t$, where $d$ is the dimensionality of $\vet{x}_{t}$. 
 This internal energy is used to regularize the deformation, or in the case of mechanical models, to provide internal strain energy induced by soft-tissue deformation.
-Our only requirements are that $f$ and $\Einternal$ be continuous and at least first-order differentiable, which is satisfied by virtually all models of interest.
+We only require that $f$ and $\Einternal$ be continuous and at least first-order differentiable, which is satisfied by virtually all models of interest.
 %We describe the specific deformable models used in our experiments in Section \ref{sec:experiments_Simulation}.
  
 \subsection{Registration Pipeline Overview}
 \label{sec:globalOverview}
-Our task is to compute $\vet{x}_t$ for a given live monocular laparoscopic image streamed at time $t$. We assume the laparoscope is intrinsically calibrated.
+Our task is to compute $\vet{x}_t$ for a given live monocular laparoscopic image.
 We break down registration into two stages. The first is the \textit{initial registration stage} and the second is the \emph{tracking stage}. 
-The initial registration is important for two main reasons. Firstly, the different patient posture between pre-operative and intra-operative steps and the insufflation may induce a significant deformation of the organ. Initial registration estimates such change of shape from the intra-operative state, or \emph{reference state}, and the intra-operative state. 
+The initial registration is important for two main reasons. Firstly, the different patient posture between pre-operative and intra-operative steps and the insufflation may induce a significant deformation of the organ. Initial registration estimates such change of shape from the pre-operative to the intra-operative state, or \emph{reference state}. 
 Secondly, during the tracking stage, we assume that the organ does not undergo significant deformations so that the tracking stage can be reasonably modeled with rigid motion.  The initial registration allows us to associate texture with the organ's surface, necessary to achieve tracking.
 % The purpose of the initial registration stage is two-fold. Firstly, it estimates the change of shape of the organ between its pre-operative state and an intra-operative state, called the \emph{reference state}, caused by physiological movement between pre-operative and intra-operative states, such as patient posture difference and insufflation. Secondly, it associates texture with the organ's surface, which is required in the tracking stage.
 % To achieve high robustness we make a simplifying assumption in the tracking stage, which is that the organ does not deform significantly during this stage.

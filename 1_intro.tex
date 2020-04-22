@@ -1,10 +1,9 @@
 %!TEX root=./main.tex
 
 \section{Introduction}
-
-In laparoscopic surgery, the surgeons usually consult pre-operative images such as Computed Tomography (CT) or Magnetic Resonance (MR) to localize hidden internal structures such as tumors. However, it can be difficult, even for experienced surgeons, to accurately predict their positions in this way during surgery. 
-One of the main goals of CAI is to ease this task by enriching optical images from the laparoscope with pre-operative image data from MR or CT using AR~\cite{1732,8714}. 
-For example, systems have been proposed to visualize sub-surface structures~\cite{Simpfendrfer2011}, to enlarge the surgical field of view~\cite{Totz2011}, and to overlay information from other imaging modalities~\cite{Nakamoto2008}.
+In laparoscopic surgery, the surgeons usually consult pre-operative images such as Computed Tomography (CT) or Magnetic Resonance (MR) to localize hidden internal structures such as tumors. However, it can be difficult, even for experienced surgeons, to accurately predict their positions during surgery. 
+One of the main goals of CAI is to ease this task by enriching laparoscopic images with pre-operative image data from MR or CT using AR~\cite{1732,8714}. 
+%For example, systems have been proposed to visualize sub-surface structures~\cite{Simpfendrfer2011}, to enlarge the surgical field of view~\cite{Totz2011}, and to overlay information from other imaging modalities~\cite{Nakamoto2008}.
 The key technical challenge is non-rigid registration of soft-body organs. Once achieved, the position of the structures within the organ can be augmented onto the laparoscopic video. A major open challenge is achieving this accurately, reliably and in real-time. 
 
 We present the first complete AR pipeline for the uterus using a segmented pre-operative 3D model and monocular laparoscopic images with novel technical contributions at various stages. This facilitates several important clinical applications, including AR-assisted resection of lesions such as uterine fibroids and endometriosis.  We specifically target monocular laparoscopes because their use is far more widespread than stereo laparoscopes in standard (non-robotic) laparoscopic procedures. This is because of several factors including

@@ -221,7 +221,8 @@ Similarly to the point-to-plane distance function of ICP with rigid objects, \Ep
 \begin{equation}
 \Epoint(\vet{x},s;\mathcal{Q})=\frac{1}{M}\sum_{j=1}^{M}\rho\left(\dplane\left(v_{j}(\vet{x}),\hat{\vet{q}}_{j}\right)\right).
 \end{equation}
-\noindent The function $\dplane(\vet{v},\vet{q})$ gives the signed distance between a plane $\vet{v}$ and a 3D point $\vet{q}$.
+\noindent The function $v_{j}(\vet{x})\in\mathbb{R}^4$ gives the organ surface's tangent plane at $f(\vet{p}_{j})$.
+The function $\dplane(\vet{v},\vet{q})$ gives the signed distance between a plane $\vet{v}$ and a 3D point $\vet{q}$.
 The function $\rho:\mathbb{R}\rightarrow\mathbb{R}^{+}$ is an \emph{M-estimator}. % and it is designed to robustly align the reconstructed point $\hat{\vet{q}}_{j}$ with the organ's surface. 
 In fact, from the MVS reconstruction there may be points of $\mathcal{Q}$ that do not belong to the organ or that are poorly reconstructed.
 These points should not be aligned and they are taken care of by the M-estimator, reducing their influence on the energy.

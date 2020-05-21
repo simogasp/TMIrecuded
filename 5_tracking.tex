@@ -42,10 +42,10 @@ We achieve the latter condition by applying Lowe's Ratio Test (LRT)~\cite{Lowe:2
 A novelty of using \emph{multiple} keyframes is that we can also exploit match \emph{coherence}. Specifically, consider a feature in the image that matches a feature in the $i^{th}$ keyframe. It is likely to be correct if there exists other features that also match with features in the $i^{th}$ keyframe.
 %Enforcing coherence can reduce false matches because it prevents matches occurring from wildly different keyframe.
 We adopt a ``winner-takes-all'' strategy to enforce coherence and reduce false matches.
-Let $I^*$ be the index of the keyframe with the largest amount of candidate matches.
-Since SIFT is invariant to scale changes and image rotation, $K_{I^*}$ can be considered as the visually ``closest'' to the input image. 
+Let $i^*$ be the index of the keyframe with the largest amount of candidate matches.
+Since SIFT is invariant to scale changes and image rotation, the keyframe $i^*$ can be considered as the visually ``closest'' to the input image.
 % We enforce coherence with a winner-takes-all strategy. We first find the index $I^*$ of the keyframe with the largest amount of candidate matches. This indicates the keyframe image which is ``closest'' to the input image \wrt the viewpoint. Because SIFT is invariant to scale changes and image rotation, %close means a keyframe image which views the uterus from a similar viewpoint, up to a change in depth and a rotation of the laparoscope about its optical axis.
-we then recompute the candidate matches, but using \emph{only} features from $K_{I^*}$.
+we then recompute the candidate matches, but using \emph{only} features from the keyframe $i^*$.
 Computational efficiency can be easily achieved as $\mathcal{F}$ is completely pre-computed and the distances to evaluate the descriptor likelihood are quite fast to compute on the GPU (\eg, $\sim\SI{3}{ms}$ to match $2000$ features from an HD image against $5600$ features from $16$ keyframes).
 % Performing these processes is very quick because $\mathcal{F}$ is completely pre-computed, and evaluating descriptor distances can be distributed trivially on the GPU (\eg, $\sim\SI{3}{ms}$ to match $2000$ features from an HD image against $5600$ features from $16$ keyframes).
 

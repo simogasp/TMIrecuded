@@ -214,7 +214,7 @@ E(\vet{x},s)=\Epoint(\vet{x},s;\mathcal{Q}) & + \lambdaContour\Econtour(\vet{x},
 % \noindent where $\lambdaContour$ and $\lambdaInternal$ are scalar weights (typically, $\lambdaContour=100$ and $\lambdaInternal=50$).
 % The set $\mathcal{C}_i$ denotes all pixels on the contour fragments in keyframe $i$. 
 
-For the point cloud data term \Epoint we use an ICP-based energy term: it uses a set of \emph{virtual point correspondences} $\mathcal{P}=\{\vet{p}_j\}$ with $|\mathcal{Q}|=|\mathcal{P}|$, where $\vet{p}_j\in\partial \Omega$ is the unknown position of point $\vet{q}}_{j}$ on the organ's surface mesh $\Omega$.
+For the point cloud data term \Epoint we use an ICP-based energy term: it uses a set of \emph{virtual point correspondences} $\mathcal{P}=\{\vet{p}_j\}$ with $|\mathcal{Q}|=|\mathcal{P}|$, where $\vet{p}_j\in\partial \Omega$ is the unknown position of point $\vet{q}_{j}$ on the organ's surface mesh $\Omega$.
 For a given $(\vet{x},s)$, \Epoint is computed by first transforming $\Omega$ according to $\ensuremath{f(\cdot;\vet{x})}$ and applying the estimated scale factor $s$ to the point cloud, so that $\hat{\vet{q}}_{j}\gets s\,\vet{q}_{j}$.
 Then, $\vet{p}_j$ is set to the closest point to $\hat{\vet{q}}_{j}$ on the surface's mesh.
 Similarly to the point-to-plane distance function of ICP with rigid objects, \Epoint uses a robust point-to-plane distance function that allows the model to slide over the point cloud without resistance:

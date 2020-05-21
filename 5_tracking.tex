@@ -16,12 +16,12 @@ Our approach updates the initial registration at each frame and is robust to com
 \label{sec:preparing}
 For each keyframe, we render the 3D model and we store the depth map of all the pixels lying within the model's silhouette. %We use $(x,y,z)=rim(i,j)$. to be the 3D position in camera coordinates at pixel location $(i,j)$. If $x=y=z=\mathrm{nan}$ then pixel $(i,j)$ dose not lie within the silhouette of the model, otherwise it dose. We denote $\mat{M}_{i}\in SE_{4}$ to be the rigid transform mapping the model to the $i^{th}$ reference image's frame. We can compute the 3D position of an image point lying with the model's silhouette by $\mat{M}_{i}^{-1}[x,y,z,1]^{\top}$. 
 %The RIM is convenient because for each texturemap image we can extract 2D image features \textit{anywhere} within the model's silhouette, 
-From this, the 3D position of any 2D image feature located within the model's silhouette can be determined.
+From this, the 3D position \vet{u} of any 2D image feature located within the model's silhouette can be determined.
 %Note that without computing a dense 3D model this is not possible in general.
 For each keyframe, we then extract a set of image features and to each one of them we associate its corresponding depth. 
-We concatenate the features from all images into a single list $\mathcal{F}=\{(\vet{x}_{m},I_{m},\vet{d}_{m})\}$, where $\vet{x}_{m} \in \mathbb{R}^3$ 
+We concatenate the features from all images into a single list $\mathcal{F}=\{(\vet{u}_{m},i_{m},\vet{d}_{m})\}$, where $\vet{u}_{m} \in \mathbb{R}^3$
 % denotes the $m^{th}$ feature's 3D position in the model coordinate frame, $I_{m}$ denotes the index of the keyframe from which it was detected and $\vet{d}_{m}$ denotes its descriptor.
-is the 3D point associated to the $m^{th}$ feature detected in the keyframe $I_{m}$, with $\vet{d}_{m}$ its associated descriptor.
+is the 3D point associated to feature detected in the keyframe of index $i_{m}$, with $\vet{d}_{m}$ its associated descriptor.
 
 The approach can be used with any feature detector, such as SIFT~\cite{Lowe:2004:DIF:993451.996342}, ORB~\cite{orbslam_laparo} or SURF~\cite{SURF}. We find that SIFT features are superior in general, and they have been shown many times to obtain a better accuracy and robustness in image matching~\cite{Tuytelaars2007}. We used the recent open-source GPU implementation PopSift~\cite{Griwodz2018Popsift} to achieve real-time computation: for a typical HD $1920\times1080$ image of the uterus, up to $3000$ features can be found, taking around $\SI{11}{\milli\second}$ with a standard GPU.
 %We use the green channel to compute features, rather than the standard approach of using average intensity.

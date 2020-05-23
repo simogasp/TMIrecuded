@@ -7,33 +7,33 @@
 \label{sec:registrationOverview}
 
 \subsubsection{Solution Overview}
-\fig{fig:initialRegOverview} shows the initial registration problem, which is more challenging to solve than the tracking stage because of two main issues: \textit{(i)} the model to be registered is textureless and \textit{(ii)} the registration is non-rigid.
+\fig{fig:initialRegOverview} shows the initial registration problem, which is  challenging to solve for two main issues: \textit{(i)} the model to be registered is textureless and \textit{(ii)} the registration is non-rigid.
 % We illustrate the problem in \fig{fig:initialRegOverview}. This stage is more challenging to solve than the tracking stage because \textit{(i)} we have no texture information associated with the organ's surface and \textit{(ii)} it is a deformable registration. 
-To overcome these problems, our approach includes a dense 3D reconstruction of the organ's surface using an \emph{exploratory video} and SfM/MVS reconstruction, for which mature and open-source methods exist~\cite{Meshroom}. Given this reconstruction, we solve the initial registration with numerical optimization of a system that combines data constraints (organ-to-reconstruction distances and contour fragment distances), combined with constraints from the model's internal energy.
+To overcome these problems, our approach includes a dense 3D reconstruction of the organ's surface using an \emph{exploratory video} and SfM/MVS reconstruction, for which mature and open-source methods exist~\cite{Meshroom}. Given this reconstruction, we solve the initial registration with numerical optimization of a system that combines data constraints (organ-to-reconstruction distances and contour fragment distances) with constraints from the model's internal energy.
 
 \subsubsection{Interventional 3D Reconstruction}
 \label{sec:sfm}
 %To perform the 3D reconstruction, sample images of the organ from different viewpoints and distances are required, known as \emph{keyframes}. We gather these as the surgeon performs an initial exploration of the organ (referred to as the \emph{exploratory phase}), 
-During the exploratory video, the uterus is rotated by the surgeon's assistant using the cannula (\fig{fig:cannula}). Note that the uterus moves independently of background structures, so the scene cannot be reconstructed using state-of-the-art SLAM approaches applied in the laparoscopic setting, which require the scene to be globally rigid. 
+During the exploratory video, the uterus is rotated by the surgeon's assistant using the cannula (\fig{fig:cannula}). It moves independently of background structures, so the scene cannot be reconstructed using SLAM, which requires the scene to be globally rigid. 
 %Short version
 % \SG{We developed a tool to automatically capture sharp keyframes with significant spatial displacement, as this improves the MVS reconstruction quality. We track SIFT features in the live feed using~\cite{Bouguet2001} and, based on the magnitude of their average 2D displacement, the UI hints when a new keyframe can be captured inviting to hold the camera still. On average we capture $N=15$ keyframes.}
 %Extended version
 \SG{We developed a new tool to capture sharp keyframes with significant mutual spatial displacement.
-We extract SIFT features from a frame and we track them along the frames of the live feed~\cite{Bouguet2001}.
-When the average 2D feature displacement exceed a threshold (default, $\SI{100}{pixels}$) or too many features are lost \wrt the initial frame (default, \SI{35}{\percent}), we consider that the camera has sufficiently moved. We are then ready to acquire a new keyframe and the UI  asked the surgeon to hold the camera still.
-We extract and track new features and the keyframe is acquired when the maximum displacement of the features remains steady and below a given threshold (default, $\SI{3}{pixels}$) for the last $M=15$ frames.
+We extract SIFT keypoints from a frame and track them along the frames of the live feed~\cite{Bouguet2001}.
+When the average 2D keypoint displacement exceeds a threshold (default, $\SI{100}{pixels}$) or too many keypoints are lost \wrt the initial frame (default, \SI{35}{\percent}), we consider that the camera has sufficiently moved. We are then ready to acquire a new keyframe and the UI  asks the surgeon to hold the camera still.
+We then extract and track new keypoints and the keyframe is acquired when the maximum displacement remains below a threshold (default, $\SI{3}{pixels}$) for the last $M=15$ frames.
 Then the process starts again until at least $N=15$ keyframes are acquired.}
 % We then extract $N$ keyframes $\{K_1,\dots K_N\}$ (see \fig{fig:cannula}) with a default of $N=10$. We index these with $i\in [1,N]$. This is done by uniformly sampling the video into $N$ intervals. %  with a default $N=12$. 
 % We sample the video into $N$ intervals (in practice, $N=10$) and we extract $N$ keyframes $\{K_1,\dots K_N\}$ (see \fig{fig:cannula}), one for each $i\in [1,N]$. 
 % In order to select sharp images, which greatly improves the MVS reconstruction quality, each keyframe $K_i$ is select to be the one with the lowest visual motion. In order to assess the quantity of motion between consecutive frame pairs we compute the Sum-of-Absolute Difference (SAD) as measure of similarity.
 % We sample the video into $N$ intervals (in practice, $N=10$) and we extract $N$ keyframes $\{K_1,\dots K_N\}$ (see \fig{fig:cannula}). 
 % For each interval $i\in [1,N]$ we take the keyframe $K_i$ to be the one with the lowest visual motion, using the Sum-of-Absolute Difference (SAD) as the metric computed between consecutive frame pairs. This is done to improve the quality of the reconstruction because MVS works best with sharper images.
-We then use a touch-screen interface to manually roughly segment the uterus in the keyframes, so that the background is masked and only the organ is reconstructed. This takes a few seconds per keyframe.
+We use a touch-screen interface to manually segment the uterus roughly in the keyframes, so that the background is masked and only the organ is reconstructed. This takes a few seconds per keyframe.
 % We then run a state-of-the-art dense SfM\&MVS open source library~\cite{AliceVision}. This provides a dense 3D point cloud $\mathcal{Q}\overset{\mathrm{def}}{=}\{\vet{q}_{1},\dots,\vet{q}_{M}\}$, $\vet{q}_{j}\in\mathbb{R}^{3}$, and the keyframe camera pose matrices $\mat{M}_i \in \mathcal{SE}_4$.
 % These hold the laparoscope's rotation matrix $\mat{R}_{i}\in\mathcal{SO}_3$ and translation vector $\vet{t}_{i}\in\mathbb{R}^3$ relative to the point cloud. Recall that an MVS reconstruction is computed up to an unknown global scale factor $s$. We solve for $s$ jointly with registration.
 We then run a state-of-the-art SfM/MVS open source library~\cite{AliceVision}. 
 As output we obtain a dense 3D point cloud $\mathcal{Q}\overset{\mathrm{def}}{=}\{\vet{q}_{j}\}$, $\vet{q}_{j}\in\mathbb{R}^{3}$, and, for each keyframe, the relevant camera pose matrix $\mat{M}_i \in \mathcal{SE}_4$, holding the rotation matrix $\mat{R}_{i}\in\mathcal{SO}_3$ and translation vector $\vet{t}_{i}\in\mathbb{R}^3$ \wrt the point cloud.
-We recall that all MVS reconstructions can be only computed up to an unknown global scale factor $s$. We solve for $s$ jointly with registration as described in Section \ref{sec:enOpt}.
+We recall that all MVS reconstructions are  only computed up to an unknown global scale factor $s$. We solve for $s$ jointly with registration in \S\ref{sec:enOpt}.
 
 
 
@@ -82,10 +82,10 @@ We recall that all MVS reconstructions can be only computed up to an unknown glo
 %We summarise the initial registration process as follows. This is similar to~\cite{Collins2044} but with some important improvements that we list at the end of the paragraph. First a rough initialisation is made using a rigid transform and a small amount of manual assistance. 
 
 \subsubsection{Silhouette Contours}
-An occluding contour is a boundary in a 2D image between an object surface and another surface that is further away, that it partially occludes. We categorize these into two types: \emph{self-occluding contours}, where the contour is formed by the object self-occluding, or \emph{silhouette contours}, where the contour is formed by the object and a background structure, and corresponds with the boundary of the object's silhouette. Most organs are approximately convex, so self-occluding contours are rare events. By contrast, silhouette contours are common, and we propose to use these to constrain the organ's shape during registration.  To achieve this we require the silhouette contours to be located in a keyframe image (\fig{fig:initialRegOverview}). This is very difficult to automate because not all of the organ's boundaries in an image correspond to silhouette contours. Indeed, they are either silhouette contours, or contours formed by the silhouette of another structure occluding the organ. We illustrate this in \fig{fig:initialRegOverview} (top row) where abdominal fat occludes the posterior region of the uterus. The boundary between fat and the uterus conveys no information about the shape of the uterus.  
+An occluding contour is a boundary in a 2D image between an object surface and another surface that is further away, that it partially occludes. This includes  \emph{self-occluding contours}, which are formed where the object self-occludes, and \emph{silhouette contours}, which are formed by the object and a background structure. Most organs are approximately convex, so self-occluding contours are rare events. In contrast, silhouette contours are common, and we propose to use these to constrain the organ's shape during registration. We require the silhouette contours to be provided in a keyframe image (\fig{fig:initialRegOverview}). This is very difficult to automate because not all of the organ's boundaries in an image correspond to silhouette contours. Indeed, they are either silhouette contours, or contours formed by the silhouette of another structure occluding the organ. We illustrate this in \fig{fig:initialRegOverview} (top row) where abdominal fat occludes the posterior region of the uterus. The boundary between fat and the uterus conveys no information about the shape of the uterus.  
 %we must both recover the organ's boundaries in an image, and infer which of those are silhouette contours compared with contours formed by another structure occluding the organ. 
 
-Consequently, extracting an organ's silhouette contours cannot be solved directly by organ segmentation, because this does not distinguish the above contour types. Furthermore, organ segmentation is itself a hard problem with laparoscopic images. We therefore propose to extract silhouette contours with a fast semi-automatic process and a touch-screen interface. Each keyframe is visualized and the operator traces the organ's silhouette contours with a finger stroke. We apply the method of~\cite{Mortensen95intelligentscissors} to snap the finger stroke to the nearest image contour, based on active contours attracted to the dominant image edge adjacent. This is very fast and a keyframe is processed in a matter of seconds. %Occasionally, snapping may fail mainly in cases where the contour fragment is very low contrast. In these cases the operator sets the contour to inactive, meaning that it is not used during registration. 
+Consequently, extracting an organ's silhouette contours cannot be solved directly by organ segmentation, because this does not distinguish the above contour types. Furthermore, organ segmentation is itself a hard problem with laparoscopic images. We therefore propose to extract silhouette contours with a fast semi-automatic process and a touch-screen interface. Each keyframe is shown and the operator traces the organ's silhouette contours with a finger stroke. We apply the method of~\cite{Mortensen95intelligentscissors} to snap the finger stroke to the nearest image contour, based on active contours attracted to the dominant image edge adjacent. This is very fast and a keyframe is processed in a matter of seconds. %Occasionally, snapping may fail mainly in cases where the contour fragment is very low contrast. In these cases the operator sets the contour to inactive, meaning that it is not used during registration. 
 
 
 
@@ -160,13 +160,13 @@ Consequently, extracting an organ's silhouette contours cannot be solved directl
 Initially, \xref is initialized with a rigid transform $\mat{M}_a\in \mathcal{SE}_4$.
 If the laparoscope is in a canonical position \wrt the organ, $\mat{M}_a$ can be considered known \emph{a priori}.
 Otherwise, we devised an interactive and relatively simple procedure to provide a rough estimate of $\mat{M}_a$.
-The method is based on solving the PnP problem~\cite{Lepetit2009Epnp} between 3D points on the organ's surface model and their corresponding 2D points on one of the keyframes, which is selected interactively.
+The method is based on solving PnP~\cite{Lepetit2009Epnp} between 3D points on the organ's surface model and their corresponding 2D points on one of the keyframes, selected interactively.
 The operator can first freely rotate the 3D model to present it from a similar viewpoint as the keyframe.
 \SG{Then they select at least $5$ 3D points on the 3D model and their corresponding points on the image.
 We found that a good strategy is to select the $4$ equidistant points on the image along (but not on) the occluding contour and one roughly in the middle.
 The corresponding points on the 3D model can be guessed following the same pattern.
 Associating points from an untextured 3D model to its image is not in general a trivial task but we found that surgeons can easily perform the operation thanks to their detailed understanding of the anatomy.
-Note that the correspondences are not required to be accurate, as this only serves as first, rough initialization of the camera pose.}
+The correspondences are not required to be accurate, as this only serves as rough initialization of the camera pose.}
 %The estimated camera pose is used to initialize  $\mat{M}_a$.
 
 % We initialize \xref with a rigid transform, denoted by $\mat{M}\in \mathcal{SE}_4$.
@@ -177,21 +177,21 @@ Note that the correspondences are not required to be accurate, as this only serv
 % We then compute a rigid transform  $\mat{M}_a$ from model coordinates to laparoscope coordinates, by fitting the correspondences using a PnP method~\cite{Lepetit2009Epnp}.
 % The point correspondences are computed using an interactive user interface, where the model can be freely rotated to present it from a similar viewpoint as the keyframe's viewpoint. This significantly eases the operator's task. 
 
-To provide a first initialization of the reconstruction scale factor $s$, we apply $\mat{M}_a$ to the model.
+To provide an initialization of the reconstruction scale factor $s$, we apply $\mat{M}_a$ to the model.
 We then use OpenGL to render a synthetic image of it using the calibrated intrinsic parameters of the laparoscope. 
-OpenGL's $z$-buffer provides a depth map $d(x,y)$ from which we can then compute $s$ by comparing depths in $d$ to depths in $\mathcal{Q}$.
+OpenGL's $z$-buffer provides a depth map $d(x,y)$ from which we can compute $s$ by comparing depths in $d$ to depths in $\mathcal{Q}$.
 % We initialize the reconstruction scale factor $s$ as follows. First we transform the model by $\mat{M}_a$ and render it using the OpenGL rendering engine, using the same intrinsic parameters as the laparoscope, thus obtaining a depth map $d(x,y)$ from OpenGL's $z$-buffer. We then compute $s$ by comparing depths in $d$ to the depths of $\mathcal{Q}$. 
-More precisely, for a 3D point $\vet{q}_j$, an estimate of $s$ is  $s_j=d(x_j,y_j)/\tilde{d}_j$, where $\tilde{d}_j$ is the depth of $\vet{q}_j$, and $(x_j,y_j)$ its corresponding 2D point.
-The final robustified estimate is obtained as the median over all points, \ie $s=\mathrm{median} \{s_j\}$. 
+Specifically, for a 3D point $\vet{q}_j$, an estimate of $s$ is  $s_j=d(x_j,y_j)/\tilde{d}_j$, where $\tilde{d}_j$ is the depth of $\vet{q}_j$, and $(x_j,y_j)$ its corresponding 2D point.
+The robust estimate is given by the median over all points, $s=\mathrm{median} \{s_j\}$. 
 
 % Specifically, let $\tilde{d}_j$ be the depth of $\vet{q}_j$ in keyframe $K_1$, and $(x_j,y_j)$ be its 2D position in the keyframe's image. We can then estimate $s$ by $s\approx d(x_j,y_j)/\tilde{d}_j$. To compute $s$ robustly, we use the median estimate using all points. Finally, the transform $\mat{M}$ is given by the composition $\mat{M} = \mat{M}_s\,\mat{M}^{-1}_i\,\mat{M}^{-1}_s\,\mat{M}_a$, where $\mat{M}_s$ is an isotropic scaling by $s$. 
 
 \subsection{Energy-based Optimization}
 \label{sec:enOpt}
-We now describe the registration energy function and the optimization process. To improve clarity we assume all image points in normalized camera coordinates, which is obtained from the intrinsic calibration, and thus define camera projection as
-$\pi(\left[x,y,z\right]^{\top})\overset{\mathrm{def}}{=}1/z \left[x,y\right]^{\top}$. 
+We describe the registration energy function and optimization process. To improve clarity we assume all image points in normalized camera coordinates, which is obtained from the intrinsic calibration, and thus define camera projection as
+$\pi(\left[x,y,z\right]^{\top})\overset{\mathrm{def}}{=}\left[x,y\right]^{\top}/z$. 
 Besides the model's internal energy $\Einternal(\vet{x})$, the energy function $E(\vet{x},s)\in\mathbb{R}^+$ consists of two other terms.
-We introduce a point cloud data term \Epoint to help the organ's surface to fit the reconstructed point cloud.
+We introduce a point cloud data term \Epoint to help the organ's surface fit the reconstructed point cloud.
 To constrain the organ's silhouette contours to fit the silhouette contour fragments we also include a contour data term \Econtour. 
 Thus, the energy $E(\vet{x},s)$ is defined as:
 \begin{equation}
@@ -219,13 +219,12 @@ For a given $(\vet{x},s)$, \Epoint is computed by first transforming $\Omega$ ac
 Then, $\vet{p}_j$ is set to the closest point to $\hat{\vet{q}}_{j}$ on the surface's mesh.
 Similarly to the point-to-plane distance function of ICP with rigid objects, \Epoint uses a robust point-to-plane distance function that allows the model to slide over the point cloud without resistance:
 \begin{equation}
-\Epoint(\vet{x},s;\mathcal{Q})=\frac{1}{M}\sum_{j=1}^{M}\rho\left(\dplane\left(v_{j}(\vet{x}),\hat{\vet{q}}_{j}\right)\right).
+\Epoint(\vet{x},s;\mathcal{Q})=\frac{1}{M}\sum_{j=1}^{M}\rho\left(\dplane\left(v_{j}(\vet{x}),\hat{\vet{q}}_{j}\right)\right),
 \end{equation}
-\noindent The function $v_{j}(\vet{x})\in\mathbb{R}^4$ gives the organ surface's tangent plane at $f(\vet{p}_{j})$.
+where $v_{j}(\vet{x})\in\mathbb{R}^4$ gives the organ surface's tangent plane at $f(\vet{p}_{j})$.
 The function $\dplane(\vet{v},\vet{q})$ gives the signed distance between a plane $\vet{v}$ and a 3D point $\vet{q}$.
 The function $\rho:\mathbb{R}\rightarrow\mathbb{R}^{+}$ is an \emph{M-estimator}. % and it is designed to robustly align the reconstructed point $\hat{\vet{q}}_{j}$ with the organ's surface. 
-In fact, from the MVS reconstruction there may be points of $\mathcal{Q}$ that do not belong to the organ or that are poorly reconstructed.
-These points should not be aligned and they are taken care of by the M-estimator, reducing their influence on the energy.
+The MVS reconstruction may contain points off the organ or poorly reconstructed; these are discarded by the M-estimator.
 We experimented with different types of estimators and found that a pseudo-L1 $\rho({x})\overset{\mathrm{def}}{=}\sqrt{{x}^{2}+\epsilon}$ offers good results (typically, $\epsilon = 10^{-4}$).
 
 % We construct \Epoint using an ICP-based energy term.
@@ -244,16 +243,16 @@ We experimented with different types of estimators and found that a pseudo-L1 $\
 % The model should not align these points, and the M-estimator facilitates this by reducing their influence on the energy.
 % We have tested various types and good results are obtained with pseudo-L1 $\rho({x})\overset{\mathrm{def}}{=}\sqrt{{x}^{2}+\epsilon}$ with $\epsilon = 10^{-4}$.
 
-In a similar manner, \Econtour uses virtual point correspondences on the organ surface mesh's occluding contours.
+Similarly, \Econtour uses virtual point correspondences on the organ surface mesh's occluding contours.
 More explicitly, for a given estimate $(\vet{x},s)$ and a given keyframe $i$, we generate a set of virtual correspondences $\mathcal{R}_i=\{\vet{r}_1,\dots ,\vet{r}_{C(i)}\}$
 containing, for each contour pixel $\vet{c}_k$, the unknown position $\vet{r}_k\in\partial \Omega$  of its corresponding 3D point on the model's surface.
 To compute the correspondence we first apply $\ensuremath{f(\cdot;\vet{x})}$ to the organ's surface mesh, and we bring the model in the reference frame of the camera $i$ using $(\mat{R}_{i}, s\,\vet{t}_{i})$.
 Then
 % , using the same intrinsic parameters as the laparoscope, 
-we render the surface mesh as described in \sect{sec:Initialization} and we store all the pixels on the silhouette boundary in a set $\mathcal{B}$. 
+we render the surface mesh as described in \sect{sec:Initialization} and store all the pixels on the silhouette boundary in a set $\mathcal{B}$. 
 We compute for each contour pixel $\vet{c}_k\in \mathcal{C}_j$ its closest point $\vet{b}_k\in \mathcal{B}$.
-Finally, we set $\vet{r}_k$ as the 3D position of $\vet{b}_k$, which is computed using the render's depth buffer.
-From all the correspondences $\mathcal{R}_i$, the term \Econtour is computed as:
+Finally, we set $\vet{r}_k$ as the 3D position of $\vet{b}_k$, computed using the render's depth buffer.
+From all the correspondences $\mathcal{R}_i$, \Econtour is computed as:
 \begin{equation}
 \label{eq:contour}
 \begin{split}
@@ -262,8 +261,7 @@ From all the correspondences $\mathcal{R}_i$, the term \Econtour is computed as:
 \end{split}
 \end{equation}
 \noindent where $C$ is the total number of contour fragment pixels.
-Similarly to \Epoint, we use the M-estimator $\rho$ to achieve a robust registration and account for possible erroneous contour fragments: sometimes, \eg, 
-the contour fragment can incorrectly break at low-contrast edges.
+Similarly to \Epoint, we use the M-estimator $\rho$ to achieve robust registration.
 
 % We construct \Econtour similarly with virtual point correspondences.
 % Specifically, for a given pair $(\vet{x},s)$ and a given keyframe $i$ we construct a set of virtual correspondences $\mathcal{R}_i=\{\vet{r}_1,\dots ,\vet{r}_{C(i)}\}$ where $\vet{r}_k\in\partial \Omega$ denotes the unknown position of the $k^{th}$ contour fragment pixel $\vet{c}_k$ on the model's surface.
@@ -287,7 +285,7 @@ the contour fragment can incorrectly break at low-contrast edges.
 % and we give details for each test case in the experimental section. The weights $\lambdaContour$ and $\lambdaInternal$ are fixed in all experiments at $\lambdaContour=100$ and $\lambdaInternal=50$. 
 
 \subsection{Optimisation}
-In order to improve convergence, we use a stiff-to-flexible strategy to optimize $E$. We start with a stiff model, we optimize $E$, and then we reduce the stiffness to account for more and more deformation.
+In order to improve convergence, we use a stiff-to-flexible strategy to optimize $E$. We start with a stiff model, we optimize $E$, and then we reduce the stiffness to account for more deformation.
 We usually use $6$ stiffness levels, in which the value of $\lambdaInternal$ is halved \wrt the previous level, \ie $\lambdaInternal(l)=\lambdaInternal(l-1)/2$.
 At each level we alternate between computing the virtual correspondence sets ($\mathcal{R}_i$ and $\mathcal{P}$) and optimising $E$, via Gauss-Newton iterations with backtracking line search.
 This alternating process proceeds until either convergence or a maximum of $20$ iterations is reached.

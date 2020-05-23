@@ -3,7 +3,7 @@
 \section{Related Work}
 \label{sec:sota}
 \subsection{Scope}
-The types of AR-guided laparosurgery with the most clinical impact involve the fusion of \emph{pre-operative} medical image data from CT or MR, to which we therefore limit the scope of this section.
+The types of AR-guided laparosurgery with the most clinical impact involve the fusion of \emph{pre-operative} medical image data from MR or CT, to which we therefore limit the scope of this section.
 A broader perspective, including fusion with intra-operative images such as Cone Beam CT (CBCT), is given in~\cite{Bernhardt2017}.
 An important categorization of approaches is whether they work with monocular~\cite{affineTracking} or stereo laparoscopes~\cite{21142942,conf/miccai/Amir-KhaliliNPHA13,Cohen2010Prostate,hamarneh2014igrs,haouchine13,Su2009, MaierHein2013}.
 As ours is in the former category, we mostly focus on that category.
@@ -31,7 +31,7 @@ There is no general consensus on the best model to use, as it depends heavily on
 
 A general limitation of the previous works is that they only use one monocular or one stereo image pair to constrain the initial registration.
 This is limiting because registration accuracy depends strongly on how much organ surface is visible. 
-This can be very small, particularly for larger organs such as the liver and uterus, leading to poor registration accuracy.
+This can be very small, particularly for larger organs such as the liver and uterus, leading to poor registration.
 
 %For the stereo methods a partial 3D reconstruction is computed (known as a \emph{2.5D reconstruction} in computer vision), and all regions of the organ not visible in both images have no 3D information. 
 %Thus the registration is essentially guessed at these regions from the deformation model's prior. 
@@ -42,7 +42,7 @@ This can be very small, particularly for larger organs such as the liver and ute
 
 \subsection{Tracking}
 \label{sec:sotaTracking}
-Almost all monocular approaches rely on the detection and tracking of features, either artificial fiducial markers~\cite{Cohen2010Prostate} inserted on the organ, or natural texture features. The former are invasive and generally not practical. The latter are generally sensitive to illumination changes, large camera motion and occlusion. These factors critically affect the performance of the tracking as they restrain the capability of maintaining the registration, and hence AR visualization, for long periods of time, especially if the organ is deformed or occluded by, \eg, the surgery tools. 
+Almost all monocular approaches rely on the detection and tracking of features, either artificial fiducial markers~\cite{Cohen2010Prostate} inserted on the organ, or natural keypoints. The former are invasive and generally not practical. The latter are sensitive to illumination changes, large camera motion and occlusion. These factors critically affect the performance of tracking as they restrain the capability of maintaining the registration, and hence AR visualization, for long periods of time, especially if the organ is deformed or occluded by, \eg, the surgery tools. 
 
 To date, only one previous work has been capable of robust long duration tracking of the kidney (several minutes) without artificial fiducials~\cite{affineTracking}. 
  %Similarly to~\cite{affineTracking}, we rely on an initial registration to align the model and project features onto the model, required for the tracking phase. 
@@ -108,24 +108,24 @@ The principle is promising but the method requires that the scene is made of a s
 
 \subsection{Contributions}
 \label{sec:contributions}
-This work describes the first complete pipeline to provide AR-guided uterine laparoscopic surgery without artificial markers or tracking equipment. It is therefore strongly compatible with existing workflows and hospital equipment. To achieve this we present several technical innovations that overcome the limits of previous works.% and allow for robust long-duration tracking of a mobile organ whose motion can be independent of surrounding structures.
+This work describes the first complete pipeline to provide AR-guided uterine laparoscopic surgery without artificial markers or tracking equipment. It is therefore strongly compatible with existing workflows and hospital equipment. To achieve this we present technical innovations that overcome the limits of previous works.% and allow for robust long-duration tracking of a mobile organ whose motion can be independent of surrounding structures.
 %The main clinical use cases are for AR-assisted tumor mass localization and resection planning of myomas (uterine fibroids) and adenomyomas. We target the most common clinical setting, using pre-operative 3D images and a standard handheld monocular laparoscope. There is no need for additional equipment such as optical or electromagnetic tracking systems. It is therefore strongly compatible with existing workflows and hospital equipment. 
 
-This paper is a distillation and extension of contributions from three workshop papers~\cite{Collins2044,Collins2013,Collins2017System}. Four significant landmark results have been achieved in laparoscopic AR in this work, which we now summarize. Firstly, we show for the first time that dense \textit{invivo} 3D reconstruction of a laparoscopic scene is achievable with a monocular laparoscope with Structure-from-Motion (SfM) and multi-view stereo (MVS). Following this, SfM and MVS have been applied by various other groups in related problems. Reconstruction is provided up to an unknown scale factor. %, which is the result of an ambiguity between a smaller scene viewed up close with smaller camera motion, compared to a larger scene viewed further away with larger camera motion. 
-This ambiguity is always present using motion-based methods, including SfM and SLAM. %This is a problem because without knowing the reconstruction's absolute scale, we cannot correctly register the model. 
-Secondly, we are the first to recover the reconstruction's absolute scale, by solving it simultaneously with the initial registration via numerical optimization. %Specifically, scale is constrained by physical properties of the organ's deformable model, and the problem is solved by jointly registering the model while simultaneously optimizing the reconstruction scale factor. 
-Thirdly, we are the first to show how the organ's silhouette (i.e. contours in the laparoscopic images corresponding to the organ's boundary) can be used to significantly improve the initial registration. The contours complement information from the scene reconstruction, by providing landmarks that fixate the model at its visible silhouette (\fig{fig:initialRegOverview}). This is particularly important for organs that are very smooth and lack strong geometric detail, such as the uterus. Without contours, the model can incorrectly slide over the reconstruction and drift from the correct solution. Fourthly, we are the first to track a mobile organ (one that can move independently of surrounding structures such as the uterus) using robust feature-based matching within a tracking-by-detection framework. This allows the organ to be tracked over long durations (\ie several dozens of minutes) in the presence of difficulties including partial views, occlusions and when the organ moves out of the laparoscope's field-of-view.
+This paper is a distillation and extension of contributions from three workshop papers~\cite{Collins2044,Collins2013,Collins2017System}. Four significant landmark results have been achieved for the first time in laparoscopic AR in this work, which we now summarize. Firstly, we show for the first time that dense \textit{invivo} 3D reconstruction is achievable with a monocular laparoscope with Structure-from-Motion (SfM) and multi-view stereo (MVS). Following this, SfM and MVS have been applied by other groups in related problems. Reconstruction is provided up to an unknown scale factor. %, which is the result of an ambiguity between a smaller scene viewed up close with smaller camera motion, compared to a larger scene viewed further away with larger camera motion. 
+This ambiguity is always present in motion-based methods, including SfM and SLAM. %This is a problem because without knowing the reconstruction's absolute scale, we cannot correctly register the model. 
+Secondly, we recover the reconstruction's absolute scale, by solving it simultaneously with the initial registration via numerical optimization. %Specifically, scale is constrained by physical properties of the organ's deformable model, and the problem is solved by jointly registering the model while simultaneously optimizing the reconstruction scale factor. 
+Thirdly, we show how the organ's silhouette (contours in the laparoscopic images corresponding to the organ's boundary) can be used to significantly improve the initial registration. This  fruitfully complements information from the scene reconstruction (\fig{fig:initialRegOverview}),  and is particularly important for organs that are very smooth and lack strong geometric detail, such as the uterus. Without contours, the model can incorrectly slide over the reconstruction and drift from the correct solution. Fourthly, we track a mobile organ (one that, like the uterus, can move independently of surrounding structures) using robust keypoint matching within tracking-by-detection. This allows the organ to be tracked over long durations (several dozens of minutes) in the presence of difficulties including partial views, occlusions and when the organ moves out of the laparoscope's field-of-view.
 
 \SG{This paper presents several improvements of our complete AR pipeline towards clinical use and to reduce manual effort during the initial registration.
 Specifically, four main contributions considerably improved our previous work.
-We (\emph{\textrm{i}}) ease the contour marking process by using interactive touchscreen requiring only non-precise finger strokes with a touchscreen interface, thus making the approach much faster and more practical in the OR.
-We (\emph{\textrm{ii}}) generalize our approach to work with all deformable models of interest, including mechanical models such as Finite Element Models (FEMs).
-We (\emph{\textrm{iii}}) introduce for the first time a semi-automatic mechanism to collect the frames for the 3D reconstruction of the organ by SfM.
+We (\emph{\textrm{i}}) ease  contour marking by using a touchscreen requiring only non-precise finger strokes, thus making the approach much faster and more practical in the OR.
+We (\emph{\textrm{ii}}) generalize our approach to all deformable models of interest, including mechanical models such as Finite Element Models (FEMs).
+We (\emph{\textrm{iii}}) propose a semi-automatic mechanism to collect the frames for 3D reconstruction of the organ by SfM.
 The tool helps and guides the surgeon in the exploratory phase to acquire sharp images that are also sufficiently spread in space.
-We show that this enhancement has an important impact on reconstructed model quality and tracking robustness.
-We (\emph{\textrm{iv}}) considerably improve the tracking algorithm to work with a robust real-time SIFT detector which sensibly increases the robustness and smoothness of tracking.
-We present a manual mechanism to update the model's features over time to overcome small appearance and geometric changes in the organ during the tracking step.
-This allows us to handle gradual texture changes of the organ during surgery and significantly improves tracking quality as well.
+We show that this has a dramatic impact on the reconstruction quality and tracking robustness.
+We (\emph{\textrm{iv}}) considerably improve the tracking algorithm to work with a robust real-time SIFT detector, which sensibly increases tracking robustness and smoothness.
+We present a manual mechanism to update the model's keypoints over time to overcome small appearance and geometric changes in the organ during tracking.
+This allows us to handle gradual texture changes of the organ during surgery and significantly improves tracking quality.
 We compare tracking performance against the state-of-the-art in real-time monocular laparoscopic tracking (ORB-SLAM~\cite{orbslam_laparo}).}
 
 The result is a system that we have tested $12$ times live in the OR, which we recall has not been previously achieved for any organ, including the uterus, using monocular laparoscopes and a markerless approach.

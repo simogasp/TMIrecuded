@@ -7,7 +7,7 @@
 \label{sec:registrationOverview}
 
 \subsubsection{Solution Overview}
-\fig{fig:initialRegOverview} shows the initial registration problem, which is  challenging to solve for two main issues: \textit{(i)} the model to be registered is textureless and \textit{(ii)} the registration is non-rigid.
+\fig{fig:initialRegOverview} shows the initial registration problem, which is challenging to solve for two main issues: \textit{(i)} the model to be registered is textureless and \textit{(ii)} the registration is non-rigid.
 % We illustrate the problem in \fig{fig:initialRegOverview}. This stage is more challenging to solve than the tracking stage because \textit{(i)} we have no texture information associated with the organ's surface and \textit{(ii)} it is a deformable registration. 
 To overcome these problems, our approach includes a dense 3D reconstruction of the organ's surface using an \emph{exploratory video} and SfM/MVS reconstruction, for which mature and open-source methods exist~\cite{Meshroom}. Given this reconstruction, we solve the initial registration with numerical optimization of a system that combines data constraints (organ-to-reconstruction distances and contour fragment distances) with constraints from the model's internal energy.
 
@@ -82,10 +82,10 @@ We recall that all MVS reconstructions are  only computed up to an unknown globa
 %We summarise the initial registration process as follows. This is similar to~\cite{Collins2044} but with some important improvements that we list at the end of the paragraph. First a rough initialisation is made using a rigid transform and a small amount of manual assistance. 
 
 \subsubsection{Silhouette Contours}
-An occluding contour is a boundary in a 2D image between an object surface and another surface that is further away, that it partially occludes. This includes  \emph{self-occluding contours}, which are formed where the object self-occludes, and \emph{silhouette contours}, which are formed by the object and a background structure. Most organs are approximately convex, so self-occluding contours are rare events. In contrast, silhouette contours are common, and we propose to use these to constrain the organ's shape during registration. We require the silhouette contours to be provided in a keyframe image (\fig{fig:initialRegOverview}). This is very difficult to automate because not all of the organ's boundaries in an image correspond to silhouette contours. Indeed, they are either silhouette contours, or contours formed by the silhouette of another structure occluding the organ. We illustrate this in \fig{fig:initialRegOverview} (top row) where abdominal fat occludes the posterior region of the uterus. The boundary between fat and the uterus conveys no information about the shape of the uterus.  
+An occluding contour is a boundary in a 2D image between an object surface and another surface that is further away, that it partially occludes. This includes  \emph{self-occluding contours}, which are formed where the object self-occludes, and \emph{silhouette contours}, which are formed by the object and a background structure. Most organs are approximately convex, so self-occluding contours are rare events. \SG{By} contrast, silhouette contours are common, and we propose to use these to constrain the organ's shape during registration. We require the silhouette contours to be provided in a keyframe image (\fig{fig:initialRegOverview}). This is very difficult to automate because not all of the organ's boundaries in an image correspond to silhouette contours. Indeed, they are either silhouette contours, or contours formed by the silhouette of another structure occluding the organ. We illustrate this in \fig{fig:initialRegOverview} (top row) where abdominal fat occludes the posterior region of the uterus. The boundary between fat and the uterus conveys no information about the shape of the uterus.  
 %we must both recover the organ's boundaries in an image, and infer which of those are silhouette contours compared with contours formed by another structure occluding the organ. 
 
-Consequently, extracting an organ's silhouette contours cannot be solved directly by organ segmentation, because this does not distinguish the above contour types. Furthermore, organ segmentation is itself a hard problem with laparoscopic images. We therefore propose to extract silhouette contours with a fast semi-automatic process and a touch-screen interface. Each keyframe is shown and the operator traces the organ's silhouette contours with a finger stroke. We apply the method of~\cite{Mortensen95intelligentscissors} to snap the finger stroke to the nearest image contour, based on active contours attracted to the dominant image edge adjacent. This is very fast and a keyframe is processed in a matter of seconds. %Occasionally, snapping may fail mainly in cases where the contour fragment is very low contrast. In these cases the operator sets the contour to inactive, meaning that it is not used during registration. 
+Consequently, extracting an organ's silhouette contours cannot be solved directly by organ segmentation, because this does not distinguish the above contour types. Furthermore, organ segmentation is itself a hard problem with laparoscopic images. We therefore propose to extract silhouette contours with a fast semi-automatic process and a touch-screen interface. \SG{The keyframes are displayed} and the operator traces the organ's silhouette contours with a finger stroke. We apply the method of~\cite{Mortensen95intelligentscissors} to snap the finger stroke to the nearest image contour, based on active contours attracted to the dominant image edge adjacent. This is very fast and a keyframe is processed in a matter of seconds. %Occasionally, snapping may fail mainly in cases where the contour fragment is very low contrast. In these cases the operator sets the contour to inactive, meaning that it is not used during registration. 
 
 
 
@@ -197,11 +197,13 @@ Thus, the energy $E(\vet{x},s)$ is defined as:
 \begin{equation}
 \label{eq:totalCost}
 \begin{split}
-E(\vet{x},s)=\Epoint(\vet{x},s;\mathcal{Q}) & + \lambdaContour\Econtour(\vet{x},s;\mathcal{C}_{1},\dots ,\mathcal{C}_{N})\\
-& +\lambdaInternal\Einternal(\vet{x}),
+E(\vet{x},s)=\Epoint(\vet{x},s;\mathcal{Q}) & + \lambdaContour\Econtour(\vet{x},s)
+% \\;\mathcal{C}_{1},\dots ,\mathcal{C}_{N}
+% & 
++\lambdaInternal\Einternal(\vet{x}),
 \end{split}
 \end{equation}
-\noindent where $\lambdaContour$ and $\lambdaInternal$ are scalar weights (typically, $\lambdaContour=100$ and $\lambdaInternal=50$), and $\mathcal{C}_i$ is the set of all pixels belonging to the contour fragments in keyframe $i$.
+\noindent where $\lambdaContour$ and $\lambdaInternal$ are scalar weights (\SG{with defaults} $\lambdaContour=100$ and $\lambdaInternal=50$).
 
 % The energy function $E(\vet{x},s)\in\mathbb{R}^+$ consists of the point cloud data term \Epoint, which encourages the organ's surface to fit to the reconstructed point cloud $\mathcal{Q}$, the contour data term \Econtour, which encourages the organ's silhouette contours to fit to the silhouette contour fragments, and the model's internal energy $\Einternal(\vet{x})$:
 % \begin{equation}
@@ -225,7 +227,7 @@ where $v_{j}(\vet{x})\in\mathbb{R}^4$ gives the organ surface's tangent plane at
 The function $\dplane(\vet{v},\vet{q})$ gives the signed distance between a plane $\vet{v}$ and a 3D point $\vet{q}$.
 The function $\rho:\mathbb{R}\rightarrow\mathbb{R}^{+}$ is an \emph{M-estimator}. % and it is designed to robustly align the reconstructed point $\hat{\vet{q}}_{j}$ with the organ's surface. 
 The MVS reconstruction may contain points off the organ or poorly reconstructed; these are discarded by the M-estimator.
-We experimented with different types of estimators and found that a pseudo-L1 $\rho({x})\overset{\mathrm{def}}{=}\sqrt{{x}^{2}+\epsilon}$ offers good results (typically, $\epsilon = 10^{-4}$).
+We experimented with different types of estimators and found that a pseudo-L1 $\rho({x})\overset{\mathrm{def}}{=}\sqrt{{x}^{2}+\epsilon}$ offers good results (\SG{with default} $\epsilon = 10^{-4}$).
 
 % We construct \Epoint using an ICP-based energy term.
 % This works using a set of \emph{virtual point correspondences} $\mathcal{P}=\{\vet{p}_1,\dots \vet{p}_M\}$ with $\vet{p}_j\in\partial \Omega$ denoting the unknown position of point $j$ on the organ's surface mesh. 
@@ -250,18 +252,19 @@ To compute the correspondence we first apply $\ensuremath{f(\cdot;\vet{x})}$ to 
 Then
 % , using the same intrinsic parameters as the laparoscope, 
 we render the surface mesh as described in \sect{sec:Initialization} and store all the pixels on the silhouette boundary in a set $\mathcal{B}$. 
+Let $\mathcal{C}_i$  the set of all pixels belonging to the contour fragments in keyframe $i$.
 We compute for each contour pixel $\vet{c}_k\in \mathcal{C}_j$ its closest point $\vet{b}_k\in \mathcal{B}$.
 Finally, we set $\vet{r}_k$ as the 3D position of $\vet{b}_k$, computed using the render's depth buffer.
 From all the correspondences $\mathcal{R}_i$, \Econtour is computed as:
 \begin{equation}
 \label{eq:contour}
 \begin{split}
- & \Econtour(\vet{x},s;\mathcal{C}_{1},\dots,\mathcal{C}_{N}) = \\ 
- &  \frac{1}{C}\sum_{i=1}^{N}\sum_{\substack{\vet{c}_{k}\in\mathcal{C}_{i}\\\vet{r}_{k}\in\mathcal{R}_{i}}}\rho\left(\|\pi\left(f(\vet{r}_{k})\right)-\vet{c}_{k}\|\right),
+% ;\mathcal{C}_{1},\dots,\mathcal{C}_{N}
+ & \Econtour(\vet{x},s) = \frac{1}{C}\sum_{i=1}^{N}\sum_{\substack{\vet{c}_{k}\in\mathcal{C}_{i}\\\vet{r}_{k}\in\mathcal{R}_{i}}}\rho\left(\|\pi\left(f(\vet{r}_{k})\right)-\vet{c}_{k}\|\right),
 \end{split}
 \end{equation}
 \noindent where $C$ is the total number of contour fragment pixels.
-Similarly to \Epoint, we use the M-estimator $\rho$ to achieve robust registration.
+Similarly to \Epoint, we use the M-estimator $\rho$ for robustness.
 
 % We construct \Econtour similarly with virtual point correspondences.
 % Specifically, for a given pair $(\vet{x},s)$ and a given keyframe $i$ we construct a set of virtual correspondences $\mathcal{R}_i=\{\vet{r}_1,\dots ,\vet{r}_{C(i)}\}$ where $\vet{r}_k\in\partial \Omega$ denotes the unknown position of the $k^{th}$ contour fragment pixel $\vet{c}_k$ on the model's surface.

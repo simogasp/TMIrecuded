@@ -88,8 +88,8 @@ See video material here: \url{https://bit.ly/2m9rGHH}.
 
 \subsection{Evaluation with Human Uteri in Pre-recorded Videos}
 \label{sec:orbslam}
-We present results on videos recorded during laparoscopic surgery. We test accuracy, computational complexity and the influence of the keypoint detector in our real-time organ tracking by detection system, named RT-OTD in the experiments.
-We compare it with ORB-SLAM, which is state-of-the-art for SLAM-based tracking in laparoscopic videos~\cite{orbslam_laparo}. We also show augmentation results, completing the AR pipeline.
+We present results on videos recorded during laparoscopic surgery \SG{in this section}. We test accuracy, computational complexity and the influence of the keypoint detector in our real-time organ tracking by detection system, named RT-OTD in the experiments.
+We compare it with ORB-SLAM, state-of-the-art for SLAM-based tracking in laparoscopic videos~\cite{orbslam_laparo}. We show augmentation results, completing the AR pipeline.
 
 
 \subsubsection{Automatic Keyframe Selection for 3D Reconstruction}
@@ -100,14 +100,14 @@ We then proceed with reconstruction and tracking for each strategy.
 Qualitatively, \emph{auto} gave a better model as all the others have many holes.
 This is explained by 1) some selected keyframes are blurry and 2) there are many similar keyframes, thus preventing a complete coverage of the full organ shape.}
 
-\SG{We then recorded another video ($\sim \SI{60}{\second}$) in order to test the tracking algorithm using the 3D models obtained from each method.
+\SG{We recorded another video ($\sim \SI{60}{\second}$) in order to test the tracking  using the 3D models obtained from each method.
 The video was purposely challenging, with the camera looking at parts of the uterus that were not completely reconstructed in any of the models, and no additional keyframes added during tracking.
 \emph{auto} was able to track the largest number of frames ($\SI{55.18}{\percent}$), followed by \emph{equally} ($\SI{53.33}{\percent}$), \emph{middle} ($\SI{52.48}{\percent}$), \emph{beginning} ($\SI{46.14}{\percent}$) and \emph{end} ($\SI{31.08}{\percent}$).
 \fig{fig:statsKframeSelection} reports tracking statistics.
 In general, \emph{auto} recovers a larger number of valid matches, both \wrt all the keyframes in the database (\fig{fig:statsKframeSelection}.a) and the winning keyframe (\fig{fig:statsKframeSelection}.b) and computes the pose with a larger number of inliers.
 The reprojection error is also slightly better than all the other methods, especially considering the higher number of inliers over which it is computed.
-Overall, we show that automatic keyframe selection improves the quality of reconstruction and  tracking.
-Any sampling method is always potentially affected by motion blur whereas guiding the acquisition of the keyframe reduces the risk.}
+Overall, automatic keyframe selection improves the quality of reconstruction and tracking.
+Any sampling method is always potentially affected by motion blur; guiding the acquisition of the keyframe reduces the risk.}
 %$\SI{46.14}{\percent}$ $\SI{52.48}{\percent}$ $\SI{31.08}{\percent}$ $\SI{53.33}{\percent}$ $\SI{55.18}{\percent}$
 
 \subsubsection{Comparison of Different Tracking Keypoints}
@@ -146,7 +146,7 @@ Despite the fact that SURF recovers, on average, more matches between $\mathcal{
 \end{figure*}
 \begin{figure*}[ht]
   \centering
-  \includegraphics[width=0.835\textwidth]{./figs/ARinOR.pdf}
+  \includegraphics[width=0.81\textwidth]{./figs/ARinOR.pdf}
 \caption{Patient 1: (a) MR image showing one myoma, (b) myoma augmentation, (c) resection of the myoma, (d) deployment of our AR system in the OR. Patient 2: (e) MR image showing three myomas, (f,g,h) myoma augmentation. Patient 3: (i) two myomas segmented from the MR images, (j,k,m) augmentation of the myomas and the uterine cavity.}
 \label{fig:realOR}
 \end{figure*}
@@ -159,7 +159,7 @@ The two videos and further results are shown in the video material.
 
 \subsubsection{Tracking Accuracy and Comparison with ORB-SLAM}
 We evaluate our tracking stage using three different human uteri captured before hysterectomy. They can be seen in \fig{fig:hister} and we refer to them as $U_1$, $U_2$ and $U_3$.
-\begin{figure}[htbp]
+\begin{figure}[htb]
   \centering
   \includegraphics[width=0.4\textwidth]{./figs/snapshotsCompressed.pdf}
 \caption{The 3D models from MVS, the coagulation marks and the registered models.}
@@ -172,9 +172,9 @@ This enabled us to generate Ground-Truth (GT) camera poses by tracking the obtai
 % This produced a set of small regions approximately $\SI{3}{\milli\metre}$ in diameter which could be accurately tracked. 
 We show examples of these markers in \fig{fig:hister}. 
 The marks were tracked using a small patch surrounding the image position of each marker, and fitted using a 2D affine transform. We verified all tracks and reinitialized them if they were lost. We then computed the marks’ 3D positions and the uterus 3D poses in each frame using SfM. If fewer than four marks were visible in a frame we considered that the GT pose could not be estimated for that frame. We masked each mark so that the methods under comparison could not exploit the artificial texture each mark introduces. We computed the optimal scale factor for each method with respect to GT to resolve the scale ambiguity.
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
-  \includegraphics[width=0.51\textwidth]{./figs/Accuracy_errors.pdf}
+  \includegraphics[width=0.48\textwidth]{./figs/Accuracy_errors.pdf}
 \caption{Rotation error, position error and camera trajectory, for $U_1$, $U_2$ and $U_3$ from top to bottom.}
 \label{fig:hister_results}
 % \vspace{-3mm}
@@ -190,10 +190,9 @@ The results with RT-OTD are very accurate  and stable in all cases, with an aver
 
 \subsubsection{Robustness Test for Tracking}
 \label{subsec:robustTracking}
-\SG{We evaluated the robustness of tracking \wrt occlusions, using the keyframes of $5$ patients.
-We used the keyframes because the GT pose is readily available from SfM reconstruction.
-We considered two types of experiments in which we simulated occlusions of the uterus.
-In the first experiment, we used the mask of the uterus to add a black occluder starting from the external contour and towards the center of the uterus.
+\SG{Since it is hard to obtain GT data in the laparoscopic setting, we evaluated tracking robustness \wrt occlusions from the keyframes used for 3D reconstruction, for which a reference pose is available from SfM, forming the GT. 
+Using the data collected from $5$ patients, we simulated occlusions and compared the pose computed by the tracker to the GT. 
+In a first experiment, we used the known mask of the uterus to add a black occluder starting from the external contour and towards the center of the uterus.
 We gradually increased the size of the occluder and launched tracking on the keyframe.
 \fig{fig:stressTest} shows the overall percentage of frames that could be tracked against the occlusion ratio.
 The occlusion ratio is computed from the number of pixels of the occluder and of the uterus.
@@ -201,7 +200,7 @@ The graph shows that tracking copes with up to $\SI{60}{\percent}$ occlusion, wh
 For the same experiment, \fig{fig:stressTest} shows pose rotational error.
 The error is below $\sim\ang{1}$ for up to $\SI{50}{\percent}$ occlusion.}
 
-\SG{In the second experiment we simulated the occlusions as growing black spots randomly distributed on the the uterus.
+\SG{In a second experiment we simulated the occlusions as growing black spots randomly distributed on the the uterus.
 This can simulate, \eg, the presence of tools or bleeding covering or changing the appearance of the uterus.
 \fig{fig:stressTest} shows that tracking successfully estimates pose for up to $\SI{60}{\percent}$ occlusion, where $\sim\SI{90}{\percent}$ of the frames are tracked, with rotational error below or of the order of $\sim\ang{1}$.}
 
@@ -463,6 +462,6 @@ In \fig{fig:realOR}(d) we show our system deployed in the operating room.
 The MR of the second patient is shown in \fig{fig:realOR}(e), showing three myomas that are visualized with AR in \fig{fig:realOR}(f,g,h).
 The third patient had two myomas whose segmentation from MR is shown in \fig{fig:realOR}(i).
 Examples of augmentation of the myomas using bright colors and the uterine cavity mesh are displayed in \fig{fig:realOR}(j,k,m).
-We recall that this is the first time one demonstrates markerless registration and AR during \emph{live} laparoscopic surgery.
+We recall that this is the first time one demonstrates markerless registration and AR during \emph{live} laparoscopic surgery. \SG{In our experience both the initial and tracking AR stages are valuable to the surgeon. The first stage is necessary to give the first appreciation of hidden structure locations (tumours and the uterine canal). Recall however that the surgeon is using a monocular camera. The value of the tracking stage is to give the sensation of depth and parallax. Specifically, the surgeon can move the uterus with the cannula and they receive interactive visual feedback. Depth and spatial comprehension is therefore much easier to comprehend because of motion and the parallax effect.}
  
 

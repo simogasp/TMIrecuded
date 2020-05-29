@@ -27,7 +27,7 @@ Of the stereo methods, some perform registration with a manual GUI~\cite{Cohen20
 In some works the registration is refined by Iterative Closest Point (ICP)~\cite{hamarneh2014igrs,Su2009}. % and in other works tracking is performed with texture features~\cite{haouchine13}.
 The initial registration requires non-visual constraints to prevent unlikely or physically implausible deformations. Various models have been used, including rigidity~\cite{Su2009}, deformation smoothness with 3D splines~\cite{conf/miccai/Amir-KhaliliNPHA13} and bio-mechanics~\cite{hamarneh2014igrs,haouchine13,Reichard2017}.
 There is no general consensus on the best model to use, as it depends heavily on available boundary conditions, available knowledge of mechanical tissue properties, and computational resources.
-\SG{Recent works have built on deep learning~\cite{Brunet2019,Pfeiffer2019,Mahmood2018}, showing promising results on synthetic data only.}
+\SG{Recent works have built on deep learning~\cite{Brunet2019,Pfeiffer2019,Mahmood2018}, showing promising results but they do not work with real monocular images}.
 
 A general limitation of the previous works is that they only use one monocular or one stereo image pair to constrain the initial registration.
 This is limiting because registration accuracy depends strongly on how much organ surface is visible. 

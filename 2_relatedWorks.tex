@@ -117,13 +117,13 @@ Secondly, we recover the reconstruction's absolute scale, by solving it simultan
 Thirdly, we show how the organ's silhouette (contours in the laparoscopic images corresponding to the organ's boundary) can be used to significantly improve the initial registration. This  fruitfully complements information from the scene reconstruction (\fig{fig:initialRegOverview}),  and is particularly important for organs that are very smooth and lack strong geometric detail, such as the uterus. Without contours, the model can incorrectly slide over the reconstruction and drift from the correct solution. Fourthly, we track a mobile organ (one that, like the uterus, can move independently of surrounding structures) using robust keypoint matching within tracking-by-detection. This allows the organ to be tracked over long durations (several dozens of minutes) in the presence of difficulties including partial views, occlusions and when the organ moves out of the laparoscope's field-of-view.
 
 \SG{This paper presents several improvements of our complete AR pipeline towards clinical use and to reduce manual effort during the initial registration.
-Specifically, four main contributions considerably improved our previous work.
+Specifically, three main contributions considerably improved our previous work.
 We (\emph{\textrm{i}}) ease  contour marking by using a touchscreen requiring only non-precise finger strokes, thus making the approach much faster and more practical in the OR.
-We (\emph{\textrm{ii}}) generalize our approach to all deformable models of interest, including mechanical models such as Finite Element Models (FEMs).
-We (\emph{\textrm{iii}}) propose a semi-automatic mechanism to collect the frames for 3D reconstruction of the organ by SfM.
+%We (\emph{\textrm{ii}}) generalize our approach to all deformable models of interest, including mechanical models such as Finite Element Models (FEMs).
+We (\emph{\textrm{ii}}) propose a semi-automatic mechanism to collect the frames for 3D reconstruction of the organ by SfM.
 The tool helps and guides the surgeon in the exploratory phase to acquire sharp images that are also sufficiently spread in space.
 We show that this has a dramatic impact on the reconstruction quality and tracking robustness.
-We (\emph{\textrm{iv}}) considerably improve the tracking algorithm to work with a robust real-time SIFT detector, which sensibly increases tracking robustness and smoothness.
+We (\emph{\textrm{iii}}) considerably improve the tracking algorithm to work with a robust real-time SIFT detector, which sensibly increases tracking robustness and smoothness.
 We present a manual mechanism to update the model's keypoints over time to overcome small appearance and geometric changes in the organ during tracking.
 This allows us to handle gradual texture changes of the organ during surgery and significantly improves tracking quality.
 We compare tracking performance against the state-of-the-art in real-time monocular laparoscopic tracking (ORB-SLAM~\cite{orbslam_laparo}).}

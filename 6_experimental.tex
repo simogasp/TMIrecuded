@@ -170,7 +170,11 @@ The uterus body was marked by the surgeon with a bipolar grasper in $12-15$ diff
 This enabled us to generate Ground-Truth (GT) camera poses by tracking the obtained set of small marked regions ($\sim\SI{3}{\milli\metre}$ in diameter).
 % This produced a set of small regions approximately $\SI{3}{\milli\metre}$ in diameter which could be accurately tracked. 
 We show examples of these markers in \fig{fig:hister}. 
-The marks were tracked using a small patch surrounding the image position of each marker, and fitted using a 2D affine transform. We verified all tracks and reinitialized them if they were lost. We then computed the marks' 3D positions and the uterus 3D poses in each frame using SfM. If fewer than four marks were visible in a frame we considered that the GT pose could not be estimated for that frame. We masked each mark so that the methods under comparison could not exploit the artificial texture each mark introduces. We computed the optimal scale factor for each method with respect to GT to resolve the scale ambiguity.
+The marks were tracked using a small patch surrounding the image position of each marker, and fitted using a 2D affine transform. 
+We verified all tracks and reinitialized them if they were lost. We then computed the marks' 3D positions and the uterus 3D poses in each frame using SfM. 
+If fewer than four marks were visible in a frame we considered that the GT pose could not be estimated for that frame. 
+We masked each mark so that the methods under comparison could not exploit the artificial texture each mark introduces. 
+We computed the optimal scale factor for each method \wrt GT to resolve the scale ambiguity.
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.48\textwidth]{./figs/Accuracy_errors.pdf}
@@ -205,11 +209,11 @@ This can simulate, \eg, the presence of tools or bleeding covering or changing t
 
 \begin{figure*}
   \centering
-  \includegraphics[width=0.16\textwidth]{./figs/kframeSelection/beginning.png}
-  \includegraphics[width=0.16\textwidth]{./figs/kframeSelection/middle.png}
-  \includegraphics[width=0.16\textwidth]{./figs/kframeSelection/end.png}
-  \includegraphics[width=0.16\textwidth]{./figs/kframeSelection/equally.png}
-  \includegraphics[width=0.205\textwidth]{./figs/kframeSelection/auto.png}
+  \includegraphics[width=0.12\textwidth]{./figs/kframeSelection/beginning.png}
+  \includegraphics[width=0.12\textwidth]{./figs/kframeSelection/middle.png}
+  \includegraphics[width=0.12\textwidth]{./figs/kframeSelection/end.png}
+  \includegraphics[width=0.12\textwidth]{./figs/kframeSelection/equally.png}
+  \includegraphics[width=0.15\textwidth]{./figs/kframeSelection/auto.png}
   \caption{From left to right, the 3D models generated using the keyframes extracted with \emph{beginning}, \emph{middle}, \emph{end}, \emph{equally}, \emph{auto}.}
   \label{fig:3DresultsKframeSelection}
 \end{figure*}
@@ -461,6 +465,6 @@ In \fig{fig:realOR}(d) we show our system deployed in the operating room.
 The MR of the second patient is shown in \fig{fig:realOR}(e), showing three myomas that are visualized with AR in \fig{fig:realOR}(f,g,h).
 The third patient had two myomas whose segmentation from MR is shown in \fig{fig:realOR}(i).
 Examples of augmentation of the myomas using bright colors and the uterine cavity mesh are displayed in \fig{fig:realOR}(j,k,m).
-We recall that this is the first time one demonstrates markerless registration and AR during \emph{live} laparoscopic surgery. \SG{In our experience both the initial and tracking AR stages are valuable to the surgeon. The first stage is necessary to give the first appreciation of hidden structure locations (tumours and the uterine canal). Recall however that the surgeon is using a monocular camera. The value of the tracking stage is to give the sensation of depth and parallax. Specifically, the surgeon can move the uterus with the cannula and they receive interactive visual feedback. Depth and spatial comprehension is therefore much easier to comprehend because of motion and the parallax effect.}
+We recall that this is the first time one demonstrates markerless registration and AR during \emph{live} laparoscopic surgery. \SG{In our experience both the initial and tracking AR stages are valuable to the surgeon. The first stage is necessary to give the first appreciation of hidden structure locations (tumours and the uterine canal). Recall however that the surgeon is using a monocular camera. The value of the tracking stage is to give the sensation of depth and parallax, and to help orient the uterus to establish a good resection plane. Specifically, the surgeon can move the uterus with the cannula and they receive interactive visual feedback. Depth and spatial comprehension of sub-surface structures are easier because of motion and parallax effects.} 
  
 

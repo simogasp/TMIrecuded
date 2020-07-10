@@ -54,7 +54,7 @@
 % \newcommand{\subfig}[2]{\mbox{\cref{#1}#2}\xspace}
 
 %reference to Table with mbox
-\newcommand{\tab}[1]{\mbox{Table \ref{#1}}\xspace}
+\newcommand{\tab}[1]{\mbox{Table~\ref{#1}}\xspace}
 
 %reference to Section with mbox 
 \newcommand{\sect}[1]{\mbox{\S\ref{#1}}\xspace}
@@ -69,7 +69,9 @@
 %use this one for the final version to show all the changes in red
 % \newcommand{\textcomment}[3]{\textcolor{red}{#3}}
 \newcommand{\textcomment}[3]{\textcolor{#2}{#1: #3}}
-\newcommand{\SG}[1]{\textcolor{RawSienna}{#1}}
+%\newcommand{\SG}[1]{\textcolor{RawSienna}{#1}}
+\newcommand{\SG}[1]{#1}
+\newcommand{\SGG}[1]{\textcolor{RawSienna}{#1}}
 \newcommand{\SGC}[1]{\textcomment{SG}{olive}{#1}}
 \newcommand{\AB}[1]{\textcomment{AB}{purple}{#1}}
 \newcommand{\LC}[1]{\textcomment{LC}{ForestGreen}{#1}}

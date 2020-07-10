@@ -4,11 +4,28 @@
 \subsection{Overview}
 %We present a qualitative and quantitative evaluation of the proposed pipeline.
 %We first present a quantitative evaluation with \textit{in-silico} data.
-We first present results with offline videos of real surgeries\footnote{All participants enrolled gave their written informed consent according to the approval of the ethical committee (IRB 2018-A03130-55).}, where we compare our new tracking algorithm \wrt our previous work and SLAM, then describe our experiences with deploying and running the pipeline in the real clinical setting.
+\SGG{We first present some quantitative results for registration and tracking on a phantom.}
+We then present results with offline videos of real surgeries\footnote{All participants enrolled gave their written informed consent according to the approval of the ethical committee (IRB 2018-A03130-55).}, where we compare our new tracking algorithm \wrt our previous work and SLAM, then describe our experiences with deploying and running the pipeline in the real clinical setting.
 We emphasize that all previous works on real-time markerless monocular laparoscopic registration with pre-operative organ models have only been evaluated with pre-recorded video data.
 Thus they have never made the step up to live tests in the OR and their robustness and practicality in the clinical setting have not been validated.
 We finally evaluate three specific points of our pipeline: automatic keyframe selection, occlusion resistance in tracking and the use of new keyframes during tracking.
 See video material here: \url{https://bit.ly/2m9rGHH}.
+
+\subsection{Quantitative Evaluation with phantom}
+\label{subsec:quantitative-evaluation-with-phantom}
+
+\SGG{In our previous paper~\cite{Collins2044} we presented a thoroughly evaluation of the initial registration step on a 3D printed uterus phantom.
+We synthetically deformed the CAD model to simulate a range of different pre-operative shapes of the uterus.
+To test the accuracy of the initial registration, we use an affine deformable model and we assessed the influence of the number of keyframes on the registration accuracy.
+The results showed that the registration error decreases with the number of views, and saturates approximately at \SI{1.4}{\milli\metre} for more than $8$ keyframes.
+More generally, the error distribution tends to increase towards the cervix (\SI{2}{\milli\metre} for $15$ views up to \SI{8}{\milli\metre} for $2$ views) away from the uterus head as the uterus head is quite well constrained by the SfM pointcloud as opposed to the area near the cervix.
+}
+
+\SGG{In the same spirit, we evaluated the accuracy of the tracker on a phantom.
+We evaluated our estimated \wrt the pose estimated with an Aruco chessboard~\cite{GarridoJurado2014}.
+We compare the two estimates using the Relative Pose Error (RPE).
+The median error of our tracker is \SI{1.6}{\milli\metre} (for more details \url{https://bit.ly/2W9qzqy}).
+}
 
 %\subsection{Quantitative Evaluation with Simulation experiments}
 %\label{sec:experiments_Simulation}

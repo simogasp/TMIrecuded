@@ -289,7 +289,7 @@ In general however, the number of tracked frames does not vary considerably but 
 \end{table}
 
 
-%\todo{maybe put the videos on youtube and give links?}
+
 \subsubsection{Computational Times}
 Our hardware is composed of a desktop PC running Linux Ubuntu with an Intel Core i$7$-$5960$X CPU running at \SI{3.00}{\giga\hertz} with \SI{16}{\giga\byte} of RAM and an NVIDIA GeForce GTX $980$ Ti graphics card.
 On average, tracking takes \SI{16.35}{\milli\second} with a full HD $1920\times1080$ image.
@@ -372,7 +372,7 @@ The full video is provided as supplemental material along with videos from other
 % Figures \fig{fig:myomas}(a) and \fig{fig:myomas}(b) show the preoperative data of a patient with two myomas. One myoma was large, with a diameter of \SI{121}{\milli\metre}, and the other medium sized with a diameter of \SI{52}{\milli\metre}. The preoperative mesh of the uterus has $6210$ vertices.
 % %$\mathcal{M}$ was constructed by performing an interactive segmentation of the MRI using MITK~\cite{Wolf_themedical}, followed by meshing with marching cubes, two iterations of Laplacian mesh smoothing and then mesh decimation with quadratic edge collapse~\cite{conf/siggraph/GarlandH97} to give a mesh of $6210$ vertices. 
 % The laparoscopic video was recorded during the patient's myomectomy and we performed the registration and augmentation off-line after surgery on a \SI{50}{\second} video clip before resection began (including the 20 second exploratory phase). We used $10$ keyframes to perform the SfM from the exploratory phase, and this computed correspondences for $321$ image features located on the uterus. The cost function in \eq{eq:totalCost} was optimised in $6$ iterations in approximately \SI{15}{\second}. % with our \CC implementation.
-% % This took approximately \SI{15}{\second} to compute using an unoptimised Matlab implementation with a \CC $z$-buffer implementation. \todo{Pamir's times for optimised \CC}
+% % This took approximately \SI{15}{\second} to compute using an unoptimised Matlab implementation with a \CC $z$-buffer implementation.
 % %The registration for the frames after the exploratory video was achieved using the method described in \sect{sec:registration}, which processed each frame in approximately \SI{37.0}{\milli\second} (or \SI{27}{fps}).
 %  We show four frames from the clip in \fig{fig:myomas}(c), together with an overlay of the uterus surface registered to each frame. Its silhouette boundary is displayed in red. 
 % %We show with a red contour the silhouette boundary of $\mathcal{M}$ in each frame.

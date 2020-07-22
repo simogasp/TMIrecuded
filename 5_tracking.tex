@@ -23,7 +23,9 @@ For each keyframe, we then extract a set of image keypoint and to each one of th
 % denotes the $m^{th}$ feature's 3D position in the model coordinate frame, $I_{m}$ denotes the index of the keyframe from which it was detected and $\vet{d}_{m}$ denotes its descriptor.
 is the 3D point associated to feature detected in the keyframe of index $i_{m}$, with $\vet{d}_{m}$ its associated descriptor.}
 
-The approach can be used with any keypoint detector, such as SIFT~\cite{Lowe:2004:DIF:993451.996342}, ORB~\cite{orbslam_laparo} or SURF~\cite{SURF}. We find that SIFT is superior in general, as in image matching~\cite{Tuytelaars2007}. We used the recent open-source GPU implementation PopSift~\cite{Griwodz2018Popsift} to achieve real-time computation: for a typical HD $1920\times1080$ image of the uterus, up to $3000$ keypoints can be found in about $\SI{11}{\milli\second}$ with a standard GPU.
+The approach can be used with any keypoint detector, such as SIFT~\cite{Lowe:2004:DIF:993451.996342}, ORB~\cite{orbslam_laparo} or SURF~\cite{SURF}.
+We find that SIFT has better performances in image matching~\cite{Tuytelaars2007}.
+We used the recent open-source GPU implementation PopSift~\cite{Griwodz2018Popsift} to achieve real-time computation: for a typical HD $1920\times1080$ image of the uterus, up to $3000$ keypoints can be found in about $\SI{11}{\milli\second}$ with a standard GPU.
 %We use the green channel to compute features, rather than the standard approach of using average intensity.
 %The reason is that the green light penetrates human tissue superficially and do not exhibit as much sub-surface scattering as with red light.
 %The difference is very prominent with the uterus~\cite{DBLP:conf/ipcai/CollinsB12}.

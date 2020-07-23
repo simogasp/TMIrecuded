@@ -209,7 +209,7 @@ The rotation error (in degrees) and position error (in mm) are computed as the E
 There are some gaps in the graphs when GT is not available.
 \SGG{The results with RT-OTD are very accurate  and stable in all cases, with an average position error of $\SI{2}{\milli\metre}$  and an average rotation error of $\ang{3}$.}
 %We also show the camera 3D trajectories estimated by RT-OTD and ORB-SLAM.
-\SGG{\fig{fig:hister_results} also shows the tracking performed with a classic SLAM algorithm, ORB-SLAM.}
+\SGG{\fig{fig:hister_results} also shows the tracking performed with a state-of-the-art open-source implementation of SLAM, ORB-SLAM.}
 While it is able to track a large portion of the first sequence, it quickly degenerates and loses the track for the other two cases.
 Track loss is due to the fact that SLAM builds a model with points from both the moving uterus and the background, violating the rigidity assumption.
 It is also affected by motion blur and the lack of matches with the model.

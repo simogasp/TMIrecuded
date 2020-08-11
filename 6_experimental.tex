@@ -14,23 +14,34 @@ See video material here: \url{https://bit.ly/2m9rGHH}.
 \subsection{Quantitative Evaluation with phantom}
 \label{subsec:quantitative-evaluation-with-phantom}
 
-\begin{figure}[htb]
+\begin{figure*}[htb]
   \centering
-  \includegraphics[width=\columnwidth]{./figs/TRE.pdf}
-\caption{The 3D models from MVS, the coagulation marks and the registered models.}
-\label{fig:TRE}
-\end{figure}
+  \includegraphics[width=0.4\columnwidth]{./figs/phantom.png}
+  \includegraphics[width=0.5\columnwidth]{./figs/affineError.pdf}
+  \includegraphics[width=0.5\columnwidth]{./figs/mechanicalError.pdf}
+  \includegraphics[width=0.4\columnwidth]{./figs/TRE_3Dmodels.pdf}
+  \caption{From left to right, the phantom used for the experiment, the errors for the affine deformations, the errors for the mechanical deformations and the distribution of the errors on the surface of the 3D model.}
+  \label{fig:TRE}
+\end{figure*}
 
 \SGG{In our previous paper~\cite{Collins2044} we presented a thoroughly evaluation of the initial registration step on a 3D printed uterus phantom and different synthetically deformed shapes of the CAD model.
 %We synthetically deformed the CAD model to simulate a range of different pre-operative shapes of the uterus.
 %To test the accuracy of the initial registration, we use an affine deformable model and we assessed the influence of the number of keyframes on the registration accuracy.
 The results showed that the registration error decreases with the number of views, and saturates approximately at \SI{1.4}{\milli\metre} for more than $8$ keyframes.
-More generally, the error distribution tends to increase towards the cervix (\SI{2}{\milli\metre} for $15$ views up to \SI{8}{\milli\metre} for $2$ views) away from the uterus head as the uterus head is quite well constrained by the SfM pointcloud as opposed to the area near the cervix.
+More generally, the error distribution tends to increase towards the cervix (\SI{2}{\milli\metre} for $15$ views up to \SI{8}{\milli\metre} for $2$ views) away from the uterus head as the uterus head is quite well constrained by the SfM point cloud as opposed to the area near the cervix.
 }
 
-\SGG{In the same spirit, we evaluated the accuracy of the tracker on a phantom \wrt the pose estimated with an Aruco chessboard~\cite{GarridoJurado2014}.
-We compared the two estimated trajectories using the Relative Pose Error (RPE).
-The median error of our tracker is \SI{1.6}{\milli\metre} (for more details \url{https://bit.ly/2W9qzqy}).
+\SGG{In this paper we present the overall Target Registration Error (TRE) using the phantom in \fig{fig:TRE}.
+We collected $N_{gt}=200$ images of the whole phantom and we perform a MVS metric reconstruction with the help of a marker of known size.
+We consider this model as the ground truth model of the phantom.
+We then selected a subset of $N_{s}=15$ images to run our reconstruction pipeline and we scaled and aligned the obtained MVS model to the GT model in order to get a metric reconstruction in the same reference frame.
+From the ground truth model we generated $10$ affine deformations of increasing deformation magnitude, as well as $10$ mechanical deformations~\cite{Collins2044}.
+For each generated deformation $\Theta(\cdot)$ we performed our non-rigid registration with the MVS model and we ran our tracker on the remaining $N_{gt}-N_{s}$ images.
+In order to estimate the TRE we discretized the GT model volume with a grid of $100\times100\times100$ voxels and, denoting $V$ the set of voxels in the interior of the uterus, we can define the registration error for each grid point $\vet{q} \in V$ for a given tracked image as $\| \mat{P}_s( \Theta(\vet{q})) -  \mat{P}_{gt}(\vet{q}) \|$, where $\mat{P}_s$ is the pose matrix estimated by the tracker and $\mat{P}_{gt}$ is the ground truth pose provided by the initial reconstruction.
+\fig{fig:TRE} shows the TRE error for each type of deformation at different depth values from the head of the uterus as the average error over all the tracked frames.
+The error at each depth is computed as the average error of all voxels \vet{q} at the same depth.
+The registration error at the head of the uterus ranges from $\SI{1.8}{\milli\metre}$ to $\SI{4.7}{\milli\metre}$ for the most severe affine deformation.
+The error increases towards the cervix, from $\SI{8.2}{\milli\metre}$ to $\SI{12.1}{\milli\metre}$.
 }
 
 %\subsection{Quantitative Evaluation with Simulation experiments}

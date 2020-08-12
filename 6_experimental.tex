@@ -38,10 +38,10 @@ We then run our reconstruction pipeline on a subset of $\termName{N}{s}=15$ imag
 We synthetically deformed the GT model to simulate different preoperative states. We use in this experiment $10$ isovolumetric affine deformations, where there is compression along a principal axis and stretching along the rest of axes, as well as $10$ mechanical deformations~\cite{Collins2044}, using a quadratic deformation law along a principal axis that simulates bending of the organ, composed with an isovolumetric affine transformation.
 For each generated deformation $\Theta(\cdot)$ we performed our non-rigid registration with the MVS model and we ran our tracker on the remaining $\termName{N}{gt}-\termName{N}{s}$ images.
 We discretized the GT model volume with a grid of $100\times100\times100$ voxels and, denoting $\mathcal{V}$ the set of voxels in the interior of the uterus, we can define the registration error for each grid point $\vet{q} \in \mathcal{V}$ for a given tracked image as $\| f( \Theta(\vet{q}),\mathbf{x}_t) -  \mat{P}_{\text{gt}}(\vet{q}) \|$, where $\vet{x}_t$ are the model registration parameters estimated by our pipeline (initial registration and tracking) and $\mat{P}_{\text{gt}}$ is the ground truth pose provided by the initial MVS reconstruction.
-\fig{fig:TRE} shows the TRE error for each type of deformation at different depth values from the head of the uterus as the average error over all the tracked frames.
+\fig{fig:TRE} shows the TRE error for each type of deformation at different depth values from the uterus head as the average error over all the tracked frames.
 The error at each depth is computed as the average error of all voxels \vet{q} at the same depth.
 The registration error at the head of the uterus ranges from $\SI{1.8}{\milli\metre}$ to $\SI{4.7}{\milli\metre}$ for the most severe affine deformation.
-The error increases towards the cervix, from $\SI{8.2}{\milli\metre}$ to $\SI{12.1}{\milli\metre}$.
+The error increases towards the cervix, from $\SI{8.2}{\milli\metre}$ to $\SI{35}{\milli\metre}$.
 }
 
 %\subsection{Quantitative Evaluation with Simulation experiments}

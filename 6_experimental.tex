@@ -24,7 +24,7 @@ See video material here: \url{https://bit.ly/2m9rGHH}.
   \label{fig:TRE}
 \end{figure*}
 
-\SGG{In our previous paper~\cite{Collins2044} we presented a thoroughly evaluation of the initial registration step on a 3D printed uterus phantom and different synthetically deformed shapes of the CAD model.
+\SGG{In our previous paper~\cite{Collins2044} we presented a thorough evaluation of the initial registration step on a 3D printed uterus phantom and different synthetically deformed shapes of the CAD model.
 %We synthetically deformed the CAD model to simulate a range of different pre-operative shapes of the uterus.
 %To test the accuracy of the initial registration, we use an affine deformable model and we assessed the influence of the number of keyframes on the registration accuracy.
 The results showed that the registration error decreases with the number of views, and saturates approximately at \SI{1.4}{\milli\metre} for more than $8$ keyframes.
@@ -32,12 +32,12 @@ More generally, the error distribution tends to increase towards the cervix (\SI
 }
 
 \SGG{In this section we present an experiment to evaluate the overall Target Registration Error (TRE) using a realistic rubber phantom, shown in \fig{fig:TRE}. 
-We collected $N_{gt}=200$ images of the phantom and we perform a MVS metric reconstruction with the help of a marker of known size.
+We collected $\termName{N}{gt}=200$ images of the phantom and we perform a MVS metric reconstruction with the help of a marker of known size.
 We consider this model as the ground truth (GT) model of the phantom.
-We then run our reconstruction pipeline on a subset of $N_{s}=15$ images and we scaled and aligned the obtained MVS model to the GT model to get a metric reconstruction in the same reference frame.
+We then run our reconstruction pipeline on a subset of $\termName{N}{s}=15$ images and we scaled and aligned the obtained MVS model to the GT model to get a metric reconstruction in the same reference frame.
 We synthetically deformed the GT model to simulate different preoperative states. We use in this experiment $10$ isovolumetric affine deformations, where there is compression along a principal axis and stretching along the rest of axes, as well as $10$ mechanical deformations~\cite{Collins2044}, using a quadratic deformation law along a principal axis that simulates bending of the organ, composed with an isovolumetric affine transformation.
-For each generated deformation $\Theta(\cdot)$ we performed our non-rigid registration with the MVS model and we ran our tracker on the remaining $N_{gt}-N_{s}$ images.
-We discretized the GT model volume with a grid of $100\times100\times100$ voxels and, denoting $V$ the set of voxels in the interior of the uterus, we can define the registration error for each grid point $\vet{q} \in V$ for a given tracked image as $\| f( \Theta(\vet{q}),\mathbf{x}_t) -  \mat{P}_{gt}(\vet{q}) \|$, where $\vet{x}_t$ are the model registration parameters estimated by our pipeline (initial registration and tracking) and $\mat{P}_{gt}$ is the ground truth pose provided by the initial MVS reconstruction.
+For each generated deformation $\Theta(\cdot)$ we performed our non-rigid registration with the MVS model and we ran our tracker on the remaining $\termName{N}{gt}-\termName{N}{s}$ images.
+We discretized the GT model volume with a grid of $100\times100\times100$ voxels and, denoting $\mathcal{V}$ the set of voxels in the interior of the uterus, we can define the registration error for each grid point $\vet{q} \in \mathcal{V}$ for a given tracked image as $\| f( \Theta(\vet{q}),\mathbf{x}_t) -  \mat{P}_{\text{gt}}(\vet{q}) \|$, where $\vet{x}_t$ are the model registration parameters estimated by our pipeline (initial registration and tracking) and $\mat{P}_{\text{gt}}$ is the ground truth pose provided by the initial MVS reconstruction.
 \fig{fig:TRE} shows the TRE error for each type of deformation at different depth values from the head of the uterus as the average error over all the tracked frames.
 The error at each depth is computed as the average error of all voxels \vet{q} at the same depth.
 The registration error at the head of the uterus ranges from $\SI{1.8}{\milli\metre}$ to $\SI{4.7}{\milli\metre}$ for the most severe affine deformation.
@@ -245,9 +245,7 @@ The occlusion ratio is computed from the number of pixels of the occluder and of
 The graph shows that tracking copes with up to $\SI{60}{\percent}$ occlusion, where $\sim\SI{80}{\percent}$ of the frames are tracked.
 For the same experiment, \fig{fig:stressTest} shows pose rotational error.
 The error is below $\sim\ang{1}$ for up to $\SI{50}{\percent}$ occlusion.}
-
-\SG{In a second experiment we simulated the occlusions as growing black spots randomly distributed on the the uterus.
-This can simulate, \eg, the presence of tools or bleeding covering or changing the appearance of the uterus.
+\SG{In a second experiment we simulated the presence of tools or bleeding covering the appearance of the uterus by growing black spots randomly distributed on the the uterus.
 \fig{fig:stressTest} shows that tracking successfully estimates pose for up to $\SI{60}{\percent}$ occlusion, where $\sim\SI{90}{\percent}$ of the frames are tracked, with rotational error below or of the order of $\sim\ang{1}$.}
 \SGG{We refer the reader to \url{https://bit.ly/2WKO6hI}) for quantitative and qualitative evaluation of the robustness.}
 

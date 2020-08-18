@@ -32,13 +32,13 @@ The results showed that the registration error decreases with the number of view
 More generally, the error distribution tends to increase towards the cervix (\SI{2}{\milli\metre} for $15$ views up to \SI{8}{\milli\metre} for $2$ views) away from the uterus head as the uterus head is quite well constrained by the SfM point cloud as opposed to the area near the cervix.
 }
 
-\SGG{In this section we present an experiment to evaluate the overall Target Registration Error (TRE) using a realistic rubber phantom, shown in \fig{fig:TRE}. 
-We collected $\termName{N}{gt}=200$ images of the phantom and we perform a MVS metric reconstruction with the help of a marker of known size.
-We consider this model as the ground truth (GT) model of the phantom.
-We then run our reconstruction pipeline on a subset of $\termName{N}{s}=15$ images and we scaled and aligned the obtained MVS model to the GT model to get a metric reconstruction in the same reference frame.
-We synthetically deformed the GT model to simulate different preoperative states. We use in this experiment $10$ isovolumetric affine deformations, where there is compression along a principal axis and stretching along the rest of axes, as well as $10$ mechanical deformations~\cite{Collins2044}, using a quadratic deformation law along a principal axis that simulates bending of the organ, composed with an isovolumetric affine transformation.
-For each generated deformation $\Theta(\cdot)$ we performed our non-rigid registration with the MVS model and we ran our tracker on the remaining $\termName{N}{gt}-\termName{N}{s}$ images.
-We discretized the GT model volume with a grid of $100\times100\times100$ voxels and, denoting $\mathcal{V}$ the set of voxels in the interior of the uterus, we can define the registration error for each grid point $\vet{q} \in \mathcal{V}$ for a given tracked image as $\| f( \Theta(\vet{q}),\mathbf{x}_t) -  \mat{P}_{\text{gt}}(\vet{q}) \|$, where $\vet{x}_t$ are the model registration parameters estimated by our pipeline (initial registration and tracking) and $\mat{P}_{\text{gt}}$ is the ground truth pose provided by the initial MVS reconstruction.
+\SGG{In this section we present an experiment to evaluate the overall Target Registration Error (TRE). 
+We collected $\termName{N}{gt}=200$ images of a realistic uterus phantom, from which we obtain the ground-truth (GT) surface model using MVS, and a marker of known size for the scale factor.
+%We then run our reconstruction pipeline on a subset of $\termName{N}{s}=15$ images.% and we scaled and aligned the obtained MVS model to the GT model to get a metric reconstruction in the same reference frame.
+We synthetically deform the GT model to simulate different preoperative states with two kinds of deformations: isovolumetric affine deformations, and mechanical deformations~\cite{Collins2044} that simulate bending of the organ using a quadratic deformation law along a principal axis. 
+We generate $10$ examples of each, progressively increasing the amount of deformation. For each generated deformation $\Theta(\cdot)$, we apply our registration pipeline, using $\termName{N}{s}=15$ for the initial registration step and $\termName{N}{gt}-\termName{N}{s}$ images for tracking.  
+%non-rigid registration with the MVS model and we ran our tracker on the remaining $\termName{N}{gt}-\termName{N}{s}$ images.
+We discretize the GT volume with a grid of $100\times100\times100$ voxels and, denoting $\mathcal{V}$ the set of voxels in the interior of the uterus, we can define the registration error for each grid point $\vet{q} \in \mathcal{V}$ for a given tracked image as $\| f( \Theta(\vet{q}),\mathbf{x}_t) -  \mat{P}_{\text{gt}}(\vet{q}) \|$, where $\vet{x}_t$ are the model registration parameters estimated by our pipeline and $\mat{P}_{\text{gt}}$ is the ground truth pose provided by the initial MVS reconstruction.
 \fig{fig:TRE} shows the TRE error for each type of deformation at different depth values from the uterus head as the average error over all the tracked frames.
 The error at each depth is computed as the average error of all voxels \vet{q} at the same depth.
 The registration error at the head of the uterus ranges from $\SI{1.8}{\milli\metre}$ to $\SI{4.7}{\milli\metre}$ for the most severe affine deformation.
@@ -182,10 +182,11 @@ Despite the fact that SURF recovers, on average, more matches between $\mathcal{
   \includegraphics[width=0.99\columnwidth]{./figs/frames_aug_new.pdf}
 \caption{(a) The 3D preoperative model of the uterus with the  myoma as reconstructed from the MR, (b) the preoperative model registered with the intraoperative model obtained from the MVS reconstruction (c) some of the keyframes used for MVS with the AR augmentation  (d) some frames of the video with the myoma shown as image overlay.}
 \label{fig:myomas}
+\vspace{-5mm}
 \end{figure}
 \begin{figure*}[ht]
   \centering
-  \includegraphics[width=0.81\textwidth]{./figs/ARinOR.pdf}
+  \includegraphics[width=0.71\textwidth]{./figs/ARinOR.pdf}
 \caption{Patient 1: (a) MR image showing one myoma, (b) myoma augmentation, (c) resection of the myoma, (d) deployment of our AR system in the OR. Patient 2: (e) MR image showing three myomas, (f,g,h) myoma augmentation. Patient 3: (i) two myomas segmented from the MR images, (j,k,m) augmentation of the myomas and the uterine cavity.}
 \label{fig:realOR}
 \end{figure*}
@@ -204,6 +205,7 @@ We evaluate our tracking stage using three different human uteri captured before
   \includegraphics[width=0.4\textwidth]{./figs/snapshotsCompressed.pdf}
 \caption{The 3D models from MVS, the coagulation marks and the registered models.}
 \label{fig:hister}
+\vspace{-5mm}
 \end{figure}
 Each video includes around $500$ frames showing image motion of the uterus due to motion induced by the cannula and camera motion. The uterus intraoperative surface is obtained with an exploratory video with $15$ keyframes. 
 The uterus body was marked by the surgeon with a bipolar grasper in $12-15$ different locations.
@@ -221,7 +223,7 @@ We computed the optimal scale factor for each method \wrt GT to resolve the scal
   \includegraphics[width=0.78\columnwidth]{./figs/Accuracy_errors.pdf}
 \caption{Rotation error, position error and camera trajectory, for $U_1$, $U_2$ and $U_3$ from top to bottom.}
 \label{fig:hister_results}
-% \vspace{-3mm}
+ \vspace{-3mm}
 \end{figure}
 \SGG{In \fig{fig:hister_results} we summarize the results of RT-OTD using \SG{SIFT} features for the three uteri.}
 %We summarize the results of RT-OTD, using \SG{SIFT} features, against ORB-SLAM in \fig{fig:hister_results} for the three uteri.
@@ -242,13 +244,12 @@ It is also affected by motion blur and the lack of matches with the model.
 Using the data collected from $5$ patients, we simulated occlusions and compared the pose computed by the tracker to the GT. 
 In a first experiment, we used the known mask of the uterus to add a black occluder starting from the external contour and towards the center of the uterus.
 We gradually increased the size of the occluder and launched tracking on the keyframe.
-\fig{fig:stressTest} shows the overall percentage of frames that could be tracked against the occlusion ratio.
+\fig{fig:statsKframeSelection}.e shows the overall percentage of frames that could be tracked against the occlusion ratio.
 The occlusion ratio is computed from the number of pixels of the occluder and of the uterus.
 The graph shows that tracking copes with up to $\SI{60}{\percent}$ occlusion, where $\sim\SI{80}{\percent}$ of the frames are tracked.
-For the same experiment, \fig{fig:stressTest} shows pose rotational error.
-The error is below $\sim\ang{1}$ for up to $\SI{50}{\percent}$ occlusion.}
+For the same experiment, \fig{fig:statsKframeSelection}.f shows that the pose rotational error is below $\sim\ang{1}$ for up to $\SI{50}{\percent}$ occlusion.}
 \SG{In a second experiment we simulated the presence of tools or bleeding covering the appearance of the uterus by growing black spots randomly distributed on the the uterus.
-\fig{fig:stressTest} shows that tracking successfully estimates pose for up to $\SI{60}{\percent}$ occlusion, where $\sim\SI{90}{\percent}$ of the frames are tracked, with rotational error below or of the order of $\sim\ang{1}$.}
+\fig{fig:statsKframeSelection}.g shows that tracking successfully estimates pose for up to $\SI{60}{\percent}$ occlusion, where $\sim\SI{90}{\percent}$ of the frames are tracked, with rotational error below or of the order of $\sim\ang{1}$.}
 \SGG{We refer the reader to \url{https://bit.ly/2WKO6hI}) for quantitative and qualitative evaluation of the robustness.}
 
 \begin{figure}
@@ -262,26 +263,38 @@ The error is below $\sim\ang{1}$ for up to $\SI{50}{\percent}$ occlusion.}
   \label{fig:3DresultsKframeSelection}
 \end{figure}
 
-\begin{figure*}
-  \centering
-  \includegraphics[width=0.22\textwidth]{./figs/kframeSelection/matching.pdf}\hspace{2.5mm}
-  \includegraphics[width=0.22\textwidth]{./figs/kframeSelection/matcheswinningKF.pdf}\hspace{2.5mm}
-  \includegraphics[width=0.22\textwidth]{./figs/kframeSelection/matching.pdf}\hspace{2.5mm}
-  \includegraphics[width=0.22\textwidth]{./figs/kframeSelection/rmsePnP.pdf}
-\caption{In each graph, the box plot represents the statistical distribution of the data, the blue box represents the second and third quartiles with a notch on the median value, while the whiskers represents the max and min values.}
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{./figs/ResultsC.pdf}
+\caption{(a,b,c,d) Tracking statistics (number of matches, inliers, and pose errors) for each keyframe sampling method.% ( In each graph, the box plot represents the statistical distribution of the data, the blue box represents the second and third quartiles with a notch on the median value, while the whiskers represents the max and min values. 
+(e,f,g,h) From left to right, histogram of successfully tracked frames and rotation error of estimated pose, for both experiments.}
 \label{fig:statsKframeSelection}
 \end{figure*}
 
-\begin{figure*}
-  \centering
-%  \include{./figs/stresstest/histo_all}
-  \includegraphics[width=0.22\textwidth]{./figs/stresstest/trackingHisto.pdf}\hspace{2.5mm}
-  \includegraphics[width=0.22\textwidth]{./figs/stresstest/rotError.pdf}\hspace{2.5mm}
-  \includegraphics[width=0.22\textwidth]{./figs/stresstest/trackingHistoPois.pdf}\hspace{2.5mm}
-  \includegraphics[width=0.22\textwidth]{./figs/stresstest/rotErrorPois.pdf}
-  \caption{From left to right, histogram of successfully tracked frames and rotation error of estimated pose, for both experiments.}
-  \label{fig:stressTest}
-\end{figure*}
+%\begin{figure}
+%  \centering
+%  \begin{tabular}{cc}
+%  \includegraphics[width=0.20\textwidth]{./figs/kframeSelection/matching.pdf}&
+% \includegraphics[width=0.20\textwidth]{./figs/kframeSelection/matcheswinningKF.pdf}\\
+%  \includegraphics[width=0.20\textwidth]{./figs/kframeSelection/matching.pdf}&
+%  \includegraphics[width=0.20\textwidth]{./figs/kframeSelection/rmsePnP.pdf}
+%  \end{tabular}
+%\caption{In each graph, the box plot represents the statistical distribution of the data, the blue box represents the second and third quartiles with a notch on the median value, while the whiskers represents the max and min values.}
+%\label{fig:statsKframeSelection}
+%\end{figure}
+
+%\begin{figure}
+%  \centering
+%%  \include{./figs/stresstest/histo_all}
+%  \begin{tabular}{cc}
+%  \includegraphics[width=0.20\textwidth]{./figs/stresstest/trackingHisto.pdf}&
+% \includegraphics[width=0.20\textwidth]{./figs/stresstest/rotError.pdf}\\
+%  \includegraphics[width=0.20\textwidth]{./figs/stresstest/trackingHistoPois.pdf}&
+% \includegraphics[width=0.20\textwidth]{./figs/stresstest/rotErrorPois.pdf}
+% \end{tabular}
+%  \caption{From left to right, histogram of successfully tracked frames and rotation error of estimated pose, for both experiments.}
+% \label{fig:stressTest}
+%\end{figure}
 
 
 \subsubsection{Additional Keyframes During Tracking}

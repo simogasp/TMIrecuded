@@ -21,7 +21,7 @@ See video material here: \url{https://bit.ly/2m9rGHH}.
   \includegraphics[width=0.49\columnwidth]{./figs/mechanicalError.pdf}
 %  \includegraphics[width=0.4\columnwidth]{./figs/TRE_3Dmodels.pdf}
 %  \caption{From left to right, the phantom used for the experiment, the TRE for the affine deformations and the mechanical deformations and the distribution of TRE on the surface of the 3D model.}
-  \caption{From left to right, the TRE for the affine deformations and the mechanical deformations. The deformation extent increases along the $x$-axis. For each deformation the TRE is plotted for different depth distances from the head of the uterus.}
+  \caption{TRE for affine (left) and mechanical (right) deformations. The deformation extent increases along the $x$-axis. The TRE is shown for different depths from the fundus.}
   \label{fig:TRE}
 \end{figure}
 
@@ -199,7 +199,7 @@ The two videos and further results are shown in the video material.
 
 %\subsubsection{Tracking Accuracy and Comparison with ORB-SLAM}
 \subsubsection{Tracking Accuracy and Comparison with SLAM}
-We evaluate our tracking stage using three different human uteri captured before hysterectomy. They can be seen in \fig{fig:hister} and we refer to them as $U_1$, $U_2$ and $U_3$.
+We evaluate our tracking stage using three human uteri captured before hysterectomy. They can be seen in \fig{fig:hister} and we refer to them as $U_1$, $U_2$ and $U_3$.
 \begin{figure}[htb]
   \centering
   \includegraphics[width=0.4\textwidth]{./figs/snapshotsCompressed.pdf}
@@ -217,7 +217,7 @@ The marks were tracked using a small patch surrounding the image position of eac
 We verified all tracks and reinitialized them if they were lost. We then computed the marks' 3D positions and the uterus 3D poses in each frame using SfM. 
 If fewer than four marks were visible in a frame we considered that the GT pose could not be estimated for that frame. 
 We masked each mark so that the methods under comparison could not exploit the artificial texture each mark introduces. 
-We computed the optimal scale factor for each method \wrt GT to resolve the scale ambiguity.
+We computed the optimal scale factor for each method \wrt GT.
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.78\columnwidth]{./figs/Accuracy_errors.pdf}
@@ -225,16 +225,16 @@ We computed the optimal scale factor for each method \wrt GT to resolve the scal
 \label{fig:hister_results}
  \vspace{-3mm}
 \end{figure}
-\SGG{In \fig{fig:hister_results} we summarize the results of RT-OTD using \SG{SIFT} features for the three uteri.}
+\SGG{In~\fig{fig:hister_results} we summarize the results of RT-OTD using \SG{SIFT} features.}
 %We summarize the results of RT-OTD, using \SG{SIFT} features, against ORB-SLAM in \fig{fig:hister_results} for the three uteri.
-The rotation error (in degrees) and position error (in mm) are computed as the Euclidean norm between GT and estimated values.
-There are some gaps in the graphs when GT is not available.
+The rotation error (in degrees) and position error (in mm) are computed as the Euclidean norm between GT and estimates.
+There are gaps in the graphs when GT is not available.
 \SGG{The results with RT-OTD are very accurate  and stable in all cases, with an average position error of $\SI{2}{\milli\metre}$  and an average rotation error of $\ang{3}$.}
 %We also show the camera 3D trajectories estimated by RT-OTD and ORB-SLAM.
 \SGG{\fig{fig:hister_results} also shows the tracking performed with a state-of-the-art open-source implementation of SLAM, ORB-SLAM.}
-While it is able to track a large portion of the first sequence, it quickly degenerates and loses the track for the other two cases.
-Track loss is due to the fact that SLAM builds a model with points from both the moving uterus and the background, violating the rigidity assumption.
-It is also affected by motion blur and the lack of matches with the model.
+While it tracks a large portion of the first sequence, it quickly degenerates and loses the track for the other two cases.
+This is due to the fact that SLAM builds a model with points from both the moving uterus and the background, violating the rigidity assumption.
+It is also affected by motion blur and the lack of matches with the map.
 %The results with RT-OTD are very accurate  and stable in all cases, with an average position error of $\SI{2}{\milli\metre}$  and an average rotation error of $\ang{3}$.
 
 

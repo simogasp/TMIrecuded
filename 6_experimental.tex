@@ -4,8 +4,8 @@
 \subsection{Overview}
 %We present a qualitative and quantitative evaluation of the proposed pipeline.
 %We first present a quantitative evaluation with \textit{in-silico} data.
-\SGG{We first present some quantitative results for registration and tracking on a phantom.}
-We then present results with offline videos of real surgeries\footnote{All participants enrolled gave their written informed consent according to the approval of the ethical committee (IRB 2018-A03130-55).}, where we compare our new tracking algorithm \wrt our previous work and SLAM, then describe our experiences with deploying and running the pipeline in the real clinical setting.
+\SGG{We first present quantitative results for the full registration pipeline on a latex phantom.}
+We then present results with offline videos of real surgeries\footnote{All participants enrolled gave their written informed consent according to the approval of the ethical committee (IRB 2018-A03130-55).}, where we compare our new tracking algorithm \wrt our workshop papers and a SLAM-based approach. We then describe our experiences with deploying and running the pipeline in the real clinical setting.
 We emphasize that all previous works on real-time markerless monocular laparoscopic registration with pre-operative organ models have only been evaluated with pre-recorded video data.
 Thus they have never made the step up to live tests in the OR and their robustness and practicality in the clinical setting have not been validated.
 We finally evaluate three specific points of our pipeline: automatic keyframe selection, occlusion resistance in tracking and the use of new keyframes during tracking.
@@ -25,24 +25,21 @@ See video material here: \url{https://bit.ly/2m9rGHH}.
   \label{fig:TRE}
 \end{figure}
 
-\SGG{In our previous paper~\cite{Collins2044} we presented a thorough evaluation of the initial registration step on a 3D printed uterus phantom and different synthetically deformed shapes of the CAD model.
+\SGG{In our workshop paper~\cite{Collins2044} we presented a thorough evaluation of the initial registration step on a 3D printed uterus phantom and different synthetically deformed shapes.
 %We synthetically deformed the CAD model to simulate a range of different pre-operative shapes of the uterus.
 %To test the accuracy of the initial registration, we use an affine deformable model and we assessed the influence of the number of keyframes on the registration accuracy.
-The results showed that the registration error decreases with the number of views, and saturates approximately at \SI{1.4}{\milli\metre} for more than $8$ keyframes.
-More generally, the error distribution tends to increase towards the cervix (\SI{2}{\milli\metre} for $15$ views up to \SI{8}{\milli\metre} for $2$ views) away from the uterus head as the uterus head is quite well constrained by the SfM point cloud as opposed to the area near the cervix.
+The results showed that the registration error decreases with the number of keyframes, and saturates approximately at \SI{1.4}{\milli\metre} for more than $8$ keyframes.
+More generally, the error distribution tends to increase towards the cervix (\SI{2}{\milli\metre} for $15$ views up to \SI{8}{\milli\metre} for $2$ views) away from the uterus head as the uterus head is quite well constrained by the SfM point cloud as opposed to deeper regions near the cervix.
 }
 
-\SGG{In this section we present an experiment to evaluate the overall Target Registration Error (TRE). 
-We collected $\termName{N}{gt}=200$ images of a realistic uterus phantom, from which we obtain the ground-truth (GT) surface model using MVS, and a marker of known size for the scale factor.
+\SGG{In this section we present a new experiment to evaluate the Target Registration Error (TRE) of the the full registration pipeline (initial registration and tracking) with a realistic latex Phantom (Limbd and Things Inc. Model XX). We collected $\termName{N}{gt}=200$ images of the phantom, from which we obtain a 3D surface model using MVS in mm. We used this model as the pre-operative model, and we
 %We then run our reconstruction pipeline on a subset of $\termName{N}{s}=15$ images.% and we scaled and aligned the obtained MVS model to the GT model to get a metric reconstruction in the same reference frame.
-We synthetically deform the GT model to simulate different preoperative states with two kinds of deformations: isovolumetric affine deformations, and mechanical deformations~\cite{Collins2044} that simulate bending of the organ using a quadratic deformation law along a principal axis. 
-We generate $10$ examples of each, progressively increasing the amount of deformation. For each generated deformation $\Theta(\cdot)$, we apply our registration pipeline, using $\termName{N}{s}=15$ images for the initial registration step and $\termName{N}{gt}-\termName{N}{s}$ images for tracking.
+synthetically deformed it to simulate different preoperative states with two kinds of deformations: isovolumetric affine deformations, and mechanical deformations~\cite{Collins2044} that simulate bending of the organ using a quadratic deformation law along a principal axis. 
+We generate $10$ examples of each, progressively increasing the amount of deformation magnitude. For each generated deformation $\Theta(\cdot)$, we apply our registration pipeline, using $\termName{N}{s}=15$ images for the initial registration step and $\termName{N}{gt}-\termName{N}{s}$ images for tracking.
 %non-rigid registration with the MVS model and we ran our tracker on the remaining $\termName{N}{gt}-\termName{N}{s}$ images.
-We discretize the GT volume with a grid of $100\times100\times100$ voxels and, denoting $\mathcal{V}$ the set of voxels in the interior of the uterus, we can define the registration error for each grid point $\vet{q} \in \mathcal{V}$ for a given tracked image as $\| f( \Theta(\vet{q}),\mathbf{x}_t) -  \mat{P}_{\text{gt}}(\vet{q}) \|$, where $\vet{x}_t$ are the model registration parameters estimated by our pipeline and $\mat{P}_{\text{gt}}$ is the ground truth pose provided by the initial MVS reconstruction.
-\fig{fig:TRE} shows the TRE error for each type of deformation at different depth values from the uterus head as the average error over all the tracked frames.
-The error at each depth is computed as the average error of all voxels \vet{q} at the same depth.
-The registration error at the head of the uterus ranges from $\SI{1.8}{\milli\metre}$ to $\SI{2.1}{\milli\metre}$ for the most severe affine deformation.
-The error increases towards the cervix, from $\SI{6.7}{\milli\metre}$ up to $\SI{15.6}{\milli\metre}$.
+We discretize the GT volume with a grid of $100\times100\times100$ voxels and, denoting $\mathcal{V}$ the set of voxels in the interior of the uterus, we define the TRE for each grid point $\vet{q} \in \mathcal{V}$ for a given tracked image as $\| f( \Theta(\vet{q}),\mathbf{x}_t) -  \mat{P}_{\text{gt}}(\vet{q}) \|$, where $\vet{x}_t$ are the model registration parameters estimated by our pipeline and $\mat{P}_{\text{gt}}$ is the ground truth pose provided by the initial MVS reconstruction. TRE varies as a function of both the depth of the target and the amount of organ deformation. We visualize the trends in \fig{fig:TRE}.\fig{fig:TRE} shows TRE error in terms of \textit{i)} voxel depth and \textit{ii)} deformation magnitude. Voxel depth was computed as the Euclidean distance from each voxel to the visible head surface of the uterus. f the uterus ion for voxles different depths computed in mm from the  visble surface of the uterus. We report TRE averaged over all the tracked frames for voxels at 30 different depths from the fundus, ranging from 0 mm to 100 mm (approximately the cervix). 
+TRE in the funhead of the uterus ranges from $\SI{1.8}{\milli\metre}$ to $\SI{2.1}{\milli\metre}$ for the most severe affine deformation.
+The error increases towards the cervix, from $\SI{6.7}{\milli\metre}$ up to $\SI{15.6}{\milli\metre}$. The increase in TRE with depth from the uterus head is normal and expected because of the increasing distance from the visible surface. The low registration error indicates the pipeline is sufficiently accurate for AR guidance of structures in the uterus fundus region. 
 }
 
 %\subsection{Quantitative Evaluation with Simulation experiments}

@@ -46,7 +46,7 @@ Secondly, during the tracking stage, we assume that the organ does not undergo s
 % To simplify the problem, we assume that during the tracking stage the organ does not deform significantly. Therefore, the tracking stage can be modelled with rigid motion, which can be estimated far more quickly and robustly than deformable motion. 
 
 Formally, the two stages of registration break down $f(\vet{p};\vet{x}_t)$ as $f(\vet{p};\vet{x}_{t})=M(f(\vet{p};\xref);\mat{R}_{t},\vet{t}_{t})$. Here \xref denotes the organ's unknown deformation for the reference state.
-The function $M(\cdot;\mat{R}_{t},\vet{t}_{t}):\mathbb{R}^3\rightarrow \mathbb{R}^3$ denotes the unknown update transform at time $t$, parameterized by a rotation $\mat{R}_{t}\in \mathcal{SO}_{3}$ and translation $\vet{t}_{t}\in \mathbb{R}^3$.
+The function $M(\cdot;\mat{R}_{t},\vet{t}_{t}):\mathbb{R}^3\rightarrow \mathbb{R}^3$ denotes the unknown update transform at time $t$, parameterized by a 3D rotation $\mat{R}_{t}\in \mathcal{SO}_{3}$ and translation $\vet{t}_{t}\in \mathbb{R}^3$.
 %Thus, the initial registration stage estimates $\vet{x}_{ref}$ and the tracking stage estimates $(\mat{R}_{t},\vet{t}_{t})$.
 
 In practice, the rigidity assumption during tracking is reasonable because during live AR guidance the surgeon does not significantly deform the organ.

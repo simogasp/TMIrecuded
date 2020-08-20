@@ -7,10 +7,10 @@ The types of AR-guided laparosurgery with the most clinical impact involve the f
 A broader perspective, including fusion with intra-operative images such as Cone Beam CT (CBCT), is given in~\cite{Bernhardt2017}.
 An important categorization of approaches is whether they work with monocular~\cite{affineTracking} or stereo laparoscopes~\cite{21142942,conf/miccai/Amir-KhaliliNPHA13,Cohen2010Prostate,hamarneh2014igrs,haouchine13,Su2009, MaierHein2013}.
 As ours is in the former category, we mostly focus on that category.
-Any approach that works with monocular scopes can be applied to stereo scopes. The converse is not true, because existing methods using stereo laparoscopes require depthmaps obtained by stereo triangulation~\cite{DBLP:conf/miccai/StoyanovSPY10}, which are not available with monocular images.
+Any approach that works with monocular scopes can be applied to stereo scopes. The converse is not true, because existing methods using stereo laparoscopes require depth maps obtained by stereo triangulation~\cite{DBLP:conf/miccai/StoyanovSPY10}, which are not available with monocular images.
 \SG{Recently, Convolutional Neural Networks (CNNs) have been trained to recover depth from endoscopic images (colonoscopy~\cite{Liu2018} and bronchoscopy~\cite{Visentini2017}), however they are yet unsuccessful with laparoscopy because of the large variability in image content.}
 The availability of depthmaps fundamentally changes a registration problem, because they provide 3D-to-3D registration constraints.
-This contrasts with monocular registration, where 3D-to-3D constraints are unavailable.
+This contrasts monocular registration, where 3D-to-3D constraints are unavailable.
 Like us, previous approaches solve monocular registration in two stages: an initial registration stage and a tracking stage.
 
 \subsection{Initial Registration}
@@ -82,7 +82,7 @@ In SLAM,  a 3D representation or \textit{map} of the environment is incrementall
 %The first is for \emph{map building}. %This is to determine which points from different video frames correspond to the same surface point. Solving this problem allows us to construct a map of the points in 3D space. 
 %The second is for \emph{localisation}, which is to determine where the map's points are located in a new input image. 
 %SLAM offers a fast solution to these problems and has found considerable success in man-made environments.
-However, SLAM in laparoscopy is not reliable enough for routine clinical use. %This is due to the repeated nature of tissue texture, rapid camera motion and photo-constancy violations caused by blood, strong viewpoint, or strong illumination change for example. 
+However, SLAM in laparoscopy is not yet reliable enough for routine clinical use. %This is due to the repeated nature of tissue texture, rapid camera motion and photo-constancy violations caused by blood, strong viewpoint, or strong illumination change for example. 
 This is because monocular SLAM systems assume a rigid scene and hence are incapable of tracking a mobile organ such as the uterus, as we show in \sect{sec:orbslam}.
 \SG{A deformable SLAM method has been recently introduced~\cite{Lamarca2019}.
 The principle is promising but the method requires that the scene is made of a single deforming object.}
@@ -123,7 +123,7 @@ We (\emph{\textrm{i}}) ease  contour marking by using a touchscreen requiring on
 We (\emph{\textrm{ii}}) propose a semi-automatic mechanism to collect the frames for 3D reconstruction of the organ by SfM.
 The tool helps and guides the surgeon in the exploratory phase to acquire sharp images that are also sufficiently spread in space.
 We show that this has a dramatic impact on the reconstruction quality and tracking robustness.
-We (\emph{\textrm{iii}}) considerably improve the tracking algorithm to work with a robust real-time SIFT detector, which sensibly increases tracking robustness and smoothness.
+We (\emph{\textrm{iii}}) considerably improve the tracking algorithm to work with a robust real-time SIFT detector, which increases tracking robustness and smoothness.
 We present a manual mechanism to update the model's keypoints over time to overcome small appearance and geometric changes in the organ during tracking.
 This allows us to handle gradual texture changes of the organ during surgery and significantly improves tracking quality.
 %We compare tracking performance against the state-of-the-art in real-time monocular laparoscopic tracking (ORB-SLAM~\cite{orbslam_laparo}).

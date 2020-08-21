@@ -15,8 +15,8 @@ Thus they have never made the step up to live tests in the OR and their robustne
 \begin{figure}[tb]
   \centering
 %  \includegraphics[width=0.4\columnwidth]{./figs/phantom.png}
-  \includegraphics[width=0.4\columnwidth]{./figs/affineError.pdf}
-  \includegraphics[width=0.4\columnwidth]{./figs/mechanicalError.pdf}
+  \includegraphics[width=0.471\columnwidth]{./figs/affineError.pdf}
+  \includegraphics[width=0.471\columnwidth]{./figs/mechanicalError.pdf}
 %  \includegraphics[width=0.4\columnwidth]{./figs/TRE_3Dmodels.pdf}
 %  \caption{From left to right, the phantom used for the experiment, the TRE for the affine deformations and the mechanical deformations and the distribution of TRE on the surface of the 3D model.}
   \caption{TRE for affine (left) and mechanical (right) deformations. The deformation extent increases along the $x$-axis. The TRE is shown for different depths from the fundus.}
@@ -36,7 +36,7 @@ We used this model as the preoperative model, and we synthetically deformed it t
 We generated $10$ examples of each type, progressively increasing in magnitude. The maximum amount of vertex displacement due to deformation is around $10$ mm in both deformation types. For each deformation $\Theta(\cdot)$, we ran the full registration pipeline, using $\termName{N}{s}=15$ images for the initial registration step and $\termName{N}{gt}-\termName{N}{s}$ images for tracking.
 %non-rigid registration with the MVS model and we ran our tracker on the remaining $\termName{N}{gt}-\termName{N}{s}$ images.
 We discretized the model with a grid of $100\times100\times100$ voxels, with those interior to the uterus denoted by $\mathcal{V}$. 
-We computed TRE for each voxel $\vet{q} \in \mathcal{V}$ in each image as $\| f( \Theta(\vet{q}),\mathbf{x}_t) -  \mat{M}_{\text{gt}}(\vet{q}) \|$, where $\vet{x}_t$ are the model registration parameters estimated by our pipeline and $\mat{M}_{\text{gt}}$ is the ground truth pose provided by the MVS reconstruction. 
+We computed TRE for each voxel $\vet{q} \in \mathcal{V}$ in each image as $\| f( \Theta(\vet{q}),\vet{x}_t) -  \mat{M}_{\text{gt}}(\vet{q}) \|$, where $\vet{x}_t$ are the model registration parameters estimated by our pipeline and $\mat{M}_{\text{gt}}$ is the ground truth pose provided by the MVS reconstruction. 
 TRE varies as a function of both the depth of the target and the amount of organ deformation. 
 We visualize the trends in \fig{fig:TRE}. We show TRE averaged over all the tracked frames for voxels at $30$ different depths from the fundus surface, ranging from $\SI{0}{\milli\metre}$ to $\SI{100}{\milli\metre}$ (approximately the cervix). 
 TRE at the fundus surface (depth $\SI{0}{\milli\metre}$) was below $\SI{2}{\milli\metre}$ for all deformations. 

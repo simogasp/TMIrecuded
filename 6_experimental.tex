@@ -15,8 +15,8 @@ Thus they have never made the step up to live tests in the OR and their robustne
 \begin{figure}[tb]
   \centering
 %  \includegraphics[width=0.4\columnwidth]{./figs/phantom.png}
-  \includegraphics[width=0.49\columnwidth]{./figs/affineError.pdf}
-  \includegraphics[width=0.49\columnwidth]{./figs/mechanicalError.pdf}
+  \includegraphics[width=0.4\columnwidth]{./figs/affineError.pdf}
+  \includegraphics[width=0.4\columnwidth]{./figs/mechanicalError.pdf}
 %  \includegraphics[width=0.4\columnwidth]{./figs/TRE_3Dmodels.pdf}
 %  \caption{From left to right, the phantom used for the experiment, the TRE for the affine deformations and the mechanical deformations and the distribution of TRE on the surface of the 3D model.}
   \caption{TRE for affine (left) and mechanical (right) deformations. The deformation extent increases along the $x$-axis. The TRE is shown for different depths from the fundus.}
@@ -35,7 +35,7 @@ More generally, the error distribution tends to increase towards the cervix (\SI
 synthetically deformed it to simulate different preoperative states with two kinds of deformations: isovolumetric affine deformations, and mechanical deformations~\cite{Collins2044} that simulate bending of the organ using a quadratic deformation law along a principal axis. 
 We generated $10$ examples of each type, progressively increasing in magnitude. The maximum amount of vertex displacement due to deformation is around $10$ mm in both deformation types. For each deformation $\Theta(\cdot)$, we ran the full registration pipeline, using $\termName{N}{s}=15$ images for the initial registration step and $\termName{N}{gt}-\termName{N}{s}$ images for tracking.
 %non-rigid registration with the MVS model and we ran our tracker on the remaining $\termName{N}{gt}-\termName{N}{s}$ images.
-We discretized the model with a grid of $100\times100\times100$ voxels, with those interior to the uterus denoted by $\mathcal{V}$. We computed TRE for each voxel $\vet{q} \in \mathcal{V}$ in each image as $\| f( \Theta(\vet{q}),\mathbf{x}_t) -  \mat{P}_{\text{gt}}(\vet{q}) \|$, where $\vet{x}_t$ are the model registration parameters estimated by our pipeline and $\mat{P}_{\text{gt}}$ is the ground truth pose provided by the MVS reconstruction. TRE varies as a function of both the depth of the target and the amount of organ deformation. We visualize the trends in \fig{fig:TRE}. We show TRE averaged over all the tracked frames for voxels at 30 different depths from the fundus surface, ranging from 0 mm to 100 mm (approximately the cervix). TRE at the fundus surface (depth $=0$ mm) was below 2 mm for all deformations. In the near fundus (depth $<20$ mm) TRE ranged from $\SI{1.8}{\milli\metre}$ to $\SI{3.9}{\milli\metre}$ for the most severe affine deformation. The error increased in depth towards the cervix, from $\SI{6.7}{\milli\metre}$ up to $\SI{15.6}{\milli\metre}$. The increase is normal and expected because of the large distance to the visible surface region. The low registration error in the fundus indicates the pipeline is sufficiently accurate to help locate uterine tumours in that region. Due to the large TRE at the cervix, AR for tumours in that region would be out of the intended use of the system.  
+We discretized the model with a grid of $100\times100\times100$ voxels, with those interior to the uterus denoted by $\mathcal{V}$. We computed TRE for each voxel $\vet{q} \in \mathcal{V}$ in each image as $\| f( \Theta(\vet{q}),\mathbf{x}_t) -  \mat{P}_{\text{gt}}(\vet{q}) \|$, where $\vet{x}_t$ are the model registration parameters estimated by our pipeline and $\mat{P}_{\text{gt}}$ is the ground truth pose provided by the MVS reconstruction. TRE varies as a function of both the depth of the target and the amount of organ deformation. We visualize the trends in \fig{fig:TRE}. We show TRE averaged over all the tracked frames for voxels at $30$ different depths from the fundus surface, ranging from $\SI{0}{\milli\metre}$ to $\SI{100}{\milli\metre}$ (approximately the cervix). TRE at the fundus surface (depth $\SI{0}{\milli\metre}$) was below $\SI{2}{\milli\metre}$ for all deformations. In the near fundus (depth $<\SI{20}{\milli\metre}$) TRE ranged from $\SI{1.8}{\milli\metre}$ to $\SI{3.9}{\milli\metre}$ for the most severe affine deformation. The error increased in depth towards the cervix, from $\SI{6.7}{\milli\metre}$ up to $\SI{15.6}{\milli\metre}$. The increase is normal and expected because of the large distance to the visible surface region. The low registration error in the fundus indicates the pipeline is sufficiently accurate to help locate uterine tumours in that region. Due to the large TRE at the cervix, AR for tumours in that region would be out of the intended used of the system.
 }
 
 %\subsection{Quantitative Evaluation with Simulation experiments}
@@ -170,7 +170,6 @@ This also results in more inliers found to support the computed pose.
 \label{fig:SurfVsSift}
 \vspace{-5mm}
 \end{figure}
-
 \begin{figure}[ht]
   \centering
 %  \includegraphics[width=0.835\textwidth]{./figs/frames_aug_new.pdf}
@@ -181,12 +180,11 @@ This also results in more inliers found to support the computed pose.
 \end{figure}
 \begin{figure*}[ht]
   \centering
-  \includegraphics[width=0.71\textwidth]{./figs/ARinOR.pdf}
+  \includegraphics[width=0.65\textwidth]{./figs/ARinOR.pdf}
 \caption{Patient 1: (a) MR image showing one myoma, (b) myoma augmentation, (c) resection of the myoma, (d) deployment of our AR system in the OR. Patient 2: (e) MR image showing three myomas, (f,g,h) myoma augmentation. Patient 3: (i) two myomas segmented from the MR images, (j,k,m) augmentation of the myomas and the uterine cavity.}
 \label{fig:realOR}
 \end{figure*}
-
-%\fig{fig:numMatches} shows the numbers of matches and inliers for both approaches for the first video sequence, where we see that all along the frames the number of matches used for computing the pose are always higher for SIFT. 
+%\fig{fig:numMatches} shows the numbers of matches and inliers for both approaches for the first video sequence, where we see that all along the frames the number of matches used for computing the pose are always higher for SIFT.
 %In order to evaluate the quality of the estimated poses, 
 We show both pose components in \fig{fig:SurfVsSift} for the $5000$ frame video.
 SIFT provides a more stable estimate for both as there are much fewer spikes in the estimates (spikes are typically incorrect estimates).
@@ -522,6 +520,11 @@ In \fig{fig:realOR}(d) we show our system deployed in the operating room.
 The MR of the second patient is shown in \fig{fig:realOR}(e), showing three myomas that are visualized with AR in \fig{fig:realOR}(f,g,h).
 The third patient had two myomas whose segmentation from MR is shown in \fig{fig:realOR}(i).
 Examples of augmentation of the myomas using bright colors and the uterine cavity mesh are displayed in \fig{fig:realOR}(j,k,m).
-We recall that this is the first time one demonstrates markerless registration and AR during \emph{live} laparoscopic surgery. \SG{In our experience both the initial and tracking AR stages are valuable to the surgeon. The first stage is necessary to give the first appreciation of hidden structure locations (tumours and the uterine canal). Recall however that the surgeon is using a monocular camera. The value of the tracking stage is to give the sensation of depth and parallax, and to help orient the uterus to establish a good resection plane. Specifically, the surgeon can move the uterus with the cannula and they receive interactive visual feedback. Depth and spatial comprehension of sub-surface structures are easier because of motion and parallax effects.} 
+We recall that this is the first time one demonstrates markerless registration and AR during \emph{live} laparoscopic surgery.
+\SG{In our experience both the initial and tracking AR stages are valuable to the surgeon.
+The first stage is necessary to give the first appreciation of hidden structure locations (tumours and the uterine canal).
+Recall however that the surgeon is using a monocular camera.
+The value of the tracking stage is to give the sensation of depth and parallax, and to help orient the uterus to establish a good resection plane. Specifically, the surgeon can move the uterus with the cannula and they receive interactive visual feedback.
+Depth and spatial comprehension of sub-surface structures are easier because of motion and parallax effects.}
  
 

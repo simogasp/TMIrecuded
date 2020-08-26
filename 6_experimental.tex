@@ -4,12 +4,11 @@
 \subsection{Overview}
 %We present a qualitative and quantitative evaluation of the proposed pipeline.
 %We first present a quantitative evaluation with \textit{in-silico} data.
-\SGG{We first assess the TRE on a phantom and we then present a thorough evaluation with offline videos of real surgeries\footnote{All participants enrolled gave their written informed consent according to the approval of the ethical committee (IRB 2018-A03130-55).}, where we analyse three specific points of our pipeline: automatic keyframe selection, occlusion resistance in tracking and the use of new keyframes during tracking (see video material \url{https://bit.ly/2m9rGHH}).}
-We then describe our experiences with deploying and running the pipeline in the real clinical setting.
-We emphasize that all previous works on real-time markerless monocular laparoscopic registration with pre-operative organ models have only been evaluated with pre-recorded video data.
-Thus they have never made the step up to live tests in the OR and their robustness and practicality in the clinical setting have not been validated.
+\SGG{We first assess the Target Registration Error (TRE) on a phantom and we then present a thorough evaluation with offline videos of real surgeries\footnote{All participants enrolled gave their written informed consent according to the approval of the ethical committee (IRB 2018-A03130-55).}, where we analyse three specific points of our pipeline: automatic keyframe selection, occlusion resistance in tracking and the use of new keyframes during tracking\footnote{All supplementary videos are found at \url{https://bit.ly/2m9rGHH}}.}
+We then describe our experiences with deploying and running the pipeline in the real clinical setting. \SGG{All the experiments are novel and more advanced compared to the workshop papers}. We emphasize that all previous works on real-time markerless monocular laparoscopic registration with pre-operative organ models have only been evaluated with pre-recorded video data.
+Thus they have never made the step up to live tests in the OR and their robustness and practicality in the clinical setting have not been validated. 
 
-\subsection{Quantitative Evaluation with phantom}
+\subsection{Quantitative Evaluation with Phantoms}
 \label{subsec:quantitative-evaluation-with-phantom}
 
 \newlength\imagewidth
@@ -39,7 +38,7 @@ The results showed that the registration error decreases with the number of keyf
 More generally, the error distribution tends to increase towards the cervix (\SI{2}{\milli\metre} for $15$ views up to \SI{8}{\milli\metre} for $2$ views) away from the uterus fundus (head), which is quite well constrained by the SfM point cloud as opposed to deeper regions near the cervix.
 }
 
-\SGG{We present a new experiment to evaluate the Target Registration Error (TRE) of the full registration pipeline (initial registration and tracking) with a realistic latex phantom (Limbs and Things Inc. Model 60922). 
+\SGG{We present a new experiment to evaluate the TRE of the full registration pipeline (initial registration and tracking) with a realistic latex uterus phantom used for surgery training (Limbs and Things Inc. Model 60922, \fig{fig:TRE}). 
 We collected $\termName{N}{gt}=200$ images of the phantom, from which we computed a 3D surface model using MVS. 
 We used this model as the preoperative model, and we synthetically deformed it to simulate different preoperative states with two kinds of deformations: isovolumetric affine deformations, and mechanical deformations~\cite{Collins2044} that simulate bending of the organ using a quadratic deformation law along a principal axis. 
 We generated $10$ examples of each type, progressively increasing in magnitude. The maximum amount of vertex displacement due to deformation is around $10$ mm in both deformation types. For each deformation $\Theta(\cdot)$, we ran the full registration pipeline, using $\termName{N}{s}=15$ images for the initial registration step and $\termName{N}{gt}-\termName{N}{s}$ images for tracking.
@@ -53,7 +52,7 @@ In the near fundus (depth $<\SI{20}{\milli\metre}$) TRE ranged from $\SI{1.8}{\m
 The error increased in depth towards the cervix, from $\SI{6.7}{\milli\metre}$ up to $\SI{15.6}{\milli\metre}$. 
 The increase is normal and expected because of the large distance to the visible surface region. 
 The low registration error in the fundus indicates the pipeline is sufficiently accurate to help locate uterine tumours in that region. 
-Due to the large TRE at the cervix, AR for tumours in that region would be out of the intended used of the system.
+Due to the large TRE at the cervix, AR for tumours in that region would be out of the intended use of the system.
 }
 
 %\subsection{Quantitative Evaluation with Simulation experiments}
@@ -212,8 +211,9 @@ The two videos and further results are shown in the video material.
 
 %\subsubsection{Tracking Accuracy and Comparison with ORB-SLAM}
 \subsubsection{Tracking Accuracy and Comparison with SLAM}
-We evaluate our tracking stage using three human uteri captured before hysterectomy.
-They can be seen in \fig{fig:hister} and we refer to them as $U_1$, $U_2$ and $U_3$.
+\label{sec:trackingAccuracySLAM}
+We evaluate our tracking stage using three human uteri captured before hysterectomy. \SGG{This experiment is an update of the one presented in \cite{TCollins} with a comparison with a state-of-the-art SLAM approach \cite{murTRO2015} used for markerless laparoscopic camera tracking \cite{orbslam_laparo}}. 
+The uteri are shown in \fig{fig:hister} and we refer to them as $U_1$, $U_2$ and $U_3$.
 \begin{figure}[htb]
   \centering
   \includegraphics[width=0.4\textwidth]{./figs/snapshotsCompressed.pdf}
@@ -247,9 +247,9 @@ The rotation error (in degrees) and position error (in mm) are computed as the E
 There are gaps in the graphs when GT is not available.
 \SGG{The results with RT-OTD are very accurate  and stable in all cases, with an average position error of $\SI{2}{\milli\metre}$  and an average rotation error of $\ang{3}$.}
 %We also show the camera 3D trajectories estimated by RT-OTD and ORB-SLAM.
-\SGG{\fig{fig:hister_results} also shows the tracking performed with a state-of-the-art open-source implementation of SLAM, ORB-SLAM.}
+\SGG{\fig{fig:hister_results} also shows the tracking performed with ORB-SLAM \cite{murTRO2015}.}
 While it tracks a large portion of the first sequence, it quickly degenerates and loses the track for the other two cases.
-This is due to the fact that SLAM builds a model with points from both the moving uterus and the background, violating the rigidity assumption.
+This is because it builds a model with points from both the moving uterus and the background, violating the rigidity assumption.
 It is also affected by motion blur and the lack of matches with the map.
 %The results with RT-OTD are very accurate  and stable in all cases, with an average position error of $\SI{2}{\milli\metre}$  and an average rotation error of $\ang{3}$.
 
@@ -263,10 +263,10 @@ We gradually increased the size of the occluder and launched tracking on the key
 \fig{fig:statsKframeSelection}.e shows the overall percentage of frames that could be tracked against the occlusion ratio.
 The occlusion ratio is computed from the number of pixels of the occluder and of the uterus.
 The graph shows that tracking copes with up to $\SI{60}{\percent}$ occlusion, where $\sim\SI{80}{\percent}$ of the frames are tracked.
-For the same experiment, \fig{fig:statsKframeSelection}.f shows that the pose rotational error is below $\sim\ang{1}$ for up to $\SI{50}{\percent}$ occlusion.}
+For the same experiment, \fig{fig:statsKframeSelection}.f shows that the pose rotational error is below $\sim\ang{1}$ for up to $\SI{50}{\percent}$ occlusion}, \SGG{demonstrating good robustness.}
 \SG{In a second experiment we simulated the presence of tools or bleeding covering the appearance of the uterus by growing black spots randomly distributed on the the uterus.
 \fig{fig:statsKframeSelection}.g shows that tracking successfully estimates pose for up to $\SI{60}{\percent}$ occlusion, where $\sim\SI{90}{\percent}$ of the frames are tracked, with rotational error below or of the order of $\sim\ang{1}$.}
-\SGG{We refer the reader to \url{https://bit.ly/2WKO6hI}) for quantitative and qualitative evaluation of the robustness.}
+\SGG{We refer the reader to \url{https://bit.ly/2WKO6hI} for quantitative and qualitative evaluation of the robustness.}
 
 \begin{figure}
   \centering
@@ -410,7 +410,7 @@ The cost function \eq{eq:totalCost} was optimized in $6$ iterations in approxima
 In \fig{fig:myomas}(c) we show four keyframes used for the reconstruction together with an overlay of the uterus surface registered to each frame.
 Qualitatively we see that the 3D preoperative model aligns well to the image of the uterus.
 Finally, \fig{fig:myomas}(d) reports the visual augmentation of the myoma in some frames of a video recorded during surgery, clearly showing that the uterus is tracked well. 
-The full video is provided as supplemental material along with videos from other patients.
+The full video is provided as supplemental material along with videos from other patients. !!SIMONE- SAY WHICH VIDEO!!.
 
 
 % \begin{figure*}[t]
@@ -526,13 +526,11 @@ The full video is provided as supplemental material along with videos from other
 % There were $23$ negative margins in the AR group (\SI{85.2}{\percent}), with $0$ complete misses and $4$ contacts.
 % Statistical significance was measured with Fisher's exact two-tailed test with  $p=0.0010$.
 % Therefore the user study indicates a very significant benefit for using the AR guidance system.
-\subsection{Use with Patients in the Operating Room}\label{subsec:use-with-patients-in-the-operating-room}
+\subsection{Live Tests in the Operating Room}\label{subsec:use-with-patients-in-the-operating-room}
 We tested our AR system in laparoscopic surgery~\cite{bourdel2017} and report on three patients with one, three and two uterine myomas respectively. 
 We built the 3D preoperative models of the organ and the myomas from preoperative T2-weighted MR\@.
 % Three-dimensional models of the patient uteri and myomas were constructed before surgery from T2-weighted MR. 
-We used our system so that the surgeon could see the location of the myomas in real time. 
-
-In \fig{fig:realOR}(a) we show the MR of the first patient with a $\SI{6}{\centi\metre}$ uterine myoma. \fig{fig:realOR}(b) shows the augmentation of the myoma and \fig{fig:realOR}(c) shows its resection.
+We used our system so that the surgeon could see the location of the myomas in real time. In \fig{fig:realOR}(a) we show the MR of the first patient with a $\SI{6}{\centi\metre}$ uterine myoma. \fig{fig:realOR}(b) shows the augmentation of the myoma and \fig{fig:realOR}(c) shows its resection.
 At that stage our algorithm shows a past augmentation due to the changes in the uterus surface.
 In \fig{fig:realOR}(d) we show our system deployed in the operating room.
 The MR of the second patient is shown in \fig{fig:realOR}(e), showing three myomas that are visualized with AR in \fig{fig:realOR}(f,g,h).
@@ -543,6 +541,6 @@ We recall that this is the first time one demonstrates markerless registration a
 The first stage is necessary to give the first appreciation of hidden structure locations (tumours and the uterine canal).
 Recall however that the surgeon is using a monocular camera.
 The value of the tracking stage is to give the sensation of depth and parallax, and to help orient the uterus to establish a good resection plane. Specifically, the surgeon can move the uterus with the cannula and they receive interactive visual feedback.
-Depth and spatial comprehension of sub-surface structures are easier because of motion and parallax effects.}
+Depth and spatial comprehension of hidden structures are easier because of motion and parallax effects.}
  
 

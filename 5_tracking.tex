@@ -56,12 +56,12 @@ Computational efficiency can be easily achieved as $\mathcal{F}$ is completely p
 \subsubsection{Computing 3D Pose}
 % Given the set of candidate matches, we perform RANSAC~\cite{Fischler:1981:RSC:358669.358692} to find the most compatible rigid 3D pose, with OpenCV's implementation with default parameters. 
 From the set of candidate matches, we find the best pose hypothesis that explains these  matches using   RANSAC~\cite{Fischler:1981:RSC:358669.358692} from OpenCV's default implementation.
-In some images tracking may be impossible or unreliable, if the organ is not visible or very partially. A good indicator for deciding if pose can be estimated reliably is the number $n_c$ of inlier matches found by RANSAC. If this is below a threshold (default of $8$), we reject the pose and consider the organ to be untrackable in that image. Finally, to reduce jitter, we feed the pose estimates into an Extended Kalman Filter (EKF). 
+In some images tracking may be impossible or unreliable, if the organ is not visible or very partially. A good indicator for deciding if pose can be estimated reliably is the number $n_c$ of inlier matches found by RANSAC. If this is below a threshold (default $8$ points), we reject the pose and consider the organ to be untrackable in that image. Finally, to reduce jitter, we feed the pose estimates into an Extended Kalman Filter (EKF). 
 
 \subsubsection{Adding New Keyframes}
 The operator can manually add new keyframes to $\mathcal{F}$ on the fly during the live tracking.
 This mitigates any remaining jitter and stabilizes tracking if the organ is viewed from a viewpoint that is very dissimilar to the keyframes.
-\SG{Adding keyframes also copes with changes occuring between the reference and current intra-operative states in organ appearance (bleeding spots, change of color because of the clamping) and shape (due to mobilization).}
+\SG{Adding keyframes also copes with changes occuring between the reference and current intra-operative states in organ appearance (bleeding spots, change of color because of the clamping) and 3D orientation (due to mobilization).}
 %In the supplementary material we present a video showing the benefits and the impact of adding a new keyframe to the tracking.
 We add the keypoints of the current image and their associated 3D points to $\mathcal{F}$.
 We do not automate the process of adding new keyframes because without care it can lead to drift.

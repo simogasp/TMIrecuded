@@ -37,9 +37,9 @@ We only require that $f$ and $\Einternal$ be continuously differentiable, which 
  
 \subsection{Registration Pipeline Overview}
 \label{sec:globalOverview}
-Our task is registration, to compute $\vet{x}_t$ for a given live monocular laparoscopic image. 
+Our task is registration: to compute $\vet{x}_t$ for a given live monocular laparoscopic image. 
 We break it down into the \textit{initial registration stage} and the \emph{tracking stage}. 
-The initial registration is important for two main reasons. Firstly, the different patient posture between pre-operative and intra-operative steps and the insufflation may induce a significant deformation of the organ. Initial registration estimates this change of shape from the pre-operative to the intra-operative state, or \emph{reference state}. 
+The initial registration is important for two main reasons. Firstly, the different patient posture between pre-operative and intra-operative steps and the insufflation may induce a  deformation of the organ. Initial registration estimates this change of shape from the pre-operative to the intra-operative state, or \emph{reference state}. 
 Secondly, during the tracking stage, we assume that the organ does not undergo significant deformations so that the tracking stage can be reasonably modeled with rigid motion.  The initial registration allows us to associate texture with the organ's surface, necessary to achieve tracking.
 % The purpose of the initial registration stage is two-fold. Firstly, it estimates the change of shape of the organ between its pre-operative state and an intra-operative state, called the \emph{reference state}, caused by physiological movement between pre-operative and intra-operative states, such as patient posture difference and insufflation. Secondly, it associates texture with the organ's surface, which is required in the tracking stage.
 % To achieve high robustness we make a simplifying assumption in the tracking stage, which is that the organ does not deform significantly during this stage.
@@ -51,7 +51,7 @@ The function $M(\cdot;\mat{R}_{t},\vet{t}_{t}):\mathbb{R}^3\rightarrow \mathbb{R
 
 In practice, the rigidity assumption during tracking is reasonable because during live AR guidance the surgeon does not significantly deform the organ.
 % In practice, rigidity during tracking is a good assumption when the surgeon does not significantly deform the organ during the tracking stage (\ie the period that they wish to use live AR guidance). 
-We emphasize that the intended use of AR is to assist spatial comprehension of internal structures and intra-operative resection planning. Typically this is done by guiding the marking of a tumor resection plane on the uterus surface with a coagulation instrument. Such marking is standard practice in uterine surgery. During the actual resection, AR visualization is deactivated because the surgeon follows the coagulation marks.
+We emphasize that the intended use of AR is to assist spatial comprehension of internal structures and intra-operative resection planning. Typically this is done by guiding the marking of a tumor resection plane on the uterus surface with a coagulation instrument. Such marking is standard practice in uterine surgery. During the actual resection, where strong deformation and topological changes occur, AR visualization is deactivated because the surgeon follows the coagulation marks.
 
 To provide real-time AR, only the tracking stage needs to be real-time. To minimize workflow interruption, we require the initial registration to be computed in no longer than a few minutes. 
 The manual pre-processing takes on average $\SI{2}{\minute}$ and the optimisation $\SI{1}{\minute}$.
